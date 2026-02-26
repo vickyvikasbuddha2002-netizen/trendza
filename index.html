@@ -1,284 +1,198 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trendza</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trendza | Build. Learn. Go Viral.</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-base: #050505;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --electric-green: #00ff66;
+            --neon-glow: rgba(0, 255, 102, 0.4);
+        }
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{
-background:#000;
-color:#fff;
-font-family:'Orbitron',sans-serif;
-overflow-x:hidden;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-/* GRID BACKGROUND */
-body::before{
-content:"";
-position:fixed;
-width:200%;
-height:200%;
-background-image:
-linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
-linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
-background-size:50px 50px;
-animation:moveGrid 25s linear infinite;
-z-index:-1;
-}
-@keyframes moveGrid{
-0%{transform:translate(0,0);}
-100%{transform:translate(-50px,-50px);}
-}
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            /* Subtle background grid pattern for tech feel */
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
 
-/* NAV */
-nav{
-position:fixed;
-top:0;
-width:100%;
-display:flex;
-justify-content:center;
-gap:40px;
-padding:20px;
-background:rgba(0,0,0,0.7);
-backdrop-filter:blur(10px);
-z-index:100;
-}
-nav a{
-color:#fff;
-text-decoration:none;
-cursor:pointer;
-letter-spacing:2px;
-}
+        /* --- Navigation --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 5%;
+            animation: fadeInDown 1s ease forwards;
+            opacity: 0;
+        }
 
-/* SECTIONS */
-section{
-min-height:100vh;
-padding-top:120px;
-}
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-/* HERO */
-.hero{
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-text-align:center;
-}
-.hero h1{
-font-size:clamp(60px,10vw,120px);
-letter-spacing:8px;
-}
-.hero p{
-margin-top:20px;
-color:#aaa;
-}
+        .logo span {
+            color: var(--electric-green);
+        }
 
-/* TUTORIALS SECTION */
-.tutorials-container{
-height:100vh;
-overflow-y:auto;
-scroll-snap-type:y mandatory;
-}
+        /* --- Hero Section --- */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 5%;
+            position: relative;
+        }
 
-.video-card{
-height:100vh;
-position:relative;
-scroll-snap-align:start;
-display:flex;
-justify-content:center;
-align-items:center;
-}
+        /* Glowing orb in the background */
+        .glow-orb {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--neon-glow) 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            filter: blur(50px);
+            animation: pulseGlow 4s infinite alternate;
+        }
 
-video{
-width:100%;
-height:100%;
-object-fit:cover;
-}
+        h1 {
+            font-size: clamp(4rem, 10vw, 8rem);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.04em;
+            margin-bottom: 1.5rem;
+        }
 
-.overlay{
-position:absolute;
-bottom:30px;
-left:20px;
-}
+        .word-1, .word-2, .word-3 {
+            display: block;
+            opacity: 0;
+            transform: translateY(40px);
+        }
 
-.stats{
-margin-top:10px;
-display:flex;
-gap:15px;
-align-items:center;
-}
+        .word-1 { animation: slideUp 0.8s ease forwards 0.2s; }
+        .word-2 { animation: slideUp 0.8s ease forwards 0.4s; }
+        .word-3 { 
+            animation: slideUp 0.8s ease forwards 0.6s; 
+            color: transparent;
+            -webkit-text-stroke: 2px var(--electric-green);
+        }
 
-.like-btn{
-cursor:pointer;
-font-size:18px;
-}
+        p.subtitle {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            color: var(--text-muted);
+            max-width: 600px;
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: slideUp 0.8s ease forwards 0.8s;
+            line-height: 1.6;
+        }
 
-.fire{
-animation:fireGlow 1s infinite alternate;
-color:orange;
-}
+        /* --- Buttons --- */
+        .cta-container {
+            opacity: 0;
+            animation: slideUp 0.8s ease forwards 1s;
+        }
 
-@keyframes fireGlow{
-from{ text-shadow:0 0 5px orange; }
-to{ text-shadow:0 0 20px red; }
-}
+        .cta-btn {
+            display: inline-block;
+            background: var(--text-main);
+            color: var(--bg-base);
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
 
-/* PRODUCTS */
-.products-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:20px;
-padding:40px;
-}
+        .cta-btn:hover {
+            background: transparent;
+            color: var(--electric-green);
+            border-color: var(--electric-green);
+            box-shadow: 0 0 20px var(--neon-glow);
+            transform: translateY(-3px);
+        }
 
-.product-card{
-background:#111;
-padding:20px;
-border:1px solid #222;
-}
+        /* --- Keyframe Animations --- */
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-/* TOOLS */
-.tools-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:20px;
-padding:40px;
-}
-.tool-card{
-background:#111;
-padding:20px;
-border:1px solid #222;
-}
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-@media(max-width:768px){
-nav{gap:20px;font-size:12px;}
-}
-</style>
+        @keyframes pulseGlow {
+            from { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+            to { transform: translate(-50%, -50%) scale(1.1); opacity: 0.8; }
+        }
+    </style>
 </head>
-
 <body>
 
-<nav>
-<a onclick="scrollToSection('home')">Home</a>
-<a onclick="scrollToSection('tutorials')">Tutorials</a>
-<a onclick="scrollToSection('products')">Products</a>
-<a onclick="scrollToSection('tools')">Tools</a>
-</nav>
+    <nav>
+        <div class="logo">
+            🐍 Trendza<span>.</span>
+        </div>
+    </nav>
 
-<section id="home" class="hero">
-<h1>TRENDZA</h1>
-<p>Build. Learn. Go Viral.</p>
-</section>
+    <main>
+        <div class="glow-orb"></div>
+        
+        <h1>
+            <span class="word-1">Build.</span>
+            <span class="word-2">Learn.</span>
+            <span class="word-3">Go Viral.</span>
+        </h1>
+        
+        <p class="subtitle">
+            The viral growth engine platform. Scroll TikTok-style tutorials, use built-in editing tools, and discover what's trending.
+        </p>
 
-<section id="tutorials">
-<div class="tutorials-container" id="videoFeed"></div>
-</section>
-
-<section id="products">
-<h2 style="text-align:center;">Trending Products</h2>
-<div class="products-grid">
-<div class="product-card">
-<h3>LED Sunset Lamp</h3>
-<p>Perfect lighting for viral reels.</p>
-</div>
-<div class="product-card">
-<h3>Portable Mini Blender</h3>
-<p>Viral kitchen gadget.</p>
-</div>
-</div>
-</section>
-
-<section id="tools">
-<h2 style="text-align:center;">Editing Tools</h2>
-<div class="tools-grid">
-<div class="tool-card">
-<h3>Hook Generator</h3>
-<p>Generate viral hooks instantly.</p>
-</div>
-<div class="tool-card">
-<h3>Caption Builder</h3>
-<p>Create scroll-stopping captions.</p>
-</div>
-</div>
-</section>
-
-<script>
-function scrollToSection(id){
-document.getElementById(id).scrollIntoView({behavior:"smooth"});
-}
-
-/* VIDEO DATA */
-let videos = [
-{id:1,title:"Viral Hook Strategy",src:"https://www.w3schools.com/html/mov_bbb.mp4"},
-{id:2,title:"Editing Trick 2026",src:"https://www.w3schools.com/html/movie.mp4"},
-{id:3,title:"Reel Growth Hack",src:"https://www.w3schools.com/html/mov_bbb.mp4"},
-{id:4,title:"AI Caption Method",src:"https://www.w3schools.com/html/movie.mp4"},
-{id:5,title:"Transition Effect Idea",src:"https://www.w3schools.com/html/mov_bbb.mp4"}
-];
-
-let likes = JSON.parse(localStorage.getItem("trendzaLikes")) || {};
-let views = JSON.parse(localStorage.getItem("trendzaViews")) || {};
-
-function renderVideos(){
-const container = document.getElementById("videoFeed");
-container.innerHTML="";
-
-videos.sort((a,b)=>(likes[b.id]||0)-(likes[a.id]||0));
-
-videos.forEach(video=>{
-likes[video.id]=likes[video.id]||0;
-views[video.id]=views[video.id]||0;
-
-const card=document.createElement("div");
-card.className="video-card";
-
-card.innerHTML=`
-<video src="${video.src}" muted loop playsinline></video>
-<div class="overlay">
-<h3>${video.title}</h3>
-<div class="stats">
-<span class="like-btn ${likes[video.id]>5?'fire':''}" onclick="likeVideo(${video.id})">
-❤️ ${likes[video.id]}
-</span>
-<span>👁 ${views[video.id]}</span>
-</div>
-</div>
-`;
-
-container.appendChild(card);
-});
-observeVideos();
-}
-
-function likeVideo(id){
-likes[id]=(likes[id]||0)+1;
-localStorage.setItem("trendzaLikes",JSON.stringify(likes));
-renderVideos();
-}
-
-function observeVideos(){
-const vids=document.querySelectorAll("video");
-const observer=new IntersectionObserver(entries=>{
-entries.forEach(entry=>{
-if(entry.isIntersecting){
-entry.target.play();
-let id = entry.target.parentElement.querySelector(".like-btn").getAttribute("onclick").match(/\d+/)[0];
-views[id]=(views[id]||0)+1;
-localStorage.setItem("trendzaViews",JSON.stringify(views));
-renderVideos();
-}else{
-entry.target.pause();
-}
-});
-},{threshold:0.6});
-vids.forEach(v=>observer.observe(v));
-}
-
-renderVideos();
-</script>
+        <div class="cta-container">
+            <a href="tutorials.html" class="cta-btn">Start Scrolling</a>
+        </div>
+    </main>
 
 </body>
 </html>
