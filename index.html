@@ -1,28 +1,18 @@
- <div class="mascot">
-<svg viewBox="0 0 200 200" width="120" height="120">
-<polygon points="50,30 80,90 20,90" fill="#111" stroke="#fff" stroke-width="3"/>
-<polygon points="150,30 180,90 120,90" fill="#111" stroke="#fff" stroke-width="3"/>
-<polygon points="40,90 100,170 160,90" fill="#111" stroke="#fff" stroke-width="3"/>
-<polygon points="75,115 95,115 85,130" fill="#fff"/>
-<polygon points="105,115 125,115 115,130" fill="#fff"/>
-</svg>
-</div>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Trendza</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
+
 body{
 background:#000;
 color:#fff;
-font-family:'Orbitron', sans-serif;
-text-align:center;
+font-family:'Orbitron',sans-serif;
 overflow-x:hidden;
 }
 
@@ -35,116 +25,127 @@ height:200%;
 background-image:
 linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
 linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
-background-size:60px 60px;
-animation:gridMove 20s linear infinite;
-z-index:-1;
-}
-@keyframes gridMove{
-0%{transform:translate(0,0);}
-100%{transform:translate(-60px,-60px);}
+background-size:50px 50px;
+animation:moveGrid 20s linear infinite;
+z-index:-2;
 }
 
+@keyframes moveGrid{
+0%{transform:translate(0,0);}
+100%{transform:translate(-50px,-50px);}
+}
+
+/* HERO */
 .hero{
-height:80vh;
+height:90vh;
 display:flex;
 flex-direction:column;
 justify-content:center;
 align-items:center;
+text-align:center;
 }
 
-h1{
+.hero h1{
 font-size:clamp(50px,8vw,120px);
 letter-spacing:8px;
-margin-bottom:10px;
 }
 
-.sub{
+.hero p{
+margin-top:20px;
 color:#aaa;
 letter-spacing:4px;
-font-size:14px;
-margin-bottom:40px;
 }
 
 /* GAME SECTION */
 .game-section{
 padding:40px 20px;
+text-align:center;
+}
+
+canvas{
+background:#111;
+border:2px solid #0f0;
+margin-top:20px;
 }
 
 input{
 padding:10px;
 background:#111;
-border:1px solid #333;
-color:#fff;
-margin-bottom:10px;
+border:1px solid #0f0;
+color:#0f0;
+text-align:center;
 }
 
 button{
 padding:10px 20px;
-background:#fff;
-color:#000;
+margin-top:10px;
+background:#0f0;
 border:none;
 cursor:pointer;
-margin-bottom:20px;
+font-weight:bold;
 }
 
-canvas{
-background:#111;
-border:2px solid #333;
-}
-
-.scoreboard{
+.leaderboard{
 margin-top:20px;
-text-align:left;
 max-width:300px;
 margin-left:auto;
 margin-right:auto;
+text-align:left;
 }
 
-.scoreboard h3{
+.leaderboard h3{
+text-align:center;
 margin-bottom:10px;
 }
 
-.scoreboard li{
-font-size:14px;
-margin-bottom:5px;
-color:#aaa;
+.leaderboard ul{
+list-style:none;
+}
+
+.leaderboard li{
+padding:5px 0;
+border-bottom:1px solid #222;
 }
 </style>
 </head>
+
 <body>
 
-<div class="hero">
+<section class="hero">
 <h1>TRENDZA</h1>
-<div class="sub">Play while we launch</div>
-</div>
+<p>Launching Soon</p>
+</section>
 
-<div class="game-section">
-<input id="username" placeholder="Enter username">
+<section class="game-section">
+<h2>Play Snake While You Wait</h2>
+<input id="username" placeholder="Enter username" />
 <br>
 <button onclick="startGame()">Start Game</button>
-<br>
+
 <canvas id="game" width="300" height="300"></canvas>
 
-<div class="scoreboard">
+<div class="leaderboard">
 <h3>Leaderboard</h3>
-<ul id="leaderboard"></ul>
+<ul id="scores"></ul>
 </div>
-</div>
+</section>
 
 <script>
-let canvas = document.getElementById("game");
-let ctx = canvas.getContext("2d");
-
-let box = 15;
-let snake = [];
-let food;
-let direction;
-let score;
-let game;
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+const box = 15;
+let snake, direction, food, score, game;
+let username = "";
 
 function startGame(){
-let name = document.getElementById("username").value;
-if(!name) return alert("Enter username");
+username = document.getElementById("username").value.trim();
+if(!username){ alert("Enter username"); return; }
+
+let scores = JSON.parse(localStorage.getItem("trendzaScores")) || [];
+if(scores.find(s => s.name === username)){
+alert("Username already exists");
+return;
+}
 
 snake = [{x:150,y:150}];
 direction = "RIGHT";
@@ -154,40 +155,44 @@ x:Math.floor(Math.random()*20)*box,
 y:Math.floor(Math.random()*20)*box
 };
 
-if(game) clearInterval(game);
+clearInterval(game);
 game = setInterval(draw,100);
 }
 
 document.addEventListener("keydown",e=>{
-if(e.key=="ArrowLeft" && direction!="RIGHT") direction="LEFT";
-if(e.key=="ArrowUp" && direction!="DOWN") direction="UP";
-if(e.key=="ArrowRight" && direction!="LEFT") direction="RIGHT";
-if(e.key=="ArrowDown" && direction!="UP") direction="DOWN";
+if(e.key==="ArrowLeft" && direction!=="RIGHT") direction="LEFT";
+if(e.key==="ArrowUp" && direction!=="DOWN") direction="UP";
+if(e.key==="ArrowRight" && direction!=="LEFT") direction="RIGHT";
+if(e.key==="ArrowDown" && direction!=="UP") direction="DOWN";
 });
+
+function collision(head,array){
+return array.some(seg=>seg.x===head.x && seg.y===head.y);
+}
 
 function draw(){
 ctx.fillStyle="#111";
 ctx.fillRect(0,0,300,300);
 
 for(let i=0;i<snake.length;i++){
-ctx.fillStyle=i==0?"#fff":"#666";
+ctx.fillStyle = i===0?"#0f0":"#090";
 ctx.fillRect(snake[i].x,snake[i].y,box,box);
 }
 
 ctx.fillStyle="red";
 ctx.fillRect(food.x,food.y,box,box);
 
-let snakeX=snake[0].x;
-let snakeY=snake[0].y;
+let snakeX = snake[0].x;
+let snakeY = snake[0].y;
 
-if(direction=="LEFT") snakeX-=box;
-if(direction=="UP") snakeY-=box;
-if(direction=="RIGHT") snakeX+=box;
-if(direction=="DOWN") snakeY+=box;
+if(direction==="LEFT") snakeX-=box;
+if(direction==="UP") snakeY-=box;
+if(direction==="RIGHT") snakeX+=box;
+if(direction==="DOWN") snakeY+=box;
 
-if(snakeX==food.x && snakeY==food.y){
+if(snakeX===food.x && snakeY===food.y){
 score++;
-food={
+food = {
 x:Math.floor(Math.random()*20)*box,
 y:Math.floor(Math.random()*20)*box
 };
@@ -199,44 +204,31 @@ let newHead={x:snakeX,y:snakeY};
 
 if(snakeX<0||snakeY<0||snakeX>=300||snakeY>=300||collision(newHead,snake)){
 clearInterval(game);
-saveScore(score);
+saveScore();
 return;
 }
 
 snake.unshift(newHead);
 }
 
-function collision(head,array){
-for(let i=0;i<array.length;i++){
-if(head.x==array[i].x && head.y==array[i].y){
-return true;
-}
-}
-return false;
-}
-
-function saveScore(score){
-let name=document.getElementById("username").value;
-let scores=JSON.parse(localStorage.getItem("trendzaScores"))||[];
-scores.push({name:name,score:score});
+function saveScore(){
+let scores = JSON.parse(localStorage.getItem("trendzaScores")) || [];
+scores.push({name:username,score});
 scores.sort((a,b)=>b.score-a.score);
-scores=scores.slice(0,10);
 localStorage.setItem("trendzaScores",JSON.stringify(scores));
-renderLeaderboard();
+displayScores();
 }
 
-function renderLeaderboard(){
-let scores=JSON.parse(localStorage.getItem("trendzaScores"))||[];
-let list=document.getElementById("leaderboard");
-list.innerHTML="";
-scores.forEach((s,i)=>{
-let li=document.createElement("li");
-li.textContent=`${i+1}. ${s.name} - ${s.score}`;
-list.appendChild(li);
+function displayScores(){
+let scores = JSON.parse(localStorage.getItem("trendzaScores")) || [];
+let ul = document.getElementById("scores");
+ul.innerHTML="";
+scores.slice(0,10).forEach((s,i)=>{
+ul.innerHTML+=`<li>#${i+1} ${s.name} - ${s.score}</li>`;
 });
 }
 
-renderLeaderboard();
+displayScores();
 </script>
 
 </body>
