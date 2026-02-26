@@ -8,16 +8,14 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-
 body{
 background:#000;
 color:#fff;
 font-family:'Orbitron',sans-serif;
 overflow-x:hidden;
-text-align:center;
 }
 
-/* Animated grid background */
+/* Animated grid */
 body::before{
 content:"";
 position:fixed;
@@ -36,256 +34,227 @@ z-index:-1;
 100%{transform:translate(-50px,-50px);}
 }
 
+/* NAV */
+nav{
+position:fixed;
+top:0;
+width:100%;
+display:flex;
+justify-content:center;
+gap:40px;
+padding:20px;
+background:rgba(0,0,0,0.6);
+backdrop-filter:blur(10px);
+z-index:10;
+}
+
+nav a{
+color:#fff;
+text-decoration:none;
+letter-spacing:2px;
+cursor:pointer;
+}
+
+/* SECTION BASE */
+section{
+min-height:100vh;
+padding-top:100px;
+}
+
+/* HERO */
 .hero{
-height:80vh;
 display:flex;
 flex-direction:column;
 justify-content:center;
 align-items:center;
+text-align:center;
 }
 
 .hero h1{
 font-size:clamp(60px,10vw,120px);
-letter-spacing:10px;
-font-weight:900;
+letter-spacing:8px;
 }
 
 .hero p{
 margin-top:20px;
 color:#aaa;
-letter-spacing:4px;
 }
 
-.game-section{
-padding:40px 20px;
+/* TIKTOK SCROLL */
+.scroll-container{
+height:100vh;
+overflow-y:scroll;
+scroll-snap-type:y mandatory;
 }
 
-input{
-padding:10px;
-background:#111;
-border:1px solid #0f0;
-color:#0f0;
-text-align:center;
+.video-card{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+scroll-snap-align:start;
+position:relative;
+}
+
+video{
+height:100%;
+width:100%;
+object-fit:cover;
+}
+
+.overlay{
+position:absolute;
+bottom:30px;
+left:30px;
+}
+
+.overlay h3{
 margin-bottom:10px;
 }
 
-button{
-padding:10px 20px;
-margin:5px;
+.sound-btn{
+position:absolute;
+top:20px;
+right:20px;
+background:#000;
+padding:8px 12px;
+cursor:pointer;
+border:1px solid #fff;
+}
+
+/* PRODUCTS */
+.products{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+padding:40px;
+}
+
+.product-card{
+background:#111;
+padding:20px;
+border:1px solid #222;
+}
+
+.product-card button{
+margin-top:10px;
+padding:10px;
 background:#0f0;
 border:none;
-font-weight:bold;
 cursor:pointer;
 }
 
-canvas{
+/* TOOLS */
+.tools{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+padding:40px;
+}
+
+.tool-card{
 background:#111;
-border:2px solid #0f0;
-display:block;
-margin:20px auto;
+padding:20px;
+border:1px solid #222;
 }
 
-/* Controls */
-.controls{
-margin-top:10px;
-}
-
-.controls button{
-width:60px;
-height:60px;
-font-size:20px;
-}
-
-/* Leaderboard */
-.leaderboard{
-max-width:300px;
-margin:20px auto;
-text-align:left;
-}
-
-.leaderboard h3{
-text-align:center;
-margin-bottom:10px;
-}
-
-.leaderboard ul{
-list-style:none;
-}
-
-.leaderboard li{
-padding:6px 0;
-border-bottom:1px solid #222;
-}
-
-.retry-btn{
-background:#ff0;
-color:#000;
-}
-
-.reset-btn{
-background:#f00;
-color:#fff;
+@media(max-width:768px){
+nav{gap:20px;font-size:12px;}
 }
 </style>
 </head>
 
 <body>
 
-<section class="hero">
+<nav>
+<a href="#home">Home</a>
+<a href="#tutorials">Tutorials</a>
+<a href="#products">Products</a>
+<a href="#tools">Tools</a>
+</nav>
+
+<section id="home" class="hero">
 <h1>TRENDZA</h1>
-<p>Launching Soon</p>
+<p>Build. Learn. Go Viral.</p>
 </section>
 
-<section class="game-section">
-<h2>Play Snake While You Wait</h2>
+<section id="tutorials">
+<div class="scroll-container">
 
-<input id="username" placeholder="Enter username">
-<br>
-<button onclick="startGame()">Start Game</button>
-<button class="retry-btn" onclick="retryGame()">Retry</button>
-<button class="reset-btn" onclick="resetScores()">Reset Players</button>
-
-<canvas id="game" width="300" height="300"></canvas>
-
-<div class="controls">
-<div>
-<button onclick="setDirection('UP')">↑</button>
+<div class="video-card">
+<video src="https://www.w3schools.com/html/mov_bbb.mp4" muted loop playsinline></video>
+<div class="overlay">
+<h3>Viral Hook Strategy</h3>
+<p>#reels #growth</p>
 </div>
-<div>
-<button onclick="setDirection('LEFT')">←</button>
-<button onclick="setDirection('DOWN')">↓</button>
-<button onclick="setDirection('RIGHT')">→</button>
-</div>
+<div class="sound-btn">Sound</div>
 </div>
 
-<div class="leaderboard">
-<h3>Leaderboard</h3>
-<ul id="scores"></ul>
+<div class="video-card">
+<video src="https://www.w3schools.com/html/movie.mp4" muted loop playsinline></video>
+<div class="overlay">
+<h3>Editing Trick 2026</h3>
+<p>#editing #viral</p>
+</div>
+<div class="sound-btn">Sound</div>
 </div>
 
+</div>
+</section>
+
+<section id="products">
+<h2 style="text-align:center;margin-top:40px;">Trending Products</h2>
+<div class="products">
+<div class="product-card">
+<h3>LED Sunset Lamp</h3>
+<p>Perfect reel lighting setup.</p>
+<button>View Product</button>
+</div>
+<div class="product-card">
+<h3>Mini Portable Blender</h3>
+<p>Viral kitchen gadget.</p>
+<button>View Product</button>
+</div>
+</div>
+</section>
+
+<section id="tools">
+<h2 style="text-align:center;margin-top:40px;">Editing Tools</h2>
+<div class="tools">
+<div class="tool-card">
+<h3>Hook Generator</h3>
+<p>Generate viral hooks instantly.</p>
+</div>
+<div class="tool-card">
+<h3>Caption Builder</h3>
+<p>Create scroll-stopping captions.</p>
+</div>
+</div>
 </section>
 
 <script>
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
-const box = 15;
-let snake, direction, food, score, game;
-let username = "";
-
-function startGame(){
-username = document.getElementById("username").value.trim();
-if(!username){ alert("Enter username"); return; }
-
-let scores = JSON.parse(localStorage.getItem("trendzaScores")) || [];
-if(scores.find(s => s.name === username)){
-alert("Username already exists");
-return;
-}
-
-initGame();
-}
-
-function retryGame(){
-if(!username){ alert("Start game first"); return; }
-initGame();
-}
-
-function initGame(){
-snake = [{x:150,y:150}];
-direction = "RIGHT";
-score = 0;
-food = {
-x:Math.floor(Math.random()*20)*box,
-y:Math.floor(Math.random()*20)*box
-};
-clearInterval(game);
-game = setInterval(draw,100);
-}
-
-function setDirection(dir){
-if(dir==="LEFT" && direction!=="RIGHT") direction="LEFT";
-if(dir==="UP" && direction!=="DOWN") direction="UP";
-if(dir==="RIGHT" && direction!=="LEFT") direction="RIGHT";
-if(dir==="DOWN" && direction!=="UP") direction="DOWN";
-}
-
-document.addEventListener("keydown",e=>{
-if(e.key==="ArrowLeft") setDirection("LEFT");
-if(e.key==="ArrowUp") setDirection("UP");
-if(e.key==="ArrowRight") setDirection("RIGHT");
-if(e.key==="ArrowDown") setDirection("DOWN");
-});
-
-function collision(head,array){
-return array.some(seg=>seg.x===head.x && seg.y===head.y);
-}
-
-function draw(){
-ctx.fillStyle="#111";
-ctx.fillRect(0,0,300,300);
-
-for(let i=0;i<snake.length;i++){
-ctx.fillStyle = i===0?"#0f0":"#090";
-ctx.fillRect(snake[i].x,snake[i].y,box,box);
-}
-
-ctx.fillStyle="red";
-ctx.fillRect(food.x,food.y,box,box);
-
-let snakeX = snake[0].x;
-let snakeY = snake[0].y;
-
-if(direction==="LEFT") snakeX-=box;
-if(direction==="UP") snakeY-=box;
-if(direction==="RIGHT") snakeX+=box;
-if(direction==="DOWN") snakeY+=box;
-
-if(snakeX===food.x && snakeY===food.y){
-score++;
-food = {
-x:Math.floor(Math.random()*20)*box,
-y:Math.floor(Math.random()*20)*box
-};
+// Auto play visible video
+const videos = document.querySelectorAll("video");
+const observer = new IntersectionObserver(entries=>{
+entries.forEach(entry=>{
+if(entry.isIntersecting){
+entry.target.play();
 }else{
-snake.pop();
+entry.target.pause();
 }
-
-let newHead={x:snakeX,y:snakeY};
-
-if(snakeX<0||snakeY<0||snakeX>=300||snakeY>=300||collision(newHead,snake)){
-clearInterval(game);
-saveScore();
-return;
-}
-
-snake.unshift(newHead);
-}
-
-function saveScore(){
-let scores = JSON.parse(localStorage.getItem("trendzaScores")) || [];
-scores.push({name:username,score});
-scores.sort((a,b)=>b.score-a.score);
-localStorage.setItem("trendzaScores",JSON.stringify(scores));
-displayScores();
-}
-
-function displayScores(){
-let scores = JSON.parse(localStorage.getItem("trendzaScores")) || [];
-let ul = document.getElementById("scores");
-ul.innerHTML="";
-scores.slice(0,10).forEach((s,i)=>{
-ul.innerHTML+=`<li>#${i+1} ${s.name} - ${s.score}</li>`;
 });
-}
+},{threshold:0.6});
 
-function resetScores(){
-if(confirm("Reset all players?")){
-localStorage.removeItem("trendzaScores");
-displayScores();
-}
-}
+videos.forEach(video=>observer.observe(video));
 
-displayScores();
+// Sound toggle
+document.querySelectorAll(".sound-btn").forEach((btn,index)=>{
+btn.addEventListener("click",()=>{
+const vid = videos[index];
+vid.muted = !vid.muted;
+btn.innerText = vid.muted ? "Sound" : "Muted";
+});
+});
 </script>
 
 </body>
