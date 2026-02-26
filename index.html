@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Trendza</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -14,9 +14,10 @@ background:#000;
 color:#fff;
 font-family:'Orbitron',sans-serif;
 overflow-x:hidden;
+text-align:center;
 }
 
-/* GRID BACKGROUND */
+/* Animated grid background */
 body::before{
 content:"";
 position:fixed;
@@ -27,7 +28,7 @@ linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
 linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
 background-size:50px 50px;
 animation:moveGrid 20s linear infinite;
-z-index:-2;
+z-index:-1;
 }
 
 @keyframes moveGrid{
@@ -35,19 +36,18 @@ z-index:-2;
 100%{transform:translate(-50px,-50px);}
 }
 
-/* HERO */
 .hero{
-height:90vh;
+height:80vh;
 display:flex;
 flex-direction:column;
 justify-content:center;
 align-items:center;
-text-align:center;
 }
 
 .hero h1{
-font-size:clamp(50px,8vw,120px);
-letter-spacing:8px;
+font-size:clamp(60px,10vw,120px);
+letter-spacing:10px;
+font-weight:900;
 }
 
 .hero p{
@@ -56,16 +56,8 @@ color:#aaa;
 letter-spacing:4px;
 }
 
-/* GAME SECTION */
 .game-section{
 padding:40px 20px;
-text-align:center;
-}
-
-canvas{
-background:#111;
-border:2px solid #0f0;
-margin-top:20px;
 }
 
 input{
@@ -74,22 +66,40 @@ background:#111;
 border:1px solid #0f0;
 color:#0f0;
 text-align:center;
+margin-bottom:10px;
 }
 
 button{
 padding:10px 20px;
-margin-top:10px;
+margin:5px;
 background:#0f0;
 border:none;
-cursor:pointer;
 font-weight:bold;
+cursor:pointer;
 }
 
+canvas{
+background:#111;
+border:2px solid #0f0;
+display:block;
+margin:20px auto;
+}
+
+/* Controls */
+.controls{
+margin-top:10px;
+}
+
+.controls button{
+width:60px;
+height:60px;
+font-size:20px;
+}
+
+/* Leaderboard */
 .leaderboard{
-margin-top:20px;
 max-width:300px;
-margin-left:auto;
-margin-right:auto;
+margin:20px auto;
 text-align:left;
 }
 
@@ -103,8 +113,18 @@ list-style:none;
 }
 
 .leaderboard li{
-padding:5px 0;
+padding:6px 0;
 border-bottom:1px solid #222;
+}
+
+.retry-btn{
+background:#ff0;
+color:#000;
+}
+
+.reset-btn{
+background:#f00;
+color:#fff;
 }
 </style>
 </head>
@@ -118,16 +138,31 @@ border-bottom:1px solid #222;
 
 <section class="game-section">
 <h2>Play Snake While You Wait</h2>
-<input id="username" placeholder="Enter username" />
+
+<input id="username" placeholder="Enter username">
 <br>
 <button onclick="startGame()">Start Game</button>
+<button class="retry-btn" onclick="retryGame()">Retry</button>
+<button class="reset-btn" onclick="resetScores()">Reset Players</button>
 
 <canvas id="game" width="300" height="300"></canvas>
+
+<div class="controls">
+<div>
+<button onclick="setDirection('UP')">↑</button>
+</div>
+<div>
+<button onclick="setDirection('LEFT')">←</button>
+<button onclick="setDirection('DOWN')">↓</button>
+<button onclick="setDirection('RIGHT')">→</button>
+</div>
+</div>
 
 <div class="leaderboard">
 <h3>Leaderboard</h3>
 <ul id="scores"></ul>
 </div>
+
 </section>
 
 <script>
@@ -147,6 +182,15 @@ alert("Username already exists");
 return;
 }
 
+initGame();
+}
+
+function retryGame(){
+if(!username){ alert("Start game first"); return; }
+initGame();
+}
+
+function initGame(){
 snake = [{x:150,y:150}];
 direction = "RIGHT";
 score = 0;
@@ -154,16 +198,22 @@ food = {
 x:Math.floor(Math.random()*20)*box,
 y:Math.floor(Math.random()*20)*box
 };
-
 clearInterval(game);
 game = setInterval(draw,100);
 }
 
+function setDirection(dir){
+if(dir==="LEFT" && direction!=="RIGHT") direction="LEFT";
+if(dir==="UP" && direction!=="DOWN") direction="UP";
+if(dir==="RIGHT" && direction!=="LEFT") direction="RIGHT";
+if(dir==="DOWN" && direction!=="UP") direction="DOWN";
+}
+
 document.addEventListener("keydown",e=>{
-if(e.key==="ArrowLeft" && direction!=="RIGHT") direction="LEFT";
-if(e.key==="ArrowUp" && direction!=="DOWN") direction="UP";
-if(e.key==="ArrowRight" && direction!=="LEFT") direction="RIGHT";
-if(e.key==="ArrowDown" && direction!=="UP") direction="DOWN";
+if(e.key==="ArrowLeft") setDirection("LEFT");
+if(e.key==="ArrowUp") setDirection("UP");
+if(e.key==="ArrowRight") setDirection("RIGHT");
+if(e.key==="ArrowDown") setDirection("DOWN");
 });
 
 function collision(head,array){
@@ -226,6 +276,13 @@ ul.innerHTML="";
 scores.slice(0,10).forEach((s,i)=>{
 ul.innerHTML+=`<li>#${i+1} ${s.name} - ${s.score}</li>`;
 });
+}
+
+function resetScores(){
+if(confirm("Reset all players?")){
+localStorage.removeItem("trendzaScores");
+displayScores();
+}
 }
 
 displayScores();
