@@ -15,7 +15,7 @@ font-family:'Orbitron',sans-serif;
 overflow-x:hidden;
 }
 
-/* Animated grid */
+/* GRID BACKGROUND */
 body::before{
 content:"";
 position:fixed;
@@ -25,10 +25,9 @@ background-image:
 linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
 linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
 background-size:50px 50px;
-animation:moveGrid 20s linear infinite;
+animation:moveGrid 25s linear infinite;
 z-index:-1;
 }
-
 @keyframes moveGrid{
 0%{transform:translate(0,0);}
 100%{transform:translate(-50px,-50px);}
@@ -43,22 +42,21 @@ display:flex;
 justify-content:center;
 gap:40px;
 padding:20px;
-background:rgba(0,0,0,0.6);
+background:rgba(0,0,0,0.7);
 backdrop-filter:blur(10px);
-z-index:10;
+z-index:100;
 }
-
 nav a{
 color:#fff;
 text-decoration:none;
-letter-spacing:2px;
 cursor:pointer;
+letter-spacing:2px;
 }
 
-/* SECTION BASE */
+/* SECTIONS */
 section{
 min-height:100vh;
-padding-top:100px;
+padding-top:120px;
 }
 
 /* HERO */
@@ -69,61 +67,67 @@ justify-content:center;
 align-items:center;
 text-align:center;
 }
-
 .hero h1{
 font-size:clamp(60px,10vw,120px);
 letter-spacing:8px;
 }
-
 .hero p{
 margin-top:20px;
 color:#aaa;
 }
 
-/* TIKTOK SCROLL */
-.scroll-container{
+/* TUTORIALS SECTION */
+.tutorials-container{
 height:100vh;
-overflow-y:scroll;
+overflow-y:auto;
 scroll-snap-type:y mandatory;
 }
 
 .video-card{
 height:100vh;
+position:relative;
+scroll-snap-align:start;
 display:flex;
 justify-content:center;
 align-items:center;
-scroll-snap-align:start;
-position:relative;
 }
 
 video{
-height:100%;
 width:100%;
+height:100%;
 object-fit:cover;
 }
 
 .overlay{
 position:absolute;
 bottom:30px;
-left:30px;
+left:20px;
 }
 
-.overlay h3{
-margin-bottom:10px;
+.stats{
+margin-top:10px;
+display:flex;
+gap:15px;
+align-items:center;
 }
 
-.sound-btn{
-position:absolute;
-top:20px;
-right:20px;
-background:#000;
-padding:8px 12px;
+.like-btn{
 cursor:pointer;
-border:1px solid #fff;
+font-size:18px;
+}
+
+.fire{
+animation:fireGlow 1s infinite alternate;
+color:orange;
+}
+
+@keyframes fireGlow{
+from{ text-shadow:0 0 5px orange; }
+to{ text-shadow:0 0 20px red; }
 }
 
 /* PRODUCTS */
-.products{
+.products-grid{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
 gap:20px;
@@ -136,22 +140,13 @@ padding:20px;
 border:1px solid #222;
 }
 
-.product-card button{
-margin-top:10px;
-padding:10px;
-background:#0f0;
-border:none;
-cursor:pointer;
-}
-
 /* TOOLS */
-.tools{
+.tools-grid{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
 gap:20px;
 padding:40px;
 }
-
 .tool-card{
 background:#111;
 padding:20px;
@@ -167,10 +162,10 @@ nav{gap:20px;font-size:12px;}
 <body>
 
 <nav>
-<a href="#home">Home</a>
-<a href="#tutorials">Tutorials</a>
-<a href="#products">Products</a>
-<a href="#tools">Tools</a>
+<a onclick="scrollToSection('home')">Home</a>
+<a onclick="scrollToSection('tutorials')">Tutorials</a>
+<a onclick="scrollToSection('products')">Products</a>
+<a onclick="scrollToSection('tools')">Tools</a>
 </nav>
 
 <section id="home" class="hero">
@@ -179,48 +174,26 @@ nav{gap:20px;font-size:12px;}
 </section>
 
 <section id="tutorials">
-<div class="scroll-container">
-
-<div class="video-card">
-<video src="https://www.w3schools.com/html/mov_bbb.mp4" muted loop playsinline></video>
-<div class="overlay">
-<h3>Viral Hook Strategy</h3>
-<p>#reels #growth</p>
-</div>
-<div class="sound-btn">Sound</div>
-</div>
-
-<div class="video-card">
-<video src="https://www.w3schools.com/html/movie.mp4" muted loop playsinline></video>
-<div class="overlay">
-<h3>Editing Trick 2026</h3>
-<p>#editing #viral</p>
-</div>
-<div class="sound-btn">Sound</div>
-</div>
-
-</div>
+<div class="tutorials-container" id="videoFeed"></div>
 </section>
 
 <section id="products">
-<h2 style="text-align:center;margin-top:40px;">Trending Products</h2>
-<div class="products">
+<h2 style="text-align:center;">Trending Products</h2>
+<div class="products-grid">
 <div class="product-card">
 <h3>LED Sunset Lamp</h3>
-<p>Perfect reel lighting setup.</p>
-<button>View Product</button>
+<p>Perfect lighting for viral reels.</p>
 </div>
 <div class="product-card">
-<h3>Mini Portable Blender</h3>
+<h3>Portable Mini Blender</h3>
 <p>Viral kitchen gadget.</p>
-<button>View Product</button>
 </div>
 </div>
 </section>
 
 <section id="tools">
-<h2 style="text-align:center;margin-top:40px;">Editing Tools</h2>
-<div class="tools">
+<h2 style="text-align:center;">Editing Tools</h2>
+<div class="tools-grid">
 <div class="tool-card">
 <h3>Hook Generator</h3>
 <p>Generate viral hooks instantly.</p>
@@ -233,28 +206,78 @@ nav{gap:20px;font-size:12px;}
 </section>
 
 <script>
-// Auto play visible video
-const videos = document.querySelectorAll("video");
-const observer = new IntersectionObserver(entries=>{
+function scrollToSection(id){
+document.getElementById(id).scrollIntoView({behavior:"smooth"});
+}
+
+/* VIDEO DATA */
+let videos = [
+{id:1,title:"Viral Hook Strategy",src:"https://www.w3schools.com/html/mov_bbb.mp4"},
+{id:2,title:"Editing Trick 2026",src:"https://www.w3schools.com/html/movie.mp4"},
+{id:3,title:"Reel Growth Hack",src:"https://www.w3schools.com/html/mov_bbb.mp4"},
+{id:4,title:"AI Caption Method",src:"https://www.w3schools.com/html/movie.mp4"},
+{id:5,title:"Transition Effect Idea",src:"https://www.w3schools.com/html/mov_bbb.mp4"}
+];
+
+let likes = JSON.parse(localStorage.getItem("trendzaLikes")) || {};
+let views = JSON.parse(localStorage.getItem("trendzaViews")) || {};
+
+function renderVideos(){
+const container = document.getElementById("videoFeed");
+container.innerHTML="";
+
+videos.sort((a,b)=>(likes[b.id]||0)-(likes[a.id]||0));
+
+videos.forEach(video=>{
+likes[video.id]=likes[video.id]||0;
+views[video.id]=views[video.id]||0;
+
+const card=document.createElement("div");
+card.className="video-card";
+
+card.innerHTML=`
+<video src="${video.src}" muted loop playsinline></video>
+<div class="overlay">
+<h3>${video.title}</h3>
+<div class="stats">
+<span class="like-btn ${likes[video.id]>5?'fire':''}" onclick="likeVideo(${video.id})">
+❤️ ${likes[video.id]}
+</span>
+<span>👁 ${views[video.id]}</span>
+</div>
+</div>
+`;
+
+container.appendChild(card);
+});
+observeVideos();
+}
+
+function likeVideo(id){
+likes[id]=(likes[id]||0)+1;
+localStorage.setItem("trendzaLikes",JSON.stringify(likes));
+renderVideos();
+}
+
+function observeVideos(){
+const vids=document.querySelectorAll("video");
+const observer=new IntersectionObserver(entries=>{
 entries.forEach(entry=>{
 if(entry.isIntersecting){
 entry.target.play();
+let id = entry.target.parentElement.querySelector(".like-btn").getAttribute("onclick").match(/\d+/)[0];
+views[id]=(views[id]||0)+1;
+localStorage.setItem("trendzaViews",JSON.stringify(views));
+renderVideos();
 }else{
 entry.target.pause();
 }
 });
 },{threshold:0.6});
+vids.forEach(v=>observer.observe(v));
+}
 
-videos.forEach(video=>observer.observe(video));
-
-// Sound toggle
-document.querySelectorAll(".sound-btn").forEach((btn,index)=>{
-btn.addEventListener("click",()=>{
-const vid = videos[index];
-vid.muted = !vid.muted;
-btn.innerText = vid.muted ? "Sound" : "Muted";
-});
-});
+renderVideos();
 </script>
 
 </body>
