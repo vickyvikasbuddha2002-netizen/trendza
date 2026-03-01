@@ -10,6 +10,7 @@
 <style>
 :root{
   --bg:#0b0b0b;
+  --card:#111;
   --text:#f5f5f5;
   --muted:#888;
   --border:#1a1a1a;
@@ -17,7 +18,7 @@
 
 *{margin:0;padding:0;box-sizing:border-box;}
 body{
-  font-family:'Plus Jakarta Sans', sans-serif;
+  font-family:'Plus Jakarta Sans',sans-serif;
   background:var(--bg);
   color:var(--text);
 }
@@ -33,16 +34,19 @@ a{text-decoration:none;color:inherit;}
 /* NAVIGATION */
 
 nav{
+  position:sticky;
+  top:0;
+  background:var(--bg);
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding:25px 0;
+  padding:20px 0;
   border-bottom:1px solid var(--border);
+  z-index:1000;
 }
 
 .logo{
   font-weight:800;
-  font-size:20px;
   letter-spacing:3px;
 }
 
@@ -51,57 +55,61 @@ nav{
   gap:30px;
   font-size:14px;
   text-transform:uppercase;
-  letter-spacing:1px;
 }
 
-.nav-links a{
-  opacity:0.7;
-  transition:0.3s;
-}
-
-.nav-links a:hover{
-  opacity:1;
-}
+.nav-links a{opacity:.7;}
+.nav-links a:hover{opacity:1;}
 
 .live{
   font-size:12px;
   color:var(--muted);
 }
 
-/* SECTION HEADER WITH SEARCH + FILTER */
+/* MOBILE MENU */
+
+.menu-toggle{
+  display:none;
+  font-size:22px;
+  cursor:pointer;
+}
+
+.mobile-menu{
+  display:none;
+  flex-direction:column;
+  gap:20px;
+  padding:20px 0;
+  border-bottom:1px solid var(--border);
+}
+
+/* SECTION */
 
 .section-header{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin:60px 0 30px;
+  margin:60px 0 20px;
   flex-wrap:wrap;
   gap:15px;
 }
 
 .section-title{
-  font-size:40px;
+  font-size:36px;
   font-weight:800;
   letter-spacing:3px;
 }
 
 .controls{
   display:flex;
-  gap:15px;
+  gap:10px;
+  flex-wrap:wrap;
 }
 
-.search{
+.search, .filter{
   background:#111;
   border:1px solid var(--border);
   padding:8px 12px;
   color:white;
-}
-
-.filter{
-  background:#111;
-  border:1px solid var(--border);
-  padding:8px 12px;
-  color:white;
+  font-size:12px;
 }
 
 /* GRID */
@@ -113,13 +121,14 @@ nav{
 }
 
 .card{
+  background:var(--card);
   border:1px solid var(--border);
   padding:20px;
-  transition:0.3s;
+  transition:.3s;
 }
 
 .card:hover{
-  background:#111;
+  background:#151515;
 }
 
 .card img{
@@ -132,9 +141,24 @@ nav{
   margin-bottom:10px;
 }
 
-.muted{
+/* INTERACTIONS */
+
+.interactions{
+  display:flex;
+  justify-content:space-between;
+  margin-top:15px;
   font-size:12px;
   color:var(--muted);
+}
+
+.actions{
+  display:flex;
+  gap:15px;
+  cursor:pointer;
+}
+
+.actions span:hover{
+  color:white;
 }
 
 /* ADS */
@@ -154,20 +178,17 @@ footer{
   margin-top:80px;
   padding:40px 0;
   font-size:12px;
-  color:var(--muted);
   text-align:center;
+  color:var(--muted);
 }
 
 /* RESPONSIVE */
 
 @media(max-width:900px){
-  .nav-links{
-    display:none;
-  }
-  .section-title{
-    font-size:28px;
-  }
+  .nav-links{display:none;}
+  .menu-toggle{display:block;}
 }
+
 </style>
 </head>
 
@@ -178,18 +199,26 @@ footer{
   <div class="logo">TRENDZA</div>
 
   <div class="nav-links">
-    <a href="#prompts">AI Prompts</a>
-    <a href="#tools">Tools</a>
-    <a href="#products">Viral Products</a>
-    <a href="#blog">Blog</a>
+    <a href="#">AI Prompts</a>
+    <a href="#">Tools</a>
+    <a href="#">Viral Products</a>
+    <a href="#">Blog</a>
   </div>
 
+  <div class="menu-toggle" onclick="toggleMenu()">☰</div>
   <div class="live">LIVE 27</div>
 </nav>
 
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#">AI Prompts</a>
+  <a href="#">Tools</a>
+  <a href="#">Viral Products</a>
+  <a href="#">Blog</a>
+</div>
+
 <!-- AI PROMPTS -->
 
-<section id="prompts">
+<section>
   <div class="section-header">
     <div class="section-title">AI PROMPTS</div>
     <div class="controls">
@@ -198,116 +227,76 @@ footer{
         <option>Trending</option>
         <option>Newest</option>
         <option>Most Liked</option>
+        <option>Most Commented</option>
+      </select>
+      <select class="filter">
+        <option>All Categories</option>
+        <option>Portrait</option>
+        <option>Product</option>
+        <option>Cinematic</option>
       </select>
     </div>
   </div>
 
   <div class="grid">
+
     <div class="card">
       <img src="https://picsum.photos/400/300">
       <h3>Cinematic Portrait Prompt</h3>
-      <div class="muted">1240 Views • 320 Likes</div>
+
+      <div class="interactions">
+        <div>1.2K Views</div>
+        <div class="actions">
+          <span onclick="like(this)">♡ 320</span>
+          <span>💬 45</span>
+          <span>🔗 Share</span>
+          <span>🔖 Save</span>
+        </div>
+      </div>
     </div>
 
     <div class="card">
       <img src="https://picsum.photos/401/300">
       <h3>Neon Cyberpunk Effect</h3>
-      <div class="muted">820 Views • 210 Likes</div>
+
+      <div class="interactions">
+        <div>820 Views</div>
+        <div class="actions">
+          <span onclick="like(this)">♡ 210</span>
+          <span>💬 32</span>
+          <span>🔗 Share</span>
+          <span>🔖 Save</span>
+        </div>
+      </div>
     </div>
+
   </div>
 </section>
 
 <div class="ad">AdSense Placeholder</div>
-
-<!-- TOOLS -->
-
-<section id="tools">
-  <div class="section-header">
-    <div class="section-title">TOOLS</div>
-    <div class="controls">
-      <input class="search" placeholder="Search tools..." />
-      <select class="filter">
-        <option>Popular</option>
-        <option>Newest</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="grid">
-    <div class="card">
-      <h3>Instagram 9-Grid Split Tool</h3>
-      <div class="muted">Split video perfectly for IG grid</div>
-    </div>
-
-    <div class="card">
-      <h3>Prompt Formatter</h3>
-      <div class="muted">Structure prompts cleanly</div>
-    </div>
-  </div>
-</section>
-
-<div class="ad">AdSense Placeholder</div>
-
-<!-- VIRAL PRODUCTS -->
-
-<section id="products">
-  <div class="section-header">
-    <div class="section-title">VIRAL PRODUCTS</div>
-    <div class="controls">
-      <input class="search" placeholder="Search products..." />
-      <select class="filter">
-        <option>Trending</option>
-        <option>Most Clicked</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="grid">
-    <div class="card">
-      <img src="https://picsum.photos/402/300">
-      <h3>Portable RGB Tube Light</h3>
-      <div class="muted">Creator favorite lighting tool</div>
-      <div class="muted">VIEW PRODUCT →</div>
-    </div>
-
-    <div class="card">
-      <img src="https://picsum.photos/403/300">
-      <h3>AI Smart Ring</h3>
-      <div class="muted">Next-gen wearable tech</div>
-      <div class="muted">VIEW PRODUCT →</div>
-    </div>
-  </div>
-</section>
-
-<div class="ad">AdSense Placeholder</div>
-
-<!-- BLOG -->
-
-<section id="blog">
-  <div class="section-header">
-    <div class="section-title">BLOG</div>
-    <div class="controls">
-      <input class="search" placeholder="Search articles..." />
-      <select class="filter">
-        <option>Latest</option>
-        <option>Most Read</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="grid">
-    <div class="card">
-      <img src="https://picsum.photos/404/300">
-      <h3>How AI Prompts Go Viral in 2026</h3>
-      <div class="muted">5 min read</div>
-    </div>
-  </div>
-</section>
 
 <footer>
-© 2026 Trendza — AI Prompt Magazine. All rights reserved.
+© 2026 Trendza — AI Prompt Magazine
 </footer>
 
 </div>
+
+<script>
+function toggleMenu(){
+  const menu = document.getElementById("mobileMenu");
+  menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+}
+
+function like(el){
+  if(el.innerText.includes("♡")){
+    el.innerText = el.innerText.replace("♡","♥");
+    el.style.color = "white";
+  } else {
+    el.innerText = el.innerText.replace("♥","♡");
+    el.style.color = "";
+  }
+}
+</script>
+
 </body>
 </html>
