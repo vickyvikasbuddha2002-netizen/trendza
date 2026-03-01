@@ -1,349 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trendza — AI Prompt Magazine</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
-
-<style>
-:root{
-  --bg:#0b0b0b;
-  --card:#111;
-  --text:#f5f5f5;
-  --muted:#888;
-  --border:#1a1a1a;
-}
-
-*{margin:0;padding:0;box-sizing:border-box;}
-body{
-  font-family:'Plus Jakarta Sans',sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
-
-.container{
-  width:95%;
-  max-width:1400px;
-  margin:auto;
-}
-
-a{text-decoration:none;color:inherit}
-
-/* NAV */
-
-nav{
-  position:sticky;
-  top:0;
-  background:var(--bg);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:20px 0;
-  border-bottom:1px solid var(--border);
-  z-index:1000;
-}
-
-.logo{
-  font-weight:800;
-  letter-spacing:3px;
-}
-
-.nav-links{
-  display:flex;
-  gap:30px;
-  font-size:14px;
-  text-transform:uppercase;
-}
-
-.nav-links a{opacity:.7}
-.nav-links a:hover{opacity:1}
-
-.menu-toggle{
-  display:none;
-  font-size:22px;
-  cursor:pointer;
-}
-
-.live{
-  font-size:12px;
-  color:var(--muted);
-}
-
-.mobile-menu{
-  display:none;
-  flex-direction:column;
-  gap:20px;
-  padding:20px 0;
-  border-bottom:1px solid var(--border);
-}
-
-/* SECTION */
-
-section{
-  margin-top:80px;
-}
-
-.section-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  flex-wrap:wrap;
-  gap:15px;
-  margin-bottom:25px;
-}
-
-.section-title{
-  font-size:36px;
-  font-weight:800;
-  letter-spacing:3px;
-}
-
-.controls{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-}
-
-.search, .filter{
-  background:#111;
-  border:1px solid var(--border);
-  padding:8px 12px;
-  color:white;
-  font-size:12px;
-}
-
-/* GRID */
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:20px;
-}
-
-.card{
-  background:var(--card);
-  border:1px solid var(--border);
-  padding:20px;
-  transition:.3s;
-}
-
-.card:hover{
-  background:#151515;
-}
-
-.card img{
-  width:100%;
-  margin-bottom:15px;
-}
-
-.card h3{
-  font-size:18px;
-  margin-bottom:10px;
-}
-
-/* INTERACTIONS */
-
-.interactions{
-  display:flex;
-  justify-content:space-between;
-  margin-top:15px;
-  font-size:12px;
-  color:var(--muted);
-}
-
-.actions{
-  display:flex;
-  gap:15px;
-  cursor:pointer;
-}
-
-.actions span:hover{color:white}
-
-/* ADS */
-
-.ad{
-  margin:60px 0;
-  padding:30px;
-  border:1px dashed var(--border);
-  text-align:center;
-  color:var(--muted);
-}
-
-/* FOOTER */
-
-footer{
-  border-top:1px solid var(--border);
-  margin-top:80px;
-  padding:40px 0;
-  font-size:12px;
-  text-align:center;
-  color:var(--muted);
-}
-
-/* RESPONSIVE */
-
-@media(max-width:900px){
-  .nav-links{display:none}
-  .menu-toggle{display:block}
-}
-</style>
+  <meta charset="UTF-8">
+  <title>Trendza</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="style.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
-
 <body>
-<div class="container">
 
-<nav>
-  <div class="logo">TRENDZA</div>
+<div class="navbar">
+  <button onclick="showSection('tools')">Tools</button>
+  <button onclick="showSection('prompts')">AI Prompts</button>
+  <button onclick="showSection('products')">Viral Products</button>
+</div>
 
-  <div class="nav-links">
-    <a href="#prompts">AI Prompts</a>
-    <a href="#tools">Tools</a>
-    <a href="#products">Viral Products</a>
-    <a href="#blog">Blog</a>
-  </div>
-
-  <div class="menu-toggle" onclick="toggleMenu()">☰</div>
-  <div class="live">LIVE 27</div>
-</nav>
-
-<div class="mobile-menu" id="mobileMenu">
-  <a href="#prompts">AI Prompts</a>
-  <a href="#tools">Tools</a>
-  <a href="#products">Viral Products</a>
-  <a href="#blog">Blog</a>
+<!-- TOOLS -->
+<div id="tools" class="section active">
+  <h1>Instagram 9 Grid Split</h1>
+  <input type="file" id="imageInput">
+  <button onclick="splitImage()">Create</button>
+  <p>⚠ For now this works locally with backend only.</p>
 </div>
 
 <!-- AI PROMPTS -->
-
-<section id="prompts">
-  <div class="section-header">
-    <div class="section-title">AI PROMPTS</div>
-    <div class="controls">
-      <input class="search" placeholder="Search prompts">
-      <select class="filter">
-        <option>Trending</option>
-        <option>Newest</option>
-        <option>Most Liked</option>
-        <option>Most Commented</option>
-      </select>
-    </div>
+<div id="prompts" class="section">
+  <div class="topbar">
+    <input type="text" id="searchPrompt" placeholder="Search...">
+    <button onclick="adminAccess('prompt')">+ Add New</button>
   </div>
-
-  <div class="grid">
-    <div class="card">
-      <img src="https://picsum.photos/400/300">
-      <h3>Cinematic Portrait Prompt</h3>
-      <div class="interactions">
-        <div>1.2K Views</div>
-        <div class="actions">
-          <span onclick="like(this)">♡ 320</span>
-          <span>💬 45</span>
-          <span>🔗 Share</span>
-          <span>🔖 Save</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="ad">AdSense Placeholder</div>
-
-<!-- TOOLS -->
-
-<section id="tools">
-  <div class="section-header">
-    <div class="section-title">TOOLS</div>
-    <div class="controls">
-      <input class="search" placeholder="Search tools">
-      <select class="filter">
-        <option>Popular</option>
-        <option>Newest</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="grid">
-    <div class="card">
-      <h3>Instagram 9-Grid Split Tool</h3>
-      <p class="muted">Upload video → Auto split into 9</p>
-    </div>
-  </div>
-</section>
-
-<div class="ad">AdSense Placeholder</div>
-
-<!-- VIRAL PRODUCTS -->
-
-<section id="products">
-  <div class="section-header">
-    <div class="section-title">VIRAL PRODUCTS</div>
-    <div class="controls">
-      <input class="search" placeholder="Search products">
-      <select class="filter">
-        <option>Trending</option>
-        <option>Most Clicked</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="grid">
-    <div class="card">
-      <img src="https://picsum.photos/401/300">
-      <h3>Portable RGB Tube Light</h3>
-      <p class="muted">Creator lighting favorite</p>
-      <div class="actions" style="margin-top:10px;">VIEW PRODUCT →</div>
-    </div>
-  </div>
-</section>
-
-<div class="ad">AdSense Placeholder</div>
-
-<!-- BLOG -->
-
-<section id="blog">
-  <div class="section-header">
-    <div class="section-title">BLOG</div>
-    <div class="controls">
-      <input class="search" placeholder="Search articles">
-      <select class="filter">
-        <option>Latest</option>
-        <option>Most Read</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="grid">
-    <div class="card">
-      <img src="https://picsum.photos/402/300">
-      <h3>How AI Prompts Go Viral in 2026</h3>
-      <p class="muted">5 min read</p>
-    </div>
-  </div>
-</section>
-
-<footer>
-© 2026 Trendza — AI Prompt Magazine
-</footer>
-
+  <div id="promptContainer"></div>
 </div>
 
-<script>
-function toggleMenu(){
-  const menu=document.getElementById("mobileMenu");
-  menu.style.display=menu.style.display==="flex"?"none":"flex";
-}
-function like(el){
-  if(el.innerText.includes("♡")){
-    el.innerText=el.innerText.replace("♡","♥");
-    el.style.color="white";
-  }else{
-    el.innerText=el.innerText.replace("♥","♡");
-    el.style.color="";
-  }
-}
-</script>
+<!-- PRODUCTS -->
+<div id="products" class="section">
+  <div class="topbar">
+    <input type="text" id="searchProduct" placeholder="Search...">
+    <button onclick="adminAccess('product')">+ Add New</button>
+  </div>
+  <div id="productContainer"></div>
+</div>
 
+<script src="script.js"></script>
 </body>
 </html>
