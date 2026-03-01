@@ -1,50 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NETIZEN</title>
-
-<link rel="stylesheet" href="style.css">
-
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400&display=swap" rel="stylesheet">
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NETIZEN | Curated Digital Intelligence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<header>
-  <div class="logo">NETIZEN</div>
-  <nav>
-    <button onclick="showSection('prompts')">AI PROMPTS</button>
-    <button onclick="showSection('products')">VIRAL PRODUCTS</button>
-  </nav>
-</header>
+    <header class="sticky-header">
+        <div class="logo">NETIZEN</div>
+        <nav>
+            <a href="#prompts-section">AI PROMPTS</a>
+            <a href="#products-section">VIRAL PRODUCTS</a>
+        </nav>
+    </header>
 
-<section class="hero">
-  <div class="hero-inner">
-    <h1>CURATED DIGITAL INTELLIGENCE</h1>
-    <p>Elite AI prompts & trending innovations for creators</p>
-  </div>
-</section>
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h1>CURATED DIGITAL INTELLIGENCE</h1>
+                <p>An editorial collection of precision AI prompts and high-performing digital assets.</p>
+            </div>
+        </section>
 
-<section id="prompts" class="content-section active">
-  <div class="section-header">
-    <h2>AI PROMPTS</h2>
-    <input type="text" id="promptSearch" placeholder="Search prompts">
-  </div>
-  <div id="promptContainer" class="grid"></div>
-</section>
+        <section id="prompts-section" class="content-section">
+            <div class="section-header">
+                <h2>AI PROMPTS</h2>
+                <input type="text" id="search-prompts" class="search-bar" placeholder="Search prompts...">
+            </div>
+            <div id="prompts-grid" class="grid"></div>
+            <div id="prompts-loader" class="loader">Loading...</div>
+            <button class="add-new-btn" onclick="handleAdminAction('prompt')">+ Add New Prompt</button>
+        </section>
 
-<section id="products" class="content-section">
-  <div class="section-header">
-    <h2>VIRAL PRODUCTS</h2>
-    <input type="text" id="productSearch" placeholder="Search products">
-  </div>
-  <div id="productContainer" class="grid"></div>
-</section>
+        <section id="products-section" class="content-section">
+            <div class="section-header">
+                <h2>VIRAL PRODUCTS</h2>
+                <input type="text" id="search-products" class="search-bar" placeholder="Search products...">
+            </div>
+            <div id="products-grid" class="grid"></div>
+            <div id="products-loader" class="loader">Loading...</div>
+            <button class="add-new-btn" onclick="handleAdminAction('product')">+ Add New Product</button>
+        </section>
+    </main>
 
-<script src="script.js"></script>
+    <div id="admin-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h3 id="modal-title">Admin Form</h3>
+            <form id="admin-form">
+                <input type="hidden" id="item-id">
+                <input type="hidden" id="item-type">
+                
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="form-title" required>
+                </div>
+
+                <div class="form-group" id="group-prompt" style="display: none;">
+                    <label>Prompt Text</label>
+                    <textarea id="form-prompt"></textarea>
+                </div>
+
+                <div class="form-group" id="group-image-base" style="display: none;">
+                    <label>Image Base (e.g., batman-prompt)</label>
+                    <input type="text" id="form-image-base">
+                </div>
+
+                <div class="form-group" id="group-link" style="display: none;">
+                    <label>Product Link</label>
+                    <input type="url" id="form-link">
+                </div>
+
+                <div class="form-group" id="group-image" style="display: none;">
+                    <label>Image Filename (e.g., product1.jpg)</label>
+                    <input type="text" id="form-image">
+                </div>
+
+                <button type="submit" class="submit-btn">Save</button>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
 </body>
 </html>
