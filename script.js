@@ -54,7 +54,7 @@ async function renderGrids() {
 
 function handleAdminAction(type) {
     const password = prompt("Enter Admin Password:");
-    if (password === "YOUR_PASSWORD") { // Change this to your password
+    if (password === "Vikas@242002") { // Change this to your password
         openModal(type);
     } else {
         alert("Access Denied");
