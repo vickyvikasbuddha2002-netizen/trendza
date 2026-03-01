@@ -1,49 +1,275 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Trendza</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trendza</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+font-family:Inter,sans-serif;
+background:#000;
+color:#fff;
+overflow-x:hidden;
+}
+
+/* NAV */
+.nav{
+position:fixed;
+top:0;
+width:100%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 60px;
+background:rgba(0,0,0,0.6);
+backdrop-filter:blur(20px);
+border-bottom:1px solid rgba(255,255,255,0.05);
+z-index:100;
+}
+
+.logo{
+font-weight:800;
+letter-spacing:3px;
+font-size:20px;
+background:linear-gradient(90deg,#00ff88,#00c3ff);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.nav-links a{
+margin-left:40px;
+text-decoration:none;
+color:#aaa;
+font-size:14px;
+transition:0.3s;
+}
+
+.nav-links a:hover{
+color:#00ff88;
+}
+
+/* HERO */
+.hero{
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+padding:0 20px;
+background:radial-gradient(circle at top left,#111,#000);
+}
+
+.hero h1{
+font-size:64px;
+font-weight:800;
+margin-bottom:20px;
+background:linear-gradient(90deg,#fff,#888);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.hero p{
+color:#888;
+font-size:18px;
+max-width:600px;
+}
+
+.btn{
+margin-top:30px;
+padding:14px 30px;
+background:linear-gradient(90deg,#00ff88,#00c3ff);
+border:none;
+border-radius:50px;
+font-weight:600;
+color:#000;
+cursor:pointer;
+}
+
+/* SECTION */
+.section{
+padding:120px 60px;
+max-width:1300px;
+margin:auto;
+}
+
+.section h2{
+font-size:36px;
+margin-bottom:50px;
+}
+
+/* GRID */
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+gap:40px;
+}
+
+/* CARD */
+.card{
+background:rgba(255,255,255,0.04);
+border:1px solid rgba(255,255,255,0.08);
+border-radius:20px;
+padding:25px;
+transition:0.3s;
+backdrop-filter:blur(20px);
+}
+
+.card:hover{
+transform:translateY(-8px);
+border-color:#00ff88;
+}
+
+.card img{
+width:100%;
+border-radius:15px;
+margin-bottom:15px;
+}
+
+.card h3{
+margin:0 0 10px 0;
+}
+
+.card p{
+color:#aaa;
+font-size:14px;
+}
+
+.copy{
+margin-top:15px;
+display:inline-block;
+padding:8px 14px;
+border-radius:10px;
+background:rgba(0,255,136,0.15);
+color:#00ff88;
+font-size:13px;
+}
+
+/* FOOTER */
+.footer{
+padding:60px;
+text-align:center;
+color:#555;
+border-top:1px solid rgba(255,255,255,0.05);
+margin-top:100px;
+}
+
+@media(max-width:768px){
+
+.hero h1{
+font-size:40px;
+}
+
+.nav{
+padding:20px;
+}
+
+.section{
+padding:100px 20px;
+}
+
+}
+
+</style>
 </head>
 <body>
 
-<div class="navbar">
-  <button onclick="showSection('tools')">Tools</button>
-  <button onclick="showSection('prompts')">AI Prompts</button>
-  <button onclick="showSection('products')">Viral Products</button>
+<div class="nav">
+<div class="logo">TRENDZA</div>
+<div class="nav-links">
+<a href="#tools">Tools</a>
+<a href="#prompts">AI Prompts</a>
+<a href="#products">Products</a>
 </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+<h1>Create Viral Content Effortlessly.</h1>
+<p>Powerful tools. AI prompt library. Viral product inspiration. Everything you need to grow your digital presence.</p>
+<button class="btn">Explore Now</button>
+</section>
 
 <!-- TOOLS -->
-<div id="tools" class="section active">
-  <h1>Instagram 9 Grid Split</h1>
-  <p>Tool coming next.</p>
+<section id="tools" class="section">
+<h2>Tools</h2>
+<div class="grid">
+
+<div class="card">
+<h3>Instagram 9 Grid Split</h3>
+<p>Upload any image and transform it into a perfect 3x3 Instagram grid layout for maximum visual impact.</p>
+<span class="copy">Coming Soon</span>
 </div>
+
+</div>
+</section>
 
 <!-- AI PROMPTS -->
-<div id="prompts" class="section">
-  <div class="topbar">
-    <input type="text" id="searchPrompt" placeholder="Search prompts..." oninput="loadPrompts()">
-    <button class="admin-btn" onclick="adminLogin()">Owner Login</button>
-  </div>
+<section id="prompts" class="section">
+<h2>AI Prompt Library</h2>
+<div class="grid">
 
-  <div id="promptAdmin"></div>
-  <div id="promptContainer"></div>
+<div class="card">
+<img src="https://picsum.photos/600/400?random=1">
+<h3>Batman Cinematic Portrait</h3>
+<p>Transform any photo into a dark cinematic superhero portrait with dramatic lighting.</p>
+<span class="copy">Copy Prompt</span>
 </div>
+
+<div class="card">
+<img src="https://picsum.photos/600/400?random=2">
+<h3>Luxury Editorial Look</h3>
+<p>Convert casual portraits into high-end editorial fashion photography style images.</p>
+<span class="copy">Copy Prompt</span>
+</div>
+
+<div class="card">
+<img src="https://picsum.photos/600/400?random=3">
+<h3>Cyberpunk Neon Effect</h3>
+<p>Create futuristic neon cityscape style portraits with cyberpunk lighting aesthetics.</p>
+<span class="copy">Copy Prompt</span>
+</div>
+
+</div>
+</section>
 
 <!-- PRODUCTS -->
-<div id="products" class="section">
-  <div class="topbar">
-    <input type="text" id="searchProduct" placeholder="Search products..." oninput="loadProducts()">
-  </div>
+<section id="products" class="section">
+<h2>Viral Products</h2>
+<div class="grid">
 
-  <div id="productAdmin"></div>
-  <div id="productContainer"></div>
+<div class="card">
+<img src="https://picsum.photos/600/400?random=4">
+<h3>Smart LED Lamp</h3>
+<p>Minimal futuristic desk lamp trending across content creators worldwide.</p>
+<span class="copy">Buy Now</span>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="script.js"></script>
+<div class="card">
+<img src="https://picsum.photos/600/400?random=5">
+<h3>Portable Studio Light</h3>
+<p>Compact lighting kit designed for creators shooting high-quality videos.</p>
+<span class="copy">Buy Now</span>
+</div>
+
+<div class="card">
+<img src="https://picsum.photos/600/400?random=6">
+<h3>Magnetic Phone Stand</h3>
+<p>Ultra-modern adjustable stand perfect for aesthetic desk setups.</p>
+<span class="copy">Buy Now</span>
+</div>
+
+</div>
+</section>
+
+<div class="footer">
+© 2026 Trendza. All rights reserved.
+</div>
 
 </body>
 </html>
