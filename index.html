@@ -86,6 +86,31 @@
         </div>
     </div>
 
+    <div id="cookie-banner" class="cookie-banner">
+        <p>We use cookies to enhance your experience. By continuing to visit this site you agree to our <a href="terms.html" target="_blank">Terms & Conditions</a> and <a href="privacy.html" target="_blank">Privacy Policy</a>.</p>
+        <button id="accept-cookies" class="accept-btn">ACCEPT</button>
+    </div>
+
     <script type="module" src="script.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const banner = document.getElementById('cookie-banner');
+            const acceptBtn = document.getElementById('accept-cookies');
+
+            // Slide banner up after 1 second if not accepted yet
+            if (!localStorage.getItem('trendza_terms_accepted')) {
+                setTimeout(() => {
+                    banner.classList.add('show');
+                }, 1000);
+            }
+
+            // Hide banner and save memory when clicked
+            acceptBtn.addEventListener('click', () => {
+                localStorage.setItem('trendza_terms_accepted', 'true');
+                banner.classList.remove('show');
+            });
+        });
+    </script>
 </body>
 </html>
