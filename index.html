@@ -5,281 +5,299 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Trendza — AI Prompt Magazine</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
 
 <style>
-:root {
-  --bg: #0b0b0b;
-  --text: #f5f5f5;
-  --muted: #777;
-  --border: #1c1c1c;
+:root{
+  --bg:#0b0b0b;
+  --text:#f5f5f5;
+  --muted:#888;
+  --border:#1a1a1a;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:'Plus Jakarta Sans', sans-serif;
+  background:var(--bg);
+  color:var(--text);
 }
 
-body {
-  font-family: 'Inter', sans-serif;
-  background: var(--bg);
-  color: var(--text);
+a{text-decoration:none;color:inherit;}
+
+.container{
+  width:95%;
+  max-width:1400px;
+  margin:auto;
 }
 
-a { text-decoration: none; color: inherit; }
+/* NAVIGATION */
 
-.container {
-  width: 95%;
-  max-width: 1400px;
-  margin: auto;
+nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:25px 0;
+  border-bottom:1px solid var(--border);
 }
 
-/* NAV */
-
-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 25px 0;
-  border-bottom: 1px solid var(--border);
+.logo{
+  font-weight:800;
+  font-size:20px;
+  letter-spacing:3px;
 }
 
-.logo {
-  font-weight: 800;
-  font-size: 20px;
-  letter-spacing: 2px;
+.nav-links{
+  display:flex;
+  gap:30px;
+  font-size:14px;
+  text-transform:uppercase;
+  letter-spacing:1px;
 }
 
-.search {
-  background: #111;
-  border: 1px solid var(--border);
-  padding: 10px 15px;
-  width: 250px;
-  color: white;
+.nav-links a{
+  opacity:0.7;
+  transition:0.3s;
 }
 
-.live {
-  font-size: 12px;
-  color: var(--muted);
+.nav-links a:hover{
+  opacity:1;
 }
 
-/* SECTION TITLES */
-
-.section-title {
-  font-size: 40px;
-  font-weight: 800;
-  margin: 60px 0 30px;
-  letter-spacing: 3px;
+.live{
+  font-size:12px;
+  color:var(--muted);
 }
 
-/* FEATURED */
+/* SECTION HEADER WITH SEARCH + FILTER */
 
-.featured {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  border: 1px solid var(--border);
+.section-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:60px 0 30px;
+  flex-wrap:wrap;
+  gap:15px;
 }
 
-.featured img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.section-title{
+  font-size:40px;
+  font-weight:800;
+  letter-spacing:3px;
 }
 
-.featured-content {
-  padding: 40px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+.controls{
+  display:flex;
+  gap:15px;
 }
 
-.featured-content h2 {
-  font-size: 36px;
+.search{
+  background:#111;
+  border:1px solid var(--border);
+  padding:8px 12px;
+  color:white;
 }
 
-.stats {
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 20px;
+.filter{
+  background:#111;
+  border:1px solid var(--border);
+  padding:8px 12px;
+  color:white;
 }
 
 /* GRID */
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:20px;
 }
 
-.card {
-  border: 1px solid var(--border);
-  padding: 20px;
-  transition: 0.3s;
+.card{
+  border:1px solid var(--border);
+  padding:20px;
+  transition:0.3s;
 }
 
-.card:hover {
-  background: #111;
+.card:hover{
+  background:#111;
 }
 
-.card img {
-  width: 100%;
-  margin-bottom: 15px;
+.card img{
+  width:100%;
+  margin-bottom:15px;
 }
 
-.card h3 {
-  font-size: 18px;
-  margin-bottom: 10px;
+.card h3{
+  font-size:18px;
+  margin-bottom:10px;
 }
 
-.muted {
-  font-size: 12px;
-  color: var(--muted);
-}
-
-/* BEFORE AFTER */
-
-.compare {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-}
-
-.compare img {
-  width: 100%;
-  display: block;
-}
-
-.slider {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 3px;
-  height: 100%;
-  background: white;
-  cursor: ew-resize;
+.muted{
+  font-size:12px;
+  color:var(--muted);
 }
 
 /* ADS */
 
-.ad {
-  margin: 50px 0;
-  padding: 30px;
-  border: 1px dashed var(--border);
-  text-align: center;
-  color: var(--muted);
+.ad{
+  margin:60px 0;
+  padding:30px;
+  border:1px dashed var(--border);
+  text-align:center;
+  color:var(--muted);
 }
 
 /* FOOTER */
 
-footer {
-  border-top: 1px solid var(--border);
-  margin-top: 80px;
-  padding: 40px 0;
-  font-size: 12px;
-  color: var(--muted);
+footer{
+  border-top:1px solid var(--border);
+  margin-top:80px;
+  padding:40px 0;
+  font-size:12px;
+  color:var(--muted);
+  text-align:center;
 }
 
 /* RESPONSIVE */
 
 @media(max-width:900px){
-  .featured{
-    grid-template-columns: 1fr;
+  .nav-links{
+    display:none;
   }
-  .search{
-    width: 150px;
+  .section-title{
+    font-size:28px;
   }
 }
 </style>
 </head>
-<body>
 
+<body>
 <div class="container">
 
 <nav>
   <div class="logo">TRENDZA</div>
-  <input class="search" placeholder="Search prompts, tools..." />
+
+  <div class="nav-links">
+    <a href="#prompts">AI Prompts</a>
+    <a href="#tools">Tools</a>
+    <a href="#products">Viral Products</a>
+    <a href="#blog">Blog</a>
+  </div>
+
   <div class="live">LIVE 27</div>
 </nav>
 
-<section>
-  <div class="section-title">FEATURED</div>
-  <div class="featured">
-    <img src="https://picsum.photos/800/600" />
-    <div class="featured-content">
-      <div>
-        <h2>Cinematic AI Portrait Prompt</h2>
-        <div class="stats">1,240 VIEWS • 320 LIKES • 45 COMMENTS</div>
-      </div>
-      <div class="muted">FULL TUTORIAL →</div>
+<!-- AI PROMPTS -->
+
+<section id="prompts">
+  <div class="section-header">
+    <div class="section-title">AI PROMPTS</div>
+    <div class="controls">
+      <input class="search" placeholder="Search prompts..." />
+      <select class="filter">
+        <option>Trending</option>
+        <option>Newest</option>
+        <option>Most Liked</option>
+      </select>
     </div>
   </div>
-</section>
 
-<div class="ad">AdSense Placeholder</div>
-
-<section>
-  <div class="section-title">TRENDING PROMPTS</div>
   <div class="grid">
     <div class="card">
       <img src="https://picsum.photos/400/300">
-      <h3>Neon Cyberpunk Effect</h3>
-      <div class="muted">820 VIEWS • 210 LIKES</div>
+      <h3>Cinematic Portrait Prompt</h3>
+      <div class="muted">1240 Views • 320 Likes</div>
     </div>
 
     <div class="card">
       <img src="https://picsum.photos/401/300">
-      <h3>Vintage Film Look</h3>
-      <div class="muted">720 VIEWS • 180 LIKES</div>
-    </div>
-
-    <div class="card">
-      <img src="https://picsum.photos/402/300">
-      <h3>Hyper Real Skin Edit</h3>
-      <div class="muted">620 VIEWS • 150 LIKES</div>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="section-title">TOOLS</div>
-  <div class="grid">
-    <div class="card">
-      <h3>Instagram 9-Grid Split Tool</h3>
-      <div class="muted">Upload video → Auto split into 9 squares</div>
-    </div>
-    <div class="card">
-      <h3>AI Prompt Formatter</h3>
-      <div class="muted">Clean & structure prompts instantly</div>
+      <h3>Neon Cyberpunk Effect</h3>
+      <div class="muted">820 Views • 210 Likes</div>
     </div>
   </div>
 </section>
 
 <div class="ad">AdSense Placeholder</div>
 
-<section>
-  <div class="section-title">VIRAL PRODUCTS</div>
+<!-- TOOLS -->
+
+<section id="tools">
+  <div class="section-header">
+    <div class="section-title">TOOLS</div>
+    <div class="controls">
+      <input class="search" placeholder="Search tools..." />
+      <select class="filter">
+        <option>Popular</option>
+        <option>Newest</option>
+      </select>
+    </div>
+  </div>
+
   <div class="grid">
     <div class="card">
-      <img src="https://picsum.photos/403/300">
+      <h3>Instagram 9-Grid Split Tool</h3>
+      <div class="muted">Split video perfectly for IG grid</div>
+    </div>
+
+    <div class="card">
+      <h3>Prompt Formatter</h3>
+      <div class="muted">Structure prompts cleanly</div>
+    </div>
+  </div>
+</section>
+
+<div class="ad">AdSense Placeholder</div>
+
+<!-- VIRAL PRODUCTS -->
+
+<section id="products">
+  <div class="section-header">
+    <div class="section-title">VIRAL PRODUCTS</div>
+    <div class="controls">
+      <input class="search" placeholder="Search products..." />
+      <select class="filter">
+        <option>Trending</option>
+        <option>Most Clicked</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <img src="https://picsum.photos/402/300">
       <h3>Portable RGB Tube Light</h3>
-      <div class="muted">Trending photography accessory</div>
+      <div class="muted">Creator favorite lighting tool</div>
       <div class="muted">VIEW PRODUCT →</div>
     </div>
+
     <div class="card">
-      <img src="https://picsum.photos/404/300">
+      <img src="https://picsum.photos/403/300">
       <h3>AI Smart Ring</h3>
-      <div class="muted">Fitness + AI integration wearable</div>
+      <div class="muted">Next-gen wearable tech</div>
       <div class="muted">VIEW PRODUCT →</div>
     </div>
   </div>
 </section>
 
-<section>
-  <div class="section-title">BLOG</div>
+<div class="ad">AdSense Placeholder</div>
+
+<!-- BLOG -->
+
+<section id="blog">
+  <div class="section-header">
+    <div class="section-title">BLOG</div>
+    <div class="controls">
+      <input class="search" placeholder="Search articles..." />
+      <select class="filter">
+        <option>Latest</option>
+        <option>Most Read</option>
+      </select>
+    </div>
+  </div>
+
   <div class="grid">
     <div class="card">
-      <img src="https://picsum.photos/405/300">
+      <img src="https://picsum.photos/404/300">
       <h3>How AI Prompts Go Viral in 2026</h3>
       <div class="muted">5 min read</div>
     </div>
@@ -287,10 +305,9 @@ footer {
 </section>
 
 <footer>
-  © 2026 Trendza — AI Prompt Magazine. All rights reserved.
+© 2026 Trendza — AI Prompt Magazine. All rights reserved.
 </footer>
 
 </div>
-
 </body>
 </html>
