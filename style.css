@@ -1,1 +1,85 @@
 
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: #0a0a0a;
+  color: white;
+}
+
+.navbar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  background: black;
+  padding: 20px;
+  border-bottom: 1px solid #222;
+  z-index: 100;
+}
+
+.navbar button {
+  background: none;
+  color: white;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.navbar button:hover {
+  color: #00ff88;
+}
+
+.section {
+  display: none;
+  padding: 40px 20px;
+  max-width: 1100px;
+  margin: auto;
+}
+
+.section.active {
+  display: block;
+}
+
+.card {
+  background: #111;
+  padding: 20px;
+  border-radius: 16px;
+  margin-bottom: 30px;
+}
+
+.card img {
+  width: 100%;
+  border-radius: 12px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+input {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  width: 60%;
+}
+
+button {
+  background: #00ff88;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .topbar {
+    flex-direction: column;
+    gap: 10px;
+  }
+  input {
+    width: 100%;
+  }
+}
