@@ -1,278 +1,296 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Trendza | Build. Learn. Go Viral.</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;900&display=swap" rel="stylesheet">
-    
-    <style>
-        /* --- CORE VARIABLES --- */
-        :root {
-            --bg-base: #050505;
-            --surface: #111111;
-            --surface-glass: rgba(255, 255, 255, 0.05);
-            --text-main: #ffffff;
-            --text-muted: #888888;
-            --electric-green: #00ff66;
-            --neon-glow: rgba(0, 255, 102, 0.3);
-            --fire: #ff4500;
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Trendza — AI Prompt Magazine</title>
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-base);
-            color: var(--text-main);
-            overflow-x: hidden;
-            background-image: radial-gradient(circle at 50% 0%, #1a1a1a 0%, transparent 70%);
-        }
+<style>
+:root {
+  --bg: #0b0b0b;
+  --text: #f5f5f5;
+  --muted: #777;
+  --border: #1c1c1c;
+}
 
-        /* --- NAVIGATION --- */
-        nav {
-            position: fixed;
-            top: 0; width: 100%;
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 1.5rem 5%;
-            background: rgba(5, 5, 5, 0.8);
-            backdrop-filter: blur(10px);
-            z-index: 100;
-            border-bottom: 1px solid var(--surface-glass);
-        }
-        .logo { font-size: 1.5rem; font-weight: 900; letter-spacing: -1px; }
-        .logo span { color: var(--electric-green); }
-        .nav-links { display: flex; gap: 2rem; }
-        .nav-links a { color: var(--text-main); text-decoration: none; font-weight: 500; transition: color 0.3s; }
-        .nav-links a:hover { color: var(--electric-green); }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-        /* --- HERO SECTION --- */
-        .hero {
-            min-height: 100vh;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            text-align: center; padding: 0 5%; position: relative;
-        }
-        .glow-orb {
-            position: absolute; width: 50vw; height: 50vw; max-width: 500px; max-height: 500px;
-            background: radial-gradient(circle, var(--neon-glow) 0%, transparent 70%);
-            top: 50%; left: 50%; transform: translate(-50%, -50%);
-            z-index: -1; filter: blur(60px); animation: pulse 4s infinite alternate;
-        }
-        h1 { font-size: clamp(3.5rem, 8vw, 7rem); font-weight: 900; line-height: 1; letter-spacing: -0.05em; margin-bottom: 1.5rem; }
-        h1 span { display: block; }
-        .text-outline { color: transparent; -webkit-text-stroke: 2px var(--electric-green); }
-        .subtitle { font-size: clamp(1rem, 1.5vw, 1.25rem); color: var(--text-muted); max-width: 600px; margin-bottom: 2.5rem; line-height: 1.6; }
-        
-        .btn {
-            background: var(--text-main); color: var(--bg-base); padding: 1rem 2.5rem;
-            font-size: 1.1rem; font-weight: 700; text-decoration: none; border-radius: 50px;
-            transition: all 0.3s ease; border: 2px solid transparent; cursor: pointer;
-            display: inline-block;
-        }
-        .btn:hover { background: transparent; color: var(--electric-green); border-color: var(--electric-green); box-shadow: 0 0 20px var(--neon-glow); }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
 
-        /* --- SPLIT SECTION (TOOLS & FEED) --- */
-        .app-container {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;
-            padding: 5rem 5%; max-width: 1400px; margin: 0 auto; min-height: 100vh; align-items: center;
-        }
-        @media (max-width: 900px) { .app-container { grid-template-columns: 1fr; } }
+a { text-decoration: none; color: inherit; }
 
-        /* --- VIRAL HOOK GENERATOR (TOOLS) --- */
-        .tools-panel { display: flex; flex-direction: column; gap: 2rem; }
-        .section-tag { color: var(--electric-green); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; }
-        .tools-panel h2 { font-size: clamp(2.5rem, 4vw, 3.5rem); font-weight: 800; line-height: 1.1; letter-spacing: -1px; }
-        
-        .glass-card {
-            background: var(--surface-glass); border: 1px solid rgba(255,255,255,0.1);
-            padding: 2rem; border-radius: 20px; backdrop-filter: blur(10px);
-        }
-        .input-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.5rem; }
-        input[type="text"] {
-            padding: 1rem; border-radius: 10px; border: 1px solid #333;
-            background: rgba(0,0,0,0.5); color: white; font-size: 1rem; outline: none; transition: border 0.3s;
-        }
-        input[type="text"]:focus { border-color: var(--electric-green); }
-        
-        #hook-results { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 10px; }
-        .hook-item { background: #000; padding: 1rem; border-radius: 8px; border-left: 3px solid var(--electric-green); font-size: 0.95rem; line-height: 1.4; display: none; }
+.container {
+  width: 95%;
+  max-width: 1400px;
+  margin: auto;
+}
 
-        /* --- TIKTOK FEED PREVIEW --- */
-        .phone-mockup {
-            width: 320px; height: 650px; background: #000; margin: 0 auto;
-            border-radius: 40px; border: 8px solid #222; position: relative; overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 30px var(--neon-glow);
-        }
-        .notch {
-            position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-            width: 120px; height: 25px; background: #222; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; z-index: 10;
-        }
-        .feed-container {
-            height: 100%; width: 100%; overflow-y: scroll; scroll-snap-type: y mandatory;
-            scrollbar-width: none; /* Hide scrollbar */
-        }
-        .feed-container::-webkit-scrollbar { display: none; }
-        
-        .video-card { height: 100%; width: 100%; scroll-snap-align: start; position: relative; background: #111; }
-        .video-player { width: 100%; height: 100%; object-fit: cover; }
-        
-        .video-ui {
-            position: absolute; bottom: 20px; left: 15px; right: 15px;
-            display: flex; justify-content: space-between; align-items: flex-end; pointer-events: none;
-        }
-        .video-info h3 { font-size: 1rem; margin-bottom: 5px; text-shadow: 1px 1px 3px #000; }
-        .video-info p { font-size: 0.85rem; text-shadow: 1px 1px 3px #000; color: #ddd; }
-        .action-btn { background: none; border: none; color: white; font-size: 1.8rem; cursor: pointer; pointer-events: auto; transition: transform 0.2s; }
-        .action-btn:active { transform: scale(0.9); }
-        .fire-active { color: var(--fire); text-shadow: 0 0 15px var(--fire); animation: pop 0.3s ease; }
+/* NAV */
 
-        @keyframes pulse { from { opacity: 0.4; } to { opacity: 0.8; } }
-        @keyframes pop { 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
-    </style>
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: 2px;
+}
+
+.search {
+  background: #111;
+  border: 1px solid var(--border);
+  padding: 10px 15px;
+  width: 250px;
+  color: white;
+}
+
+.live {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* SECTION TITLES */
+
+.section-title {
+  font-size: 40px;
+  font-weight: 800;
+  margin: 60px 0 30px;
+  letter-spacing: 3px;
+}
+
+/* FEATURED */
+
+.featured {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  border: 1px solid var(--border);
+}
+
+.featured img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.featured-content {
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.featured-content h2 {
+  font-size: 36px;
+}
+
+.stats {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 20px;
+}
+
+/* GRID */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  border: 1px solid var(--border);
+  padding: 20px;
+  transition: 0.3s;
+}
+
+.card:hover {
+  background: #111;
+}
+
+.card img {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.card h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.muted {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* BEFORE AFTER */
+
+.compare {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.compare img {
+  width: 100%;
+  display: block;
+}
+
+.slider {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 3px;
+  height: 100%;
+  background: white;
+  cursor: ew-resize;
+}
+
+/* ADS */
+
+.ad {
+  margin: 50px 0;
+  padding: 30px;
+  border: 1px dashed var(--border);
+  text-align: center;
+  color: var(--muted);
+}
+
+/* FOOTER */
+
+footer {
+  border-top: 1px solid var(--border);
+  margin-top: 80px;
+  padding: 40px 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* RESPONSIVE */
+
+@media(max-width:900px){
+  .featured{
+    grid-template-columns: 1fr;
+  }
+  .search{
+    width: 150px;
+  }
+}
+</style>
 </head>
 <body>
 
-    <nav>
-        <div class="logo">🐍 Trendza<span>.</span></div>
-        <div class="nav-links">
-            <a href="#hero">Home</a>
-            <a href="#app">The Engine</a>
-        </div>
-    </nav>
+<div class="container">
 
-    <section class="hero" id="hero">
-        <div class="glow-orb"></div>
-        <h1>
-            <span>Build.</span>
-            <span>Learn.</span>
-            <span class="text-outline">Go Viral.</span>
-        </h1>
-        <p class="subtitle">The complete growth engine. Scroll TikTok-style tutorials, generate viral hooks in seconds, and discover products that actually convert.</p>
-        <a href="#app" class="btn">Launch Engine</a>
-    </section>
+<nav>
+  <div class="logo">TRENDZA</div>
+  <input class="search" placeholder="Search prompts, tools..." />
+  <div class="live">LIVE 27</div>
+</nav>
 
-    <section class="app-container" id="app">
-        
-        <div class="tools-panel">
-            <span class="section-tag">Browser-Based Tools</span>
-            <h2>Viral Hook Generator</h2>
-            <p class="text-muted">Stop guessing. Generate algorithm-friendly hooks tailored to your niche instantly. No backend required.</p>
-            
-            <div class="glass-card">
-                <div class="input-group">
-                    <label style="font-size: 0.9rem; color: #aaa;">What is your video about?</label>
-                    <input type="text" id="topic-input" placeholder="e.g., Video Editing, Dropshipping, AI Tools...">
-                </div>
-                <button class="btn" id="generate-btn" style="width: 100%; text-align: center;">Generate Hooks ⚡</button>
-                
-                <div id="hook-results">
-                    <div class="hook-item" id="hook-1"></div>
-                    <div class="hook-item" id="hook-2"></div>
-                    <div class="hook-item" id="hook-3"></div>
-                </div>
-            </div>
-        </div>
+<section>
+  <div class="section-title">FEATURED</div>
+  <div class="featured">
+    <img src="https://picsum.photos/800/600" />
+    <div class="featured-content">
+      <div>
+        <h2>Cinematic AI Portrait Prompt</h2>
+        <div class="stats">1,240 VIEWS • 320 LIKES • 45 COMMENTS</div>
+      </div>
+      <div class="muted">FULL TUTORIAL →</div>
+    </div>
+  </div>
+</section>
 
-        <div class="phone-mockup">
-            <div class="notch"></div>
-            <div class="feed-container" id="feed">
-                
-                <div class="video-card">
-                    <video class="video-player" src="https://www.w3schools.com/html/mov_bbb.mp4" loop playsinline muted></video>
-                    <div class="video-ui">
-                        <div class="video-info">
-                            <h3>@trendza</h3>
-                            <p>The 3-second hook formula 🚀</p>
-                        </div>
-                        <button class="action-btn like-btn">🤍</button>
-                    </div>
-                </div>
+<div class="ad">AdSense Placeholder</div>
 
-                <div class="video-card">
-                    <video class="video-player" src="https://www.w3schools.com/html/mov_bbb.mp4" loop playsinline muted></video>
-                    <div class="video-ui">
-                        <div class="video-info">
-                            <h3>@trendza_tools</h3>
-                            <p>CapCut hidden text tracking 🔥</p>
-                        </div>
-                        <button class="action-btn like-btn">🤍</button>
-                    </div>
-                </div>
+<section>
+  <div class="section-title">TRENDING PROMPTS</div>
+  <div class="grid">
+    <div class="card">
+      <img src="https://picsum.photos/400/300">
+      <h3>Neon Cyberpunk Effect</h3>
+      <div class="muted">820 VIEWS • 210 LIKES</div>
+    </div>
 
-            </div>
-        </div>
+    <div class="card">
+      <img src="https://picsum.photos/401/300">
+      <h3>Vintage Film Look</h3>
+      <div class="muted">720 VIEWS • 180 LIKES</div>
+    </div>
 
-    </section>
+    <div class="card">
+      <img src="https://picsum.photos/402/300">
+      <h3>Hyper Real Skin Edit</h3>
+      <div class="muted">620 VIEWS • 150 LIKES</div>
+    </div>
+  </div>
+</section>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            
-            /* --- 1. VIRAL HOOK GENERATOR LOGIC (No backend needed) --- */
-            const generateBtn = document.getElementById('generate-btn');
-            const topicInput = document.getElementById('topic-input');
-            const hookItems = document.querySelectorAll('.hook-item');
-            
-            // Templates based on viral psychology
-            const templates = [
-                "Stop doing [TOPIC] like this! Do this instead...",
-                "The secret about [TOPIC] that 99% of people don't know.",
-                "If you want to master [TOPIC] in 2024, watch this.",
-                "Here is the ultimate cheat code for [TOPIC].",
-                "Why your [TOPIC] strategy is failing (and how to fix it)."
-            ];
+<section>
+  <div class="section-title">TOOLS</div>
+  <div class="grid">
+    <div class="card">
+      <h3>Instagram 9-Grid Split Tool</h3>
+      <div class="muted">Upload video → Auto split into 9 squares</div>
+    </div>
+    <div class="card">
+      <h3>AI Prompt Formatter</h3>
+      <div class="muted">Clean & structure prompts instantly</div>
+    </div>
+  </div>
+</section>
 
-            generateBtn.addEventListener('click', () => {
-                let topic = topicInput.value.trim();
-                if (!topic) topic = "your niche"; // Fallback
+<div class="ad">AdSense Placeholder</div>
 
-                // Shuffle templates
-                const shuffled = templates.sort(() => 0.5 - Math.random());
-                
-                // Display results
-                hookItems.forEach((item, index) => {
-                    item.style.display = 'block';
-                    item.textContent = shuffled[index].replace('[TOPIC]', topic);
-                    // Reset animation
-                    item.style.animation = 'none';
-                    item.offsetHeight; // trigger reflow
-                    item.style.animation = `pop 0.3s ease ${index * 0.1}s forwards`;
-                });
-            });
+<section>
+  <div class="section-title">VIRAL PRODUCTS</div>
+  <div class="grid">
+    <div class="card">
+      <img src="https://picsum.photos/403/300">
+      <h3>Portable RGB Tube Light</h3>
+      <div class="muted">Trending photography accessory</div>
+      <div class="muted">VIEW PRODUCT →</div>
+    </div>
+    <div class="card">
+      <img src="https://picsum.photos/404/300">
+      <h3>AI Smart Ring</h3>
+      <div class="muted">Fitness + AI integration wearable</div>
+      <div class="muted">VIEW PRODUCT →</div>
+    </div>
+  </div>
+</section>
 
-            /* --- 2. TIKTOK FEED AUTOPLAY ENGINE --- */
-            const videos = document.querySelectorAll('.video-player');
-            
-            // Intersection Observer ensures only the visible video plays
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    const video = entry.target;
-                    if (entry.isIntersecting) {
-                        video.play().catch(e => console.log("Autoplay blocked"));
-                    } else {
-                        video.pause();
-                        video.currentTime = 0; // Reset video when scrolled past
-                    }
-                });
-            }, { threshold: 0.6 });
+<section>
+  <div class="section-title">BLOG</div>
+  <div class="grid">
+    <div class="card">
+      <img src="https://picsum.photos/405/300">
+      <h3>How AI Prompts Go Viral in 2026</h3>
+      <div class="muted">5 min read</div>
+    </div>
+  </div>
+</section>
 
-            videos.forEach(video => {
-                observer.observe(video);
-                // Tap to pause/play
-                video.addEventListener('click', () => {
-                    video.paused ? video.play() : video.pause();
-                });
-            });
+<footer>
+  © 2026 Trendza — AI Prompt Magazine. All rights reserved.
+</footer>
 
-            /* --- 3. LIKE SYSTEM (Engagement Mechanics) --- */
-            const likeBtns = document.querySelectorAll('.like-btn');
-            likeBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    this.classList.toggle('fire-active');
-                    this.textContent = this.classList.contains('fire-active') ? '🔥' : '🤍';
-                });
-            });
+</div>
 
-        });
-    </script>
 </body>
 </html>
