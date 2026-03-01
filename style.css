@@ -301,3 +301,67 @@ nav a:hover {
     .section-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
     .search-bar { width: 100%; }
 }
+/* --- COOKIE & TERMS BANNER --- */
+.cookie-banner {
+    position: fixed;
+    bottom: -150px;
+    left: 0;
+    width: 100%;
+    background-color: #111;
+    color: #fff;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.8);
+    transition: bottom 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 9999;
+    border-top: 1px solid #333;
+}
+
+.cookie-banner.show {
+    bottom: 0;
+}
+
+.cookie-banner p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #aaa;
+}
+
+.cookie-banner a {
+    color: #fff;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+}
+
+.cookie-banner a:hover {
+    color: #888;
+}
+
+.accept-btn {
+    background-color: #fff;
+    color: #000;
+    border: none;
+    padding: 10px 24px;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 1px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.accept-btn:hover {
+    background-color: #ccc;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .cookie-banner {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+        padding: 20px 15px;
+    }
+}
