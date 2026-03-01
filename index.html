@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Trendza — AI Prompt Magazine</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -23,15 +23,15 @@ body{
   color:var(--text);
 }
 
-a{text-decoration:none;color:inherit;}
-
 .container{
   width:95%;
   max-width:1400px;
   margin:auto;
 }
 
-/* NAVIGATION */
+a{text-decoration:none;color:inherit}
+
+/* NAV */
 
 nav{
   position:sticky;
@@ -57,20 +57,18 @@ nav{
   text-transform:uppercase;
 }
 
-.nav-links a{opacity:.7;}
-.nav-links a:hover{opacity:1;}
-
-.live{
-  font-size:12px;
-  color:var(--muted);
-}
-
-/* MOBILE MENU */
+.nav-links a{opacity:.7}
+.nav-links a:hover{opacity:1}
 
 .menu-toggle{
   display:none;
   font-size:22px;
   cursor:pointer;
+}
+
+.live{
+  font-size:12px;
+  color:var(--muted);
 }
 
 .mobile-menu{
@@ -83,13 +81,17 @@ nav{
 
 /* SECTION */
 
+section{
+  margin-top:80px;
+}
+
 .section-header{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin:60px 0 20px;
   flex-wrap:wrap;
   gap:15px;
+  margin-bottom:25px;
 }
 
 .section-title{
@@ -157,9 +159,7 @@ nav{
   cursor:pointer;
 }
 
-.actions span:hover{
-  color:white;
-}
+.actions span:hover{color:white}
 
 /* ADS */
 
@@ -185,10 +185,9 @@ footer{
 /* RESPONSIVE */
 
 @media(max-width:900px){
-  .nav-links{display:none;}
-  .menu-toggle{display:block;}
+  .nav-links{display:none}
+  .menu-toggle{display:block}
 }
-
 </style>
 </head>
 
@@ -199,10 +198,10 @@ footer{
   <div class="logo">TRENDZA</div>
 
   <div class="nav-links">
-    <a href="#">AI Prompts</a>
-    <a href="#">Tools</a>
-    <a href="#">Viral Products</a>
-    <a href="#">Blog</a>
+    <a href="#prompts">AI Prompts</a>
+    <a href="#tools">Tools</a>
+    <a href="#products">Viral Products</a>
+    <a href="#blog">Blog</a>
   </div>
 
   <div class="menu-toggle" onclick="toggleMenu()">☰</div>
@@ -210,40 +209,32 @@ footer{
 </nav>
 
 <div class="mobile-menu" id="mobileMenu">
-  <a href="#">AI Prompts</a>
-  <a href="#">Tools</a>
-  <a href="#">Viral Products</a>
-  <a href="#">Blog</a>
+  <a href="#prompts">AI Prompts</a>
+  <a href="#tools">Tools</a>
+  <a href="#products">Viral Products</a>
+  <a href="#blog">Blog</a>
 </div>
 
 <!-- AI PROMPTS -->
 
-<section>
+<section id="prompts">
   <div class="section-header">
     <div class="section-title">AI PROMPTS</div>
     <div class="controls">
-      <input class="search" placeholder="Search prompts..." />
+      <input class="search" placeholder="Search prompts">
       <select class="filter">
         <option>Trending</option>
         <option>Newest</option>
         <option>Most Liked</option>
         <option>Most Commented</option>
       </select>
-      <select class="filter">
-        <option>All Categories</option>
-        <option>Portrait</option>
-        <option>Product</option>
-        <option>Cinematic</option>
-      </select>
     </div>
   </div>
 
   <div class="grid">
-
     <div class="card">
       <img src="https://picsum.photos/400/300">
       <h3>Cinematic Portrait Prompt</h3>
-
       <div class="interactions">
         <div>1.2K Views</div>
         <div class="actions">
@@ -254,26 +245,83 @@ footer{
         </div>
       </div>
     </div>
-
-    <div class="card">
-      <img src="https://picsum.photos/401/300">
-      <h3>Neon Cyberpunk Effect</h3>
-
-      <div class="interactions">
-        <div>820 Views</div>
-        <div class="actions">
-          <span onclick="like(this)">♡ 210</span>
-          <span>💬 32</span>
-          <span>🔗 Share</span>
-          <span>🔖 Save</span>
-        </div>
-      </div>
-    </div>
-
   </div>
 </section>
 
 <div class="ad">AdSense Placeholder</div>
+
+<!-- TOOLS -->
+
+<section id="tools">
+  <div class="section-header">
+    <div class="section-title">TOOLS</div>
+    <div class="controls">
+      <input class="search" placeholder="Search tools">
+      <select class="filter">
+        <option>Popular</option>
+        <option>Newest</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Instagram 9-Grid Split Tool</h3>
+      <p class="muted">Upload video → Auto split into 9</p>
+    </div>
+  </div>
+</section>
+
+<div class="ad">AdSense Placeholder</div>
+
+<!-- VIRAL PRODUCTS -->
+
+<section id="products">
+  <div class="section-header">
+    <div class="section-title">VIRAL PRODUCTS</div>
+    <div class="controls">
+      <input class="search" placeholder="Search products">
+      <select class="filter">
+        <option>Trending</option>
+        <option>Most Clicked</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <img src="https://picsum.photos/401/300">
+      <h3>Portable RGB Tube Light</h3>
+      <p class="muted">Creator lighting favorite</p>
+      <div class="actions" style="margin-top:10px;">VIEW PRODUCT →</div>
+    </div>
+  </div>
+</section>
+
+<div class="ad">AdSense Placeholder</div>
+
+<!-- BLOG -->
+
+<section id="blog">
+  <div class="section-header">
+    <div class="section-title">BLOG</div>
+    <div class="controls">
+      <input class="search" placeholder="Search articles">
+      <select class="filter">
+        <option>Latest</option>
+        <option>Most Read</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <img src="https://picsum.photos/402/300">
+      <h3>How AI Prompts Go Viral in 2026</h3>
+      <p class="muted">5 min read</p>
+    </div>
+  </div>
+</section>
 
 <footer>
 © 2026 Trendza — AI Prompt Magazine
@@ -283,17 +331,16 @@ footer{
 
 <script>
 function toggleMenu(){
-  const menu = document.getElementById("mobileMenu");
-  menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+  const menu=document.getElementById("mobileMenu");
+  menu.style.display=menu.style.display==="flex"?"none":"flex";
 }
-
 function like(el){
   if(el.innerText.includes("♡")){
-    el.innerText = el.innerText.replace("♡","♥");
-    el.style.color = "white";
-  } else {
-    el.innerText = el.innerText.replace("♥","♡");
-    el.style.color = "";
+    el.innerText=el.innerText.replace("♡","♥");
+    el.style.color="white";
+  }else{
+    el.innerText=el.innerText.replace("♥","♡");
+    el.style.color="";
   }
 }
 </script>
