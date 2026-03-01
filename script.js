@@ -1,94 +1,247 @@
-// ===== SUPABASE CONNECTION =====
-const SUPABASE_URL = "https://fbnnbkjdnvvtqeivjoyt.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_dte-0n8c1xWsI1Aw9rgQ5g_28zwHqJB";
+// Replace with your actual Supabase project URL and anon key
+const supabaseUrl = 'https://fbnnbkjdnvvtqeivjoyt.supabase.co';
+const supabaseAnonKey = 'sb_publishable_dte-0n8c1xWsI1Aw9rgQ5g_28zwHqJB';
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-const supabase = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
+const PAGE_SIZE = 9;
+let state = {
+    prompts: { page: 0, loading: false, hasMore: true, query: '' },
+    products: { page: 0, loading: false, hasMore: true, query: '' }
+};
 
-// ===== SECTION SWITCH =====
-function showSection(id) {
-  document.querySelectorAll('.content-section').forEach(sec => {
-    sec.classList.remove('active');
-  });
-  document.getElementById(id).classList.add('active');
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
+let adminToken = sessionStorage.getItem('netizen_admin') || null;
 
-// ===== LOAD PROMPTS =====
-async function loadPrompts() {
-  const { data } = await supabase
-    .from("prompts")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  const container = document.getElementById("promptContainer");
-  container.innerHTML = "";
-
-  data.forEach(post => {
-    container.innerHTML += `
-      <div class="card">
-        <img src="/images/${post.image_base}1.jpg">
-        <img src="/images/${post.image_base}2.jpg">
-        <h3>${post.title}</h3>
-        <p>${post.prompt}</p>
-        <button onclick="copyPrompt(\`${post.prompt}\`)">COPY PROMPT</button>
-      </div>
-    `;
-  });
-}
-
-// ===== LOAD PRODUCTS =====
-async function loadProducts() {
-  const { data } = await supabase
-    .from("Products")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  const container = document.getElementById("productContainer");
-  container.innerHTML = "";
-
-  data.forEach(product => {
-    container.innerHTML += `
-      <div class="card">
-        <img src="/images/${product.image}">
-        <h3>${product.title}</h3>
-        <a href="${product.link}" target="_blank">BUY NOW</a>
-      </div>
-    `;
-  });
-}
-
-// ===== COPY FUNCTION =====
-function copyPrompt(text) {
-  navigator.clipboard.writeText(text);
-  alert("Prompt Copied");
-}
-
-// ===== SEARCH =====
-document.addEventListener("input", function(e){
-
-  if(e.target.id === "promptSearch"){
-    filterContent("promptContainer", e.target.value);
-  }
-
-  if(e.target.id === "productSearch"){
-    filterContent("productContainer", e.target.value);
-  }
-
+// Initialization
+document.addEventListener('DOMContentLoaded', () => {
+    loadItems('prompts');
+    loadItems('products');
+    setupSearch();
+    setupInfiniteScroll();
+    setupModal();
 });
 
-function filterContent(containerId, value){
-  const cards = document.getElementById(containerId).children;
-  const search = value.toLowerCase();
+// Fetch Data
+async function loadItems(type) {
+    if (state[type].loading || !state[type].hasMore) return;
+    state[type].loading = true;
+    document.getElementById(`${type}-loader`).style.display = 'block';
 
-  for(let card of cards){
-    const text = card.innerText.toLowerCase();
-    card.style.display = text.includes(search) ? "block" : "none";
-  }
+    const from = state[type].page * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
+
+    let query = supabase.from(type).select('*').order('created_at', { ascending: false }).range(from, to);
+    
+    if (state[type].query) {
+        query = query.ilike('title', `%${state[type].query}%`);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+        console.error(`Error fetching ${type}:`, error);
+    } else {
+        if (data.length < PAGE_SIZE) state[type].hasMore = false;
+        renderItems(type, data, state[type].page === 0);
+        state[type].page++;
+    }
+
+    state[type].loading = false;
+    document.getElementById(`${type}-loader`).style.display = 'none';
 }
 
-// ===== INIT =====
-loadPrompts();
-loadProducts();
+// Rendering
+function renderItems(type, items, clear) {
+    const grid = document.getElementById(`${type}-grid`);
+    if (clear) grid.innerHTML = '';
+
+    items.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.dataset.id = item.id;
+        card.dataset.type = type;
+
+        let content = '';
+        if (type === 'prompts') {
+            content = `
+                <div class="card-images">
+                    <img src="/images/${item.image_base}1.jpg" loading="lazy" onerror="this.src='data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='">
+                    <img src="/images/${item.image_base}2.jpg" loading="lazy" onerror="this.src='data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='">
+                </div>
+                <h3>${item.title}</h3>
+                <p class="prompt-text">${item.prompt}</p>
+                <button class="action-btn copy-btn" onclick="copyText(this, \`${item.prompt.replace(/`/g, '\\`')}\`)">COPY PROMPT</button>
+            `;
+        } else {
+            content = `
+                <img src="/images/${item.image}" loading="lazy" style="margin-bottom: 1.5rem" onerror="this.src='data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='">
+                <h3>${item.title}</h3>
+                <a href="${item.link}" target="_blank" class="action-btn">BUY NOW</a>
+            `;
+        }
+
+        if (adminToken) {
+            content += `
+                <div class="admin-controls">
+                    <button class="admin-btn" onclick='openEditModal(${JSON.stringify(item)}, "${type}")'>Edit</button>
+                    <button class="admin-btn" onclick="deleteItem('${item.id}', '${type}')">Delete</button>
+                </div>
+            `;
+        }
+
+        card.innerHTML = content;
+        grid.appendChild(card);
+    });
+}
+
+// Utility functions
+window.copyText = (btn, text) => {
+    navigator.clipboard.writeText(text);
+    const originalText = btn.innerText;
+    btn.innerText = 'COPIED!';
+    setTimeout(() => btn.innerText = originalText, 2000);
+};
+
+// Search filtering
+function setupSearch() {
+    ['prompts', 'products'].forEach(type => {
+        document.getElementById(`search-${type}`).addEventListener('input', (e) => {
+            state[type].query = e.target.value;
+            state[type].page = 0;
+            state[type].hasMore = true;
+            loadItems(type);
+        });
+    });
+}
+
+// Infinite Scroll
+function setupInfiniteScroll() {
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                if (entry.target.id === 'prompts-loader') loadItems('prompts');
+                if (entry.target.id === 'products-loader') loadItems('products');
+            }
+        });
+    }, { rootMargin: '200px' });
+
+    observer.observe(document.getElementById('prompts-loader'));
+    observer.observe(document.getElementById('products-loader'));
+}
+
+/* --- ADMIN SYSTEM --- */
+
+window.handleAdminAction = async (type) => {
+    if (!adminToken) {
+        const pass = prompt("Enter Admin Password:");
+        if (!pass) return;
+        
+        // Verify password
+        const res = await fetch('/api/admin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: pass })
+        });
+        
+        if (res.ok) {
+            adminToken = pass;
+            sessionStorage.setItem('netizen_admin', pass);
+            location.reload(); // Reload to show edit/delete buttons
+        } else {
+            alert("Invalid password");
+            return;
+        }
+    }
+    
+    // Open modal for Add
+    document.getElementById('item-id').value = '';
+    document.getElementById('item-type').value = type;
+    document.getElementById('modal-title').innerText = `Add New ${type}`;
+    document.getElementById('admin-form').reset();
+    toggleFormFields(type);
+    document.getElementById('admin-modal').style.display = 'flex';
+};
+
+window.openEditModal = (item, type) => {
+    document.getElementById('item-id').value = item.id;
+    document.getElementById('item-type').value = type;
+    document.getElementById('modal-title').innerText = `Edit ${type}`;
+    document.getElementById('form-title').value = item.title;
+    
+    if (type === 'prompts') {
+        document.getElementById('form-prompt').value = item.prompt;
+        document.getElementById('form-image-base').value = item.image_base;
+    } else {
+        document.getElementById('form-link').value = item.link;
+        document.getElementById('form-image').value = item.image;
+    }
+    
+    toggleFormFields(type);
+    document.getElementById('admin-modal').style.display = 'flex';
+};
+
+function toggleFormFields(type) {
+    const isPrompt = type === 'prompt' || type === 'prompts';
+    document.getElementById('group-prompt').style.display = isPrompt ? 'block' : 'none';
+    document.getElementById('group-image-base').style.display = isPrompt ? 'block' : 'none';
+    document.getElementById('group-link').style.display = !isPrompt ? 'block' : 'none';
+    document.getElementById('group-image').style.display = !isPrompt ? 'block' : 'none';
+}
+
+window.closeModal = () => {
+    document.getElementById('admin-modal').style.display = 'none';
+};
+
+function setupModal() {
+    document.getElementById('admin-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('item-id').value;
+        const type = document.getElementById('item-type').value;
+        const table = type === 'prompt' ? 'prompts' : (type === 'product' ? 'products' : type);
+        
+        const payload = { table, data: { title: document.getElementById('form-title').value }};
+        if (table === 'prompts') {
+            payload.data.prompt = document.getElementById('form-prompt').value;
+            payload.data.image_base = document.getElementById('form-image-base').value;
+        } else {
+            payload.data.link = document.getElementById('form-link').value;
+            payload.data.image = document.getElementById('form-image').value;
+        }
+
+        const endpoint = id ? `/api/editItem` : `/api/createItem`;
+        if (id) payload.id = id;
+
+        try {
+            const res = await fetch(endpoint, {
+                method: id ? 'PUT' : 'POST',
+                headers: { 'Content-Type': 'application/json', 'x-admin-pass': adminToken },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                closeModal();
+                state[table].page = 0;
+                loadItems(table);
+            } else {
+                alert("Failed to save item.");
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    });
+}
+
+window.deleteItem = async (id, table) => {
+    if(!confirm("Are you sure?")) return;
+    try {
+        const res = await fetch(`/api/deleteItem`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json', 'x-admin-pass': adminToken },
+            body: JSON.stringify({ id, table })
+        });
+        if(res.ok) {
+            document.querySelector(`.card[data-id="${id}"]`).remove();
+        }
+    } catch (err) {
+        console.error(err);
+    }
+};
