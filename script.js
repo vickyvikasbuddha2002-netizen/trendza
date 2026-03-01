@@ -1,4 +1,6 @@
-// Replace with your actual Supabase project URL and anon key
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+
+// Your actual Supabase project URL and anon key are securely set here
 const supabaseUrl = 'https://fbnnbkjdnvvtqeivjoyt.supabase.co';
 const supabaseAnonKey = 'sb_publishable_dte-0n8c1xWsI1Aw9rgQ5g_28zwHqJB';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
@@ -145,14 +147,22 @@ window.handleAdminAction = async (type) => {
         if (res.ok) {
             adminToken = pass;
             sessionStorage.setItem('netizen_admin', pass);
-            location.reload(); // Reload to show edit/delete buttons
+            
+            // Reload the grids silently so the Edit/Delete buttons appear
+            state.prompts.page = 0; state.prompts.hasMore = true; 
+            document.getElementById('prompts-grid').innerHTML = ''; 
+            loadItems('prompts');
+            
+            state.products.page = 0; state.products.hasMore = true; 
+            document.getElementById('products-grid').innerHTML = ''; 
+            loadItems('products');
         } else {
-            alert("Invalid password");
+            alert("Invalid password. Check your Vercel Environment Variables.");
             return;
         }
     }
     
-    // Open modal for Add
+    // Open modal for Add immediately without refreshing the page
     document.getElementById('item-id').value = '';
     document.getElementById('item-type').value = type;
     document.getElementById('modal-title').innerText = `Add New ${type}`;
@@ -194,6 +204,12 @@ window.closeModal = () => {
 function setupModal() {
     document.getElementById('admin-form').addEventListener('submit', async (e) => {
         e.preventDefault();
+        
+        const submitBtn = document.querySelector('.submit-btn');
+        const originalBtnText = submitBtn.innerText;
+        submitBtn.innerText = 'Saving...';
+        submitBtn.disabled = true;
+
         const id = document.getElementById('item-id').value;
         const type = document.getElementById('item-type').value;
         const table = type === 'prompt' ? 'prompts' : (type === 'product' ? 'products' : type);
@@ -220,18 +236,24 @@ function setupModal() {
             if (res.ok) {
                 closeModal();
                 state[table].page = 0;
-                loadItems(table);
+                state[table].hasMore = true;
+                loadItems(table); // Refresh grid to show new item
             } else {
-                alert("Failed to save item.");
+                const errorData = await res.json();
+                alert(`Failed to save item: ${errorData.error || 'Unknown error'}`);
             }
         } catch (err) {
             console.error(err);
+            alert("Network error. Make sure your environment variables are set in Vercel.");
+        } finally {
+            submitBtn.innerText = originalBtnText;
+            submitBtn.disabled = false;
         }
     });
 }
 
 window.deleteItem = async (id, table) => {
-    if(!confirm("Are you sure?")) return;
+    if(!confirm("Are you sure you want to delete this item?")) return;
     try {
         const res = await fetch(`/api/deleteItem`, {
             method: 'DELETE',
@@ -240,6 +262,8 @@ window.deleteItem = async (id, table) => {
         });
         if(res.ok) {
             document.querySelector(`.card[data-id="${id}"]`).remove();
+        } else {
+            alert("Failed to delete item.");
         }
     } catch (err) {
         console.error(err);
