@@ -1,315 +1,49 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trendza</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-
-<style>
-body{
-margin:0;
-font-family:Inter,sans-serif;
-background:#0a0a0a;
-color:white;
-}
-
-.navbar{
-position:sticky;
-top:0;
-background:#000;
-display:flex;
-justify-content:center;
-gap:40px;
-padding:20px;
-border-bottom:1px solid #222;
-z-index:100;
-}
-
-.navbar button{
-background:none;
-border:none;
-color:white;
-font-size:16px;
-cursor:pointer;
-}
-
-.navbar button:hover{
-color:#00ff88;
-}
-
-.section{
-display:none;
-max-width:1100px;
-margin:auto;
-padding:40px 20px;
-}
-
-.section.active{
-display:block;
-}
-
-.topbar{
-display:flex;
-justify-content:space-between;
-margin-bottom:30px;
-flex-wrap:wrap;
-gap:10px;
-}
-
-input{
-padding:10px;
-border-radius:8px;
-border:none;
-width:60%;
-}
-
-.admin-btn{
-background:#00ff88;
-border:none;
-padding:10px 15px;
-border-radius:8px;
-cursor:pointer;
-font-weight:bold;
-}
-
-.card{
-background:#111;
-padding:20px;
-border-radius:16px;
-margin-bottom:25px;
-}
-
-.images{
-display:flex;
-gap:10px;
-margin:15px 0;
-}
-
-.images img{
-width:50%;
-border-radius:12px;
-}
-
-.copy-btn{
-background:#222;
-border:none;
-color:#00ff88;
-padding:8px 12px;
-border-radius:8px;
-cursor:pointer;
-}
-
-.product-img{
-width:100%;
-border-radius:12px;
-margin-bottom:15px;
-}
-
-.delete-btn{
-background:red;
-border:none;
-padding:6px 10px;
-border-radius:6px;
-cursor:pointer;
-color:white;
-font-size:12px;
-margin-top:10px;
-}
-
-@media(max-width:768px){
-.images{
-flex-direction:column;
-}
-.images img{
-width:100%;
-}
-input{
-width:100%;
-}
-}
-</style>
+  <meta charset="UTF-8">
+  <title>Trendza</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
-
 <body>
 
 <div class="navbar">
-<button onclick="showSection('tools')">Tools</button>
-<button onclick="showSection('prompts')">AI Prompts</button>
-<button onclick="showSection('products')">Viral Products</button>
+  <button onclick="showSection('tools')">Tools</button>
+  <button onclick="showSection('prompts')">AI Prompts</button>
+  <button onclick="showSection('products')">Viral Products</button>
 </div>
 
 <!-- TOOLS -->
 <div id="tools" class="section active">
-<h1>Instagram 9 Grid Split</h1>
-<p>Tool coming next. Backend ffmpeg integration later.</p>
+  <h1>Instagram 9 Grid Split</h1>
+  <p>Tool coming next.</p>
 </div>
 
 <!-- AI PROMPTS -->
 <div id="prompts" class="section">
-<div class="topbar">
-<input type="text" id="searchPrompt" placeholder="Search prompts..." oninput="loadPrompts()">
-<button class="admin-btn" onclick="adminLogin()">Owner Login</button>
-</div>
-<div id="promptContainer"></div>
+  <div class="topbar">
+    <input type="text" id="searchPrompt" placeholder="Search prompts..." oninput="loadPrompts()">
+    <button class="admin-btn" onclick="adminLogin()">Owner Login</button>
+  </div>
+
+  <div id="promptAdmin"></div>
+  <div id="promptContainer"></div>
 </div>
 
 <!-- PRODUCTS -->
 <div id="products" class="section">
-<div class="topbar">
-<input type="text" id="searchProduct" placeholder="Search products..." oninput="loadProducts()">
-</div>
-<div id="productContainer"></div>
+  <div class="topbar">
+    <input type="text" id="searchProduct" placeholder="Search products..." oninput="loadProducts()">
+  </div>
+
+  <div id="productAdmin"></div>
+  <div id="productContainer"></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-
-const SUPABASE_URL = "https://fbnnbkjdnvvtqeivjoyt.supabase.co";
-const SUPABASE_KEY = "sb_publishable_dte-0n8c1xWsI1Aw9rgQ5g_28zwHqJB";
-
-const supabase = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-
-let isAdmin = false;
-
-function showSection(id){
-document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-document.getElementById(id).classList.add("active");
-}
-
-async function loadPrompts(){
-let search = document.getElementById("searchPrompt").value.toLowerCase();
-
-const {data,error} = await supabase
-.from("prompts")
-.select("*")
-.order("created_at",{ascending:false});
-
-if(error){console.log(error);return;}
-
-let container=document.getElementById("promptContainer");
-container.innerHTML="";
-
-data
-.filter(p=>p.title.toLowerCase().includes(search))
-.forEach(p=>{
-container.innerHTML+=`
-<div class="card">
-<h2>${p.title}</h2>
-<div class="images">
-<img src="${SUPABASE_URL}/storage/v1/object/public/ai-prompts/${p.id}-1.jpg">
-<img src="${SUPABASE_URL}/storage/v1/object/public/ai-prompts/${p.id}-2.jpg">
-</div>
-<p>${p.prompt}</p>
-<button class="copy-btn" onclick="copyText('${p.prompt}')">Copy</button>
-${isAdmin ? `<button class="delete-btn" onclick="deletePrompt('${p.id}')">Delete</button>` : ""}
-</div>
-`;
-});
-}
-
-async function loadProducts(){
-let search = document.getElementById("searchProduct").value.toLowerCase();
-
-const {data,error} = await supabase
-.from("products")
-.select("*")
-.order("created_at",{ascending:false});
-
-if(error){console.log(error);return;}
-
-let container=document.getElementById("productContainer");
-container.innerHTML="";
-
-data
-.filter(p=>p.title.toLowerCase().includes(search))
-.forEach(p=>{
-container.innerHTML+=`
-<div class="card">
-<img class="product-img" src="${SUPABASE_URL}/storage/v1/object/public/viral-products/${p.id}.jpg">
-<h2>${p.title}</h2>
-<a href="${p.link}" target="_blank">Buy Here</a>
-${isAdmin ? `<button class="delete-btn" onclick="deleteProduct('${p.id}')">Delete</button>` : ""}
-</div>
-`;
-});
-}
-
-function copyText(text){
-navigator.clipboard.writeText(text);
-alert("Copied");
-}
-
-async function deletePrompt(id){
-await supabase.from("prompts").delete().eq("id",id);
-loadPrompts();
-}
-
-async function deleteProduct(id){
-await supabase.from("products").delete().eq("id",id);
-loadProducts();
-}
-
-async function adminLogin(){
-let pass=prompt("Enter Owner Password");
-if(pass==="trendza123"){
-isAdmin=true;
-alert("Admin enabled");
-addAdminForms();
-loadPrompts();
-loadProducts();
-}else{
-alert("Wrong password");
-}
-}
-
-function addAdminForms(){
-
-let promptSection=document.getElementById("promptContainer");
-
-promptSection.insertAdjacentHTML("beforebegin",`
-<div class="card">
-<h3>Add New Prompt</h3>
-<input id="newTitle" placeholder="Title"><br><br>
-<textarea id="newPrompt" placeholder="Prompt" style="width:100%;height:80px;"></textarea><br><br>
-<button class="admin-btn" onclick="addPrompt()">Add</button>
-</div>
-`);
-
-let productSection=document.getElementById("productContainer");
-
-productSection.insertAdjacentHTML("beforebegin",`
-<div class="card">
-<h3>Add New Product</h3>
-<input id="newProductTitle" placeholder="Title"><br><br>
-<input id="newProductLink" placeholder="Buy Link"><br><br>
-<button class="admin-btn" onclick="addProduct()">Add</button>
-</div>
-`);
-}
-
-async function addPrompt(){
-let title=document.getElementById("newTitle").value;
-let prompt=document.getElementById("newPrompt").value;
-
-await supabase.from("prompts").insert([{title,prompt}]);
-loadPrompts();
-}
-
-async function addProduct(){
-let title=document.getElementById("newProductTitle").value;
-let link=document.getElementById("newProductLink").value;
-
-await supabase.from("products").insert([{title,link}]);
-loadProducts();
-}
-
-loadPrompts();
-loadProducts();
-
-</script>
+<script src="script.js"></script>
 
 </body>
 </html>
