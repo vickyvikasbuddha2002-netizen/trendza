@@ -1,67 +1,65 @@
-let ADMIN_PASSWORD = "trendza123";
+const SUPABASE_URL = "https://fbnnbkjdnvvtqeivjoyt.supabase.co";
+const SUPABASE_KEY = "sb_publishable_dte-0n8c1xWsI1Aw9rgQ5g_28zwHqJB";
 
-function showSection(id) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+const supabase = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+let isAdmin = false;
+
+function showSection(id){
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+document.getElementById(id).classList.add("active");
 }
 
-async function loadPrompts() {
-  const res = await fetch('data/ai-prompts.json');
-  const data = await res.json();
+async function loadPrompts(){
+let search = document.getElementById("searchPrompt").value.toLowerCase();
 
-  const container = document.getElementById('promptContainer');
-  container.innerHTML = "";
+const {data,error} = await supabase
+.from("prompts")
+.select("*")
+.order("created_at",{ascending:false});
 
-  data.forEach(item => {
-    container.innerHTML += `
-      <div class="card">
-        <h2>${item.title}</h2>
-        <div style="display:flex; gap:10px;">
-          <img src="ai-prompts/${item.title}-prompt1.jpg">
-          <img src="ai-prompts/${item.title}-prompt2.jpg">
-        </div>
-        <p>${item.prompt}</p>
-        <button onclick="copyText('${item.prompt}')">Copy</button>
-      </div>
-    `;
-  });
+if(error){console.log(error);return;}
+
+let container=document.getElementById("promptContainer");
+container.innerHTML="";
+
+data
+.filter(p=>p.title.toLowerCase().includes(search))
+.forEach(p=>{
+container.innerHTML+=`
+<div class="card">
+<h2>${p.title}</h2>
+<div class="images">
+<img src="${SUPABASE_URL}/storage/v1/object/public/ai-prompts/${p.id}-1.jpg">
+<img src="${SUPABASE_URL}/storage/v1/object/public/ai-prompts/${p.id}-2.jpg">
+</div>
+<p>${p.prompt}</p>
+<button class="copy-btn" onclick="copyText('${p.prompt}')">Copy</button>
+${isAdmin ? `<button class="delete-btn" onclick="deletePrompt('${p.id}')">Delete</button>` : ""}
+</div>
+`;
+});
 }
 
-async function loadProducts() {
-  const res = await fetch('data/viral-products.json');
-  const data = await res.json();
+async function loadProducts(){
+let search = document.getElementById("searchProduct").value.toLowerCase();
 
-  const container = document.getElementById('productContainer');
-  container.innerHTML = "";
+const {data,error} = await supabase
+.from("products")
+.select("*")
+.order("created_at",{ascending:false});
 
-  data.forEach(item => {
-    container.innerHTML += `
-      <div class="card">
-        <img src="viral-products/${item.title}.jpg">
-        <h2>${item.title}</h2>
-        <a href="${item.link}" target="_blank">Buy Here</a>
-      </div>
-    `;
-  });
-}
+if(error){console.log(error);return;}
 
-function copyText(text) {
-  navigator.clipboard.writeText(text);
-  alert("Copied!");
-}
+let container=document.getElementById("productContainer");
+container.innerHTML="";
 
-function adminAccess(type) {
-  let pass = prompt("Enter Admin Password");
-  if (pass !== ADMIN_PASSWORD) {
-    alert("Wrong password");
-    return;
-  }
-
-  let title = prompt("Enter Title");
-  let content = prompt("Enter Prompt / Link");
-
-  alert("Now manually update JSON file in GitHub.");
-}
-
-loadPrompts();
-loadProducts();
+data
+.filter(p=>p.title.toLowerCase().includes(search))
+.forEach(p=>{
+container.innerHTML+=`
+<div class="card">
+<img class="product-img" src="${SUPABASE_URL}/storage/v1/object/public/viral-products/${p.id}.jpg">
+<h2>${p.title}</h2>
+<a href="${p.link}" target="_blank">Buy Here</a>
+${isAdmin ? `<
