@@ -7,8 +7,7 @@
 
 <link rel="stylesheet" href="style.css">
 
-<!-- Thin Futuristic Font -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400&display=swap" rel="stylesheet">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -18,45 +17,31 @@
 <header>
   <div class="logo">NETIZEN</div>
   <nav>
-    <button onclick="showSection('tools')">TOOLS</button>
     <button onclick="showSection('prompts')">AI PROMPTS</button>
     <button onclick="showSection('products')">VIRAL PRODUCTS</button>
   </nav>
 </header>
 
-<!-- TOOLS SECTION -->
-<section id="tools" class="section active">
-  <div class="section-title">9 GRID SPLITTER</div>
-
-  <div class="tool-box">
-    <input type="file" id="mediaInput">
-    <button onclick="splitMedia()">CREATE</button>
+<section class="hero">
+  <div class="hero-inner">
+    <h1>CURATED DIGITAL INTELLIGENCE</h1>
+    <p>Elite AI prompts & trending innovations for creators</p>
   </div>
-
-  <div id="outputGrid"></div>
 </section>
 
-<!-- PROMPTS SECTION -->
-<section id="prompts" class="section">
-  <div class="sticky-bar">
-    <input type="text" id="promptSearch" placeholder="Search">
-    <select id="promptSort">
-      <option value="newest">Newest</option>
-    </select>
+<section id="prompts" class="content-section active">
+  <div class="section-header">
+    <h2>AI PROMPTS</h2>
+    <input type="text" id="promptSearch" placeholder="Search prompts">
   </div>
-
   <div id="promptContainer" class="grid"></div>
 </section>
 
-<!-- PRODUCTS SECTION -->
-<section id="products" class="section">
-  <div class="sticky-bar">
-    <input type="text" id="productSearch" placeholder="Search">
-    <select>
-      <option>Newest</option>
-    </select>
+<section id="products" class="content-section">
+  <div class="section-header">
+    <h2>VIRAL PRODUCTS</h2>
+    <input type="text" id="productSearch" placeholder="Search products">
   </div>
-
   <div id="productContainer" class="grid"></div>
 </section>
 
