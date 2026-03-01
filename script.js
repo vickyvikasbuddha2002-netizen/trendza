@@ -31,7 +31,7 @@ async function loadItems(type) {
     const from = state[type].page * PAGE_SIZE;
     const to = from + PAGE_SIZE - 1;
 
-    let query = supabase.from(type).select('*').order('created_at', { ascending: false }).range(from, to);
+    let query = supabase.from(type).select('*').order('display_order', { ascending: false }).order('created_at', { ascending: false }).range(from, to);
     
     if (state[type].query) {
         query = query.ilike('title', `%${state[type].query}%`);
