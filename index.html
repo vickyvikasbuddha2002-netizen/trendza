@@ -283,21 +283,22 @@
 
         .full-blog-content {
             display: none;
-            margin-top: 20px;
-            padding-top: 20px;
+            margin-top: 30px;
+            padding-top: 30px;
             border-top: var(--border-width) dashed var(--border-color);
-            font-size: 1.05rem;
-            line-height: 1.7;
+            font-size: 1.1rem; 
+            line-height: 1.8;
             color: #111;
         }
 
         .full-blog-content h4 {
-            margin: 20px 0 10px 0;
+            margin: 24px 0 12px 0;
             font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.3rem;
         }
 
         .full-blog-content p {
-            margin-bottom: 15px;
+            margin-bottom: 16px;
         }
 
         /* STYLING FOR LINKS INSIDE THE BLOG CONTENT */
@@ -322,9 +323,37 @@
             color: var(--card-bg);
         }
 
+        /* --- THE MAGIC FIX FOR READABILITY WHEN EXPANDED --- */
         .blog-card.expanded {
             grid-column: 1 / -1; 
             transform: none !important; 
+            cursor: default; 
+        }
+
+        .blog-card.expanded .full-blog-content,
+        .blog-card.expanded h3,
+        .blog-card.expanded .desc {
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: left;
+        }
+
+        .blog-card.expanded h3 {
+            text-align: center;
+            font-size: 2rem;
+            margin-top: 10px;
+        }
+        
+        .blog-card.expanded .desc {
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .blog-card.expanded .card-img-wrapper {
+            max-width: 800px;
+            max-height: 450px; 
+            margin: 0 auto 20px auto;
         }
 
         .blog-card.expanded .full-blog-content {
@@ -332,8 +361,10 @@
             animation: fadeIn 0.4s ease-in;
         }
 
-        .blog-card.expanded .card-img-wrapper {
-            max-height: 500px; 
+        .blog-card.expanded .btn {
+            max-width: 300px;
+            margin: 40px auto 0 auto;
+            display: block;
         }
 
         @keyframes fadeIn {
@@ -558,25 +589,6 @@
                     description: "From monitor light bars to ergonomic chairs, here is what you need.",
                     category: "Setup",
                     dateAdded: "2026-03-11",
-                    // NOTICE THE <a> TAGS BELOW FOR HYPERLINKS
-                    content: `
-                        <p>If you're still working off a cramped laptop screen on your dining table, it's time to level up. The aesthetic workspace isn't just about looking good for the timeline—it's about maximizing your productivity and keeping your posture in check.</p>
-                        
-                        <h4>1. The Monitor Light Bar</h4>
-                        <p>Stop blinding yourself with overhead room lights. A monitor light bar gives your desk a warm, focused glow that reduces eye strain perfectly. <a href="https://your-affiliate-link.com/lightbar" target="_blank">Grab my favorite one right here</a>.</p>
-                        
-                        <h4>2. A Thocky Mechanical Keyboard</h4>
-                        <p>Membrane keyboards are out. You need something that sounds like raindrops on a window when you type. Look for linear switches if you want something smooth, or tactile if you want that satisfying bump. I highly recommend checking out <a href="https://your-affiliate-link.com/keyboard" target="_blank">this custom board</a>.</p>
-                    `
-                },
-                {
-                    title: "Top Trendy Carpets you should Own in 2026",
-                    name: "Carpets",
-                    imageExtension: "jpg",
-                    description: "These carpets are your buy to list in 2026",
-                    category: "Setup",
-                    dateAdded: "2026-03-11",
-                    // NOTICE THE <a> TAGS BELOW FOR HYPERLINKS
                     content: `
                         <p>If you're still working off a cramped laptop screen on your dining table, it's time to level up. The aesthetic workspace isn't just about looking good for the timeline—it's about maximizing your productivity and keeping your posture in check.</p>
                         
@@ -627,7 +639,6 @@
             document.getElementById('explore-section').classList.toggle('hidden', tab !== 'explore');
             document.getElementById('blog-section').classList.toggle('hidden', tab !== 'blog');
             
-            // Clear the search bar when switching tabs
             document.getElementById('search-input').value = '';
             
             renderContent();
@@ -653,15 +664,12 @@
             const dataList = currentTab === 'explore' ? SITE_DATA.products : SITE_DATA.blogs;
             const sortType = document.getElementById('sort-select').value;
             
-            // Grab what the user typed in the search bar
             const searchQuery = document.getElementById('search-input').value.toLowerCase();
 
-            // 1. Filter by Category
             let filtered = currentCategory === 'All' 
                 ? dataList 
                 : dataList.filter(item => item.category === currentCategory);
 
-            // 2. Filter by Search Query (Looks at title and description instantly)
             if (searchQuery) {
                 filtered = filtered.filter(item => {
                     const title = (item.name || item.title || '').toLowerCase();
@@ -670,7 +678,6 @@
                 });
             }
 
-            // 3. Sort Results
             filtered.sort((a, b) => {
                 if (sortType === 'newest') {
                     return new Date(b.dateAdded) - new Date(a.dateAdded);
@@ -681,14 +688,14 @@
                 }
             });
 
-            // If nothing matches the search or filter
             if (filtered.length === 0) {
                 container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; font-weight: bold; font-size: 1.2rem; padding: 40px 0;">No items found. Try a different search! 🌵</p>`;
                 return;
             }
 
-            container.innerHTML = filtered.map((item, index) => `
-                <div class="card ${currentTab === 'blog' ? 'blog-card' : ''}" id="card-${index}">
+            // NOTE: Removed hardcoded ID generation on the card div
+            container.innerHTML = filtered.map((item) => `
+                <div class="card ${currentTab === 'blog' ? 'blog-card' : ''}">
                     <div class="card-img-wrapper">
                         <img src="${getImagePath(item)}" alt="${item.name || item.title}" onerror="this.src='https://via.placeholder.com/400x400?text=Image+Missing'">
                     </div>
@@ -699,23 +706,29 @@
                         <a href="${item.affiliateLink}" target="_blank" class="btn">Cop Now</a>
                     ` : `
                         <div class="full-blog-content">${item.content || '<p>Content coming soon...</p>'}</div>
-                        <button class="btn" onclick="toggleBlog(${index})">Read Up</button>
+                        <button class="btn" onclick="toggleBlog(this)">Read Up</button>
                     `}
                 </div>
             `).join('');
         }
 
-        function toggleBlog(index) {
-            const card = document.getElementById(`card-${index}`);
-            const btn = card.querySelector('.btn');
+        // NOTE: Updated function to use the specific button element clicked
+        function toggleBlog(btnElement) {
+            // Find the exact card that houses the button that was clicked
+            const card = btnElement.closest('.card');
             
             card.classList.toggle('expanded');
             
             if (card.classList.contains('expanded')) {
-                btn.innerText = 'Close Article';
-                card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                btnElement.innerText = 'Close Article';
+                setTimeout(() => {
+                    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 50);
             } else {
-                btn.innerText = 'Read Up';
+                btnElement.innerText = 'Read Up';
+                setTimeout(() => {
+                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 50);
             }
         }
 
