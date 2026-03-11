@@ -1,1 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trendza.life | Curated For You</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700&family=Space+Grotesk:wght@700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- VIBRANT NEUBRUTALISM VARIABLES --- */
+        :root {
+            --bg-color: #F4F0EA; 
+            --text-color: #000000;
+            --accent-purple: #B28DFF;
+            --accent-green: #00FF94;
+            --accent-pink: #FF66A3;
+            --accent-yellow: #FFD23F;
+            --card-bg: #FFFFFF;
+            --radius: 12px;
+            --border-width: 3px;
+            --border-color: #000000;
+            --brutal-shadow: 6px 6px 0px var(--border-color);
+            --transition: all 0.2s ease-out;
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(var(--border-color) 1px, transparent 1px);
+            background-size: 24px 24px;
+            color: var(--text-color);
+            -webkit-font-smoothing: antialiased;
+            padding-bottom: 80px;
+        }
+
+        h1, h2, h3, .brand {
+            font-family: 'Space Grotesk', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+            font-weight: 900;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background: var(--accent-purple);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: var(--border-width) solid var(--border-color);
+        }
+
+        .brand {
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #000;
+            text-shadow: 2px 2px 0px #FFF;
+        }
+
+        .nav-links button {
+            background: var(--card-bg);
+            border: var(--border-width) solid var(--border-color);
+            box-shadow: 3px 3px 0px var(--border-color);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1rem;
+            font-weight: 900;
+            margin-left: 15px;
+            cursor: pointer;
+            color: var(--text-color);
+            transition: var(--transition);
+        }
+
+        .nav-links button:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0px var(--border-color);
+        }
+
+        .nav-links button.active {
+            background: var(--accent-green);
+        }
+
+        /* --- CONTROLS (SEARCH, FILTERS & SORT) --- */
+        .controls {
+            padding: 30px 5%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .search-bar {
+            flex-grow: 1;
+            min-width: 250px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 30px;
+            border: var(--border-width) solid var(--border-color);
+            box-shadow: 3px 3px 0px var(--border-color);
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            background: var(--card-bg);
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0px var(--border-color);
+            background: #E8F0FF;
+        }
+
+        .filters {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            flex: 2;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: 30px;
+            background: var(--card-bg);
+            box-shadow: 3px 3px 0px var(--border-color);
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-btn:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0px var(--border-color);
+        }
+
+        .filter-btn.active {
+            background: var(--accent-yellow);
+        }
+
+        select {
+            padding: 12px 20px;
+            border-radius: 30px;
+            border: var(--border-width) solid var(--border-color);
+            box-shadow: 3px 3px 0px var(--border-color);
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            background: var(--accent-pink);
+            cursor: pointer;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        select:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0px var(--border-color);
+        }
+
+        /* --- GRID LAYOUT --- */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 0 5%;
+            align-items: start; 
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* --- CARDS (PLACARDS) --- */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            border: var(--border-width) solid var(--border-color);
+            box-shadow: var(--brutal-shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 10px 10px 0px var(--border-color);
+        }
+
+        .card-img-wrapper {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--accent-purple);
+            border: var(--border-width) solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover img {
+            transform: scale(1.08);
+        }
+
+        .card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            line-height: 1.1;
+        }
+
+        .card p.desc {
+            font-size: 0.95rem;
+            color: #333;
+            margin-bottom: 24px;
+            line-height: 1.5;
+            font-weight: 500;
+            flex-grow: 1;
+        }
+
+        .btn {
+            display: inline-block;
+            text-align: center;
+            padding: 16px;
+            background: var(--text-color);
+            color: var(--card-bg);
+            text-decoration: none;
+            border-radius: 8px;
+            border: var(--border-width) solid var(--border-color);
+            font-weight: 900;
+            font-family: 'Space Grotesk', sans-serif;
+            text-transform: uppercase;
+            font-size: 1rem;
+            letter-spacing: 0.05em;
+            transition: var(--transition);
+            box-shadow: 4px 4px 0px var(--accent-green);
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: var(--card-bg);
+            color: var(--text-color);
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px var(--accent-green);
+        }
+
+        /* --- BLOG OVERRIDES & EXPANSION --- */
+        .blog-card .btn {
+            box-shadow: 4px 4px 0px var(--accent-pink);
+        }
+        .blog-card .btn:hover {
+            box-shadow: 2px 2px 0px var(--accent-pink);
+        }
+
+        .blog-card .card-img-wrapper {
+            aspect-ratio: 16 / 9;
+        }
+
+        .full-blog-content {
+            display: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: var(--border-width) dashed var(--border-color);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: #111;
+        }
+
+        .full-blog-content h4 {
+            margin: 20px 0 10px 0;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .full-blog-content p {
+            margin-bottom: 15px;
+        }
+
+        /* STYLING FOR LINKS INSIDE THE BLOG CONTENT */
+        .full-blog-content a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 700;
+            background-color: var(--accent-green);
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 2px solid var(--text-color);
+            box-shadow: 2px 2px 0px var(--text-color);
+            transition: var(--transition);
+            display: inline-block;
+            margin: 0 2px;
+        }
+
+        .full-blog-content a:hover {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0px var(--text-color);
+            background-color: var(--accent-pink);
+            color: var(--card-bg);
+        }
+
+        .blog-card.expanded {
+            grid-column: 1 / -1; 
+            transform: none !important; 
+        }
+
+        .blog-card.expanded .full-blog-content {
+            display: block; 
+            animation: fadeIn 0.4s ease-in;
+        }
+
+        .blog-card.expanded .card-img-wrapper {
+            max-height: 500px; 
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- FOOTER & MODALS --- */
+        footer {
+            text-align: center;
+            padding: 60px 5% 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        footer a {
+            color: var(--text-color);
+            cursor: pointer;
+            text-decoration: underline;
+            text-decoration-thickness: 2px;
+            text-decoration-color: var(--accent-purple);
+        }
+
+        /* Cookie Banner */
+        .cookie-banner {
+            position: fixed;
+            bottom: 20px;
+            left: 5%;
+            right: 5%;
+            background: var(--accent-yellow);
+            color: var(--text-color);
+            padding: 20px;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: var(--brutal-shadow);
+            z-index: 1000;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translateY(150%);
+            font-weight: 700;
+        }
+
+        .cookie-banner.show {
+            transform: translateY(0);
+        }
+
+        .cookie-banner button {
+            background: var(--text-color);
+            color: var(--card-bg);
+            border: var(--border-width) solid var(--text-color);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 900;
+            font-family: 'Space Grotesk', sans-serif;
+            text-transform: uppercase;
+            cursor: pointer;
+            align-self: flex-start;
+            transition: var(--transition);
+        }
+
+        .cookie-banner button:hover {
+            background: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        /* T&C Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            width: 90%;
+            max-width: 500px;
+            padding: 40px;
+            border: var(--border-width) solid var(--border-color);
+            box-shadow: var(--brutal-shadow);
+            border-radius: var(--radius);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close-modal {
+            background: var(--accent-pink);
+            color: var(--text-color);
+            border: var(--border-width) solid var(--border-color);
+            box-shadow: 3px 3px 0px var(--border-color);
+            padding: 12px 24px;
+            border-radius: 8px;
+            margin-top: 24px;
+            cursor: pointer;
+            font-weight: 900;
+            font-family: 'Space Grotesk', sans-serif;
+            text-transform: uppercase;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0px var(--border-color);
+        }
+
+        @media (min-width: 768px) {
+            .cookie-banner {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                left: auto;
+                right: 30px;
+                width: 450px;
+            }
+            .cookie-banner button {
+                align-self: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="brand">Trendza.life</div>
+        <div class="nav-links">
+            <button id="btn-explore" class="active" onclick="switchTab('explore')">Explore</button>
+            <button id="btn-blog" onclick="switchTab('blog')">Blog</button>
+        </div>
+    </nav>
+
+    <div class="controls" id="controls">
+        <div class="search-bar">
+            <input type="text" id="search-input" class="search-input" placeholder="Search trends..." oninput="renderContent()">
+        </div>
+        <div class="filters" id="filter-container"></div>
+        <div class="sort">
+            <select id="sort-select" onchange="renderContent()">
+                <option value="newest">Sort: Newest</option>
+                <option value="name">Sort: A-Z</option>
+            </select>
+        </div>
+    </div>
+
+    <main>
+        <section id="explore-section" class="grid-container"></section>
+        <section id="blog-section" class="grid-container hidden"></section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Trendza.life. Curated vibes only.</p>
+        <br>
+        <p><a onclick="openModal()">Terms & Conditions</a></p>
+    </footer>
+
+    <div class="cookie-banner" id="cookie-banner">
+        <p>We use cookies to serve you the absolute best trends. 🍪</p>
+        <button onclick="acceptCookies()">Bet</button>
+    </div>
+
+    <div class="modal-overlay" id="tnc-modal">
+        <div class="modal-content">
+            <h2>The Fine Print</h2>
+            <br>
+            <p>Welcome to Trendza.life! We participate in affiliate marketing programs, meaning we might score a commission if you cop something through our links.</p>
+            <br>
+            <p><strong>1.</strong> Prices and availability might change. Don't blame us, blame the algorithm.</p>
+            <p><strong>2.</strong> We curate the fire stuff, but always do your own research before buying.</p>
+            <button class="close-modal" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const SITE_DATA = {
+            categories: ["All", "Tech", "Aesthetics", "Setup"],
+            
+            products: [
+                {
+                    name: "Noise-Cancelling Headphones",
+                    imageExtension: "jpg", 
+                    description: "Immersive audio. Block out the noise, focus on the vibe.",
+                    category: "Tech",
+                    affiliateLink: "https://your-affiliate-link.com/headphones",
+                    dateAdded: "2026-03-11"
+                },
+                {
+                    name: "Neon LED Sign",
+                    imageExtension: "png",
+                    description: "Elevate your room aesthetics with this customizable LED glow.",
+                    category: "Aesthetics",
+                    affiliateLink: "https://your-affiliate-link.com/neon",
+                    dateAdded: "2026-03-10"
+                },
+                {
+                    name: "Mechanical Keyboard",
+                    imageExtension: "jpg",
+                    description: "Thocky switches and RGB that actually looks good.",
+                    category: "Setup",
+                    affiliateLink: "https://your-affiliate-link.com/keyboard",
+                    dateAdded: "2026-03-09"
+                }
+            ],
+
+            blogs: [
+                {
+                    title: "Top Desk Setup Essentials for 2026",
+                    name: "Blog-Desk-Setup",
+                    imageExtension: "jpg",
+                    description: "From monitor light bars to ergonomic chairs, here is what you need.",
+                    category: "Setup",
+                    dateAdded: "2026-03-11",
+                    // NOTICE THE <a> TAGS BELOW FOR HYPERLINKS
+                    content: `
+                        <p>If you're still working off a cramped laptop screen on your dining table, it's time to level up. The aesthetic workspace isn't just about looking good for the timeline—it's about maximizing your productivity and keeping your posture in check.</p>
+                        
+                        <h4>1. The Monitor Light Bar</h4>
+                        <p>Stop blinding yourself with overhead room lights. A monitor light bar gives your desk a warm, focused glow that reduces eye strain perfectly. <a href="https://your-affiliate-link.com/lightbar" target="_blank">Grab my favorite one right here</a>.</p>
+                        
+                        <h4>2. A Thocky Mechanical Keyboard</h4>
+                        <p>Membrane keyboards are out. You need something that sounds like raindrops on a window when you type. Look for linear switches if you want something smooth, or tactile if you want that satisfying bump. I highly recommend checking out <a href="https://your-affiliate-link.com/keyboard" target="_blank">this custom board</a>.</p>
+                    `
+                },
+                {
+                    title: "Why Minimalist Tech is Taking Over",
+                    name: "Blog-Minimal-Tech",
+                    imageExtension: "jpg",
+                    description: "Transparent casing, exposed circuits, and zero RGB.",
+                    category: "Tech",
+                    dateAdded: "2026-03-10",
+                    content: `
+                        <p>We are officially moving away from the "unicorn vomit" RGB era of tech. The new wave? Stripped back, industrial minimalism.</p>
+                        <p>Brands are realizing that showing the raw components of a device is way cooler than wrapping it in cheap plastic. Expect to see a lot more transparent earbuds, phones, and controllers hitting the market this year.</p>
+                    `
+                }
+            ]
+        };
+
+        // ==========================================
+        // SYSTEM LOGIC (DO NOT EDIT BELOW THIS LINE)
+        // ==========================================
+
+        let currentTab = 'explore';
+        let currentCategory = 'All';
+
+        function init() {
+            renderFilters();
+            renderContent();
+            checkCookies();
+        }
+
+        function getImagePath(item) {
+            return `assets/${item.name ? item.name : item.title}.${item.imageExtension}`;
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.getElementById('btn-explore').classList.toggle('active', tab === 'explore');
+            document.getElementById('btn-blog').classList.toggle('active', tab === 'blog');
+            
+            document.getElementById('explore-section').classList.toggle('hidden', tab !== 'explore');
+            document.getElementById('blog-section').classList.toggle('hidden', tab !== 'blog');
+            
+            // Clear the search bar when switching tabs
+            document.getElementById('search-input').value = '';
+            
+            renderContent();
+        }
+
+        function renderFilters() {
+            const container = document.getElementById('filter-container');
+            container.innerHTML = SITE_DATA.categories.map(cat => 
+                `<button class="filter-btn ${cat === currentCategory ? 'active' : ''}" 
+                         onclick="setCategory('${cat}')">${cat}</button>`
+            ).join('');
+        }
+
+        function setCategory(cat) {
+            currentCategory = cat;
+            renderFilters();
+            renderContent();
+        }
+
+        function renderContent() {
+            const sectionId = currentTab === 'explore' ? 'explore-section' : 'blog-section';
+            const container = document.getElementById(sectionId);
+            const dataList = currentTab === 'explore' ? SITE_DATA.products : SITE_DATA.blogs;
+            const sortType = document.getElementById('sort-select').value;
+            
+            // Grab what the user typed in the search bar
+            const searchQuery = document.getElementById('search-input').value.toLowerCase();
+
+            // 1. Filter by Category
+            let filtered = currentCategory === 'All' 
+                ? dataList 
+                : dataList.filter(item => item.category === currentCategory);
+
+            // 2. Filter by Search Query (Looks at title and description instantly)
+            if (searchQuery) {
+                filtered = filtered.filter(item => {
+                    const title = (item.name || item.title || '').toLowerCase();
+                    const desc = (item.description || '').toLowerCase();
+                    return title.includes(searchQuery) || desc.includes(searchQuery);
+                });
+            }
+
+            // 3. Sort Results
+            filtered.sort((a, b) => {
+                if (sortType === 'newest') {
+                    return new Date(b.dateAdded) - new Date(a.dateAdded);
+                } else if (sortType === 'name') {
+                    const nameA = a.name || a.title;
+                    const nameB = b.name || b.title;
+                    return nameA.localeCompare(nameB);
+                }
+            });
+
+            // If nothing matches the search or filter
+            if (filtered.length === 0) {
+                container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; font-weight: bold; font-size: 1.2rem; padding: 40px 0;">No items found. Try a different search! 🌵</p>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map((item, index) => `
+                <div class="card ${currentTab === 'blog' ? 'blog-card' : ''}" id="card-${index}">
+                    <div class="card-img-wrapper">
+                        <img src="${getImagePath(item)}" alt="${item.name || item.title}" onerror="this.src='https://via.placeholder.com/400x400?text=Image+Missing'">
+                    </div>
+                    <h3>${item.name || item.title}</h3>
+                    <p class="desc">${item.description}</p>
+                    
+                    ${currentTab === 'explore' ? `
+                        <a href="${item.affiliateLink}" target="_blank" class="btn">Cop Now</a>
+                    ` : `
+                        <div class="full-blog-content">${item.content || '<p>Content coming soon...</p>'}</div>
+                        <button class="btn" onclick="toggleBlog(${index})">Read Up</button>
+                    `}
+                </div>
+            `).join('');
+        }
+
+        function toggleBlog(index) {
+            const card = document.getElementById(`card-${index}`);
+            const btn = card.querySelector('.btn');
+            
+            card.classList.toggle('expanded');
+            
+            if (card.classList.contains('expanded')) {
+                btn.innerText = 'Close Article';
+                card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                btn.innerText = 'Read Up';
+            }
+        }
+
+        function checkCookies() {
+            if (!localStorage.getItem('trendza_cookies_accepted')) {
+                setTimeout(() => {
+                    document.getElementById('cookie-banner').classList.add('show');
+                }, 1000);
+            }
+        }
+
+        function acceptCookies() {
+            localStorage.setItem('trendza_cookies_accepted', 'true');
+            document.getElementById('cookie-banner').classList.remove('show');
+        }
+
+        function openModal() {
+            document.getElementById('tnc-modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('tnc-modal').classList.remove('active');
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
