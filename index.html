@@ -12,21 +12,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&family=Space+Grotesk:wght@700;900&display=swap" rel="stylesheet">
     
     <style>
-        /* --- HYPER-VIBRANT NEO-BRUTALISM --- */
+        /* --- BALANCED NEO-BRUTALISM --- */
         :root {
             --bg-color: #F4F0EA; 
             --text-color: #000000;
             
-            /* The "Nisshin" & Cheat Sheet Palette */
-            --c-pink: #FF71CE;
+            /* Unified Palette - Colorful but controlled */
+            --c-purple: #B967FF;
+            --c-yellow: #FFEA00;
             --c-cyan: #01CDFE;
             --c-green: #05FFA1;
-            --c-yellow: #FFEA00;
-            --c-purple: #B967FF;
-            --c-orange: #FF9E00;
+            --c-pink: #FF71CE;
 
             --card-bg: #FFFFFF;
-            --radius: 4px;
+            --radius: 6px;
             --border-width: 3px; 
             --border-color: #000000;
             
@@ -68,7 +67,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 16px 5%;
-            background: var(--c-purple); /* Vibrant purple nav */
+            background: var(--c-purple); 
             position: sticky;
             top: 0;
             z-index: 100;
@@ -80,7 +79,7 @@
             font-size: 1.6rem;
             cursor: pointer;
             color: #000;
-            background: var(--c-yellow);
+            background: #FFF;
             padding: 4px 12px;
             border: var(--border-width) solid var(--border-color);
             box-shadow: var(--shadow-sm);
@@ -109,7 +108,7 @@
         }
 
         .nav-links button.active {
-            background: var(--c-green);
+            background: var(--c-yellow);
         }
 
         /* --- CONTROLS --- */
@@ -139,20 +138,20 @@
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
             font-size: 0.9rem;
-            background: var(--c-cyan); /* Colorful search bar */
+            background: #FFF; 
             outline: none;
             transition: var(--transition);
             color: #000;
         }
 
         .search-input::placeholder {
-            color: rgba(0,0,0,0.6);
+            color: rgba(0,0,0,0.5);
         }
 
         .search-input:focus {
             transform: translate(3px, 3px);
             box-shadow: 0px 0px 0px var(--border-color);
-            background: #FFF;
+            background: var(--c-cyan);
         }
 
         .filters {
@@ -186,11 +185,7 @@
             box-shadow: 0px 0px 0px var(--border-color);
         }
 
-        /* Giving filters random colors when active */
-        .filter-btn.active { background: var(--c-pink); }
-        .filter-btn:nth-child(2).active { background: var(--c-yellow); }
-        .filter-btn:nth-child(3).active { background: var(--c-green); }
-        .filter-btn:nth-child(4).active { background: var(--c-cyan); }
+        .filter-btn.active { background: var(--text-color); color: #FFF; }
 
         select {
             padding: 10px 14px;
@@ -201,7 +196,7 @@
             font-weight: 900;
             font-size: 0.75rem;
             text-transform: uppercase;
-            background: var(--c-orange);
+            background: var(--c-cyan);
             color: #000;
             cursor: pointer;
             outline: none;
@@ -213,20 +208,21 @@
             box-shadow: 0px 0px 0px var(--border-color);
         }
 
-        /* --- GRID LAYOUT --- */
+        /* --- PERFECT CO-LINEAR GRID LAYOUT --- */
         .grid-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr); /* FORCED 3 COLUMN MOBILE */
-            gap: 8px;
-            padding: 0 3%;
-            align-items: start; 
+            gap: 10px;
+            padding: 0 4%;
+            /* 'stretch' forces all cards in a row to be the exact same height */
+            align-items: stretch; 
         }
 
         .hidden {
             display: none !important;
         }
 
-        /* --- COLORFUL WINDOW CARDS --- */
+        /* --- BALANCED WINDOW CARDS --- */
         .card {
             background: var(--card-bg);
             border-radius: var(--radius);
@@ -236,19 +232,13 @@
             box-shadow: var(--shadow-md);
             transition: var(--transition);
             overflow: hidden;
+            height: 100%; /* Important for co-linear alignment */
         }
 
         .card:hover {
             transform: translate(-2px, -2px);
             box-shadow: var(--shadow-lg);
         }
-
-        /* COLOR CYCLING FOR CARDS! This makes the grid super vibrant */
-        .card:nth-child(5n+1) .card-content { background: var(--c-pink); }
-        .card:nth-child(5n+2) .card-content { background: var(--c-cyan); }
-        .card:nth-child(5n+3) .card-content { background: var(--c-yellow); }
-        .card:nth-child(5n+4) .card-content { background: var(--c-green); }
-        .card:nth-child(5n+5) .card-content { background: var(--c-purple); }
 
         .window-bar {
             background: #FFF;
@@ -270,19 +260,20 @@
         .dot.green { background: #27C93F; }
 
         .card-content {
-            padding: 6px; 
+            padding: 8px; 
             display: flex;
             flex-direction: column;
-            flex-grow: 1;
+            flex-grow: 1; /* Pushes everything to fill height */
+            background: #FFF; /* Pure white keeps it clean */
         }
 
         .card-img-wrapper {
             width: 100%;
             aspect-ratio: 1 / 1;
-            border-radius: var(--radius);
+            border-radius: 4px;
             overflow: hidden;
             background: #FFF;
-            border: var(--border-width) solid var(--border-color);
+            border: 2px solid var(--border-color);
             margin-bottom: 8px;
         }
 
@@ -294,52 +285,39 @@
 
         .card h3 {
             font-size: 0.65rem; 
-            margin-bottom: 4px;
-            line-height: 1.1;
-            background: #FFF; /* Keeps text legible over the bright backgrounds */
-            padding: 4px;
-            border: 2px solid var(--border-color);
+            line-height: 1.2;
+            margin-bottom: 10px;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
+            height: 2.4em; /* Forces exact height for perfectly aligned buttons */
         }
 
-        .card p.desc {
-            font-size: 0.55rem; 
-            color: #000; /* Force black for contrast on bright cards */
-            margin-bottom: 8px;
-            line-height: 1.3;
-            font-weight: 900;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            flex-grow: 1;
-            background: rgba(255,255,255,0.8); /* Slight white wash so text pops */
-            padding: 2px 4px;
-            border: 1px solid #000;
+        /* HIDING THE DESCRIPTION AS REQUESTED */
+        .card:not(.expanded) p.desc {
+            display: none !important;
         }
 
         .btn {
-            display: inline-block;
+            display: block;
             text-align: center;
             padding: 8px 4px;
-            background: #FFF;
-            color: var(--text-color);
+            background: var(--c-green); /* Colorful accent for the button */
+            color: #000;
             text-decoration: none;
-            border-radius: var(--radius);
-            border: var(--border-width) solid var(--border-color);
+            border-radius: 4px;
+            border: 2px solid var(--border-color);
             font-weight: 900;
             font-family: 'Space Grotesk', sans-serif;
             text-transform: uppercase;
-            font-size: 0.6rem; 
+            font-size: 0.65rem; 
             letter-spacing: 0.05em;
             transition: var(--transition);
             box-shadow: 2px 2px 0px var(--border-color);
             cursor: pointer;
             width: 100%;
-            margin-top: auto;
+            margin-top: auto; /* Forces the button to the absolute bottom perfectly */
         }
 
         .btn:hover {
@@ -351,7 +329,7 @@
 
         /* --- BLOG OVERRIDES --- */
         .blog-card .btn {
-            background: var(--c-orange);
+            background: var(--c-pink);
             color: #000;
         }
 
@@ -367,9 +345,6 @@
             font-size: 0.85rem; 
             line-height: 1.5;
             font-weight: 700;
-            background: #FFF;
-            padding: 8px;
-            border: 2px solid #000;
         }
 
         .full-blog-content h4 {
@@ -390,7 +365,7 @@
             color: var(--text-color);
             text-decoration: none;
             font-weight: 900;
-            background-color: var(--c-pink);
+            background-color: var(--c-yellow);
             padding: 2px 6px;
             border: 2px solid var(--text-color);
             box-shadow: 2px 2px 0px var(--text-color);
@@ -410,6 +385,15 @@
             transform: none !important; 
             cursor: default; 
             box-shadow: var(--shadow-lg);
+            height: auto; /* Allow expanding card to grow normally */
+        }
+
+        .blog-card.expanded p.desc {
+            display: block !important; /* Show description only when expanded */
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 700;
+            margin-top: 10px;
         }
 
         .blog-card.expanded .full-blog-content,
@@ -425,18 +409,13 @@
             text-align: center;
             font-size: 1.5rem;
             margin-top: 10px;
-        }
-        
-        .blog-card.expanded .desc {
-            text-align: center;
-            font-size: 1rem;
-            -webkit-line-clamp: unset; 
+            height: auto; /* Remove strict height limitation for expanded title */
         }
 
         .blog-card.expanded .card-img-wrapper {
             max-width: 800px;
             max-height: 450px; 
-            margin: 0 auto 20px auto;
+            margin: 0 auto 10px auto;
         }
 
         .blog-card.expanded .full-blog-content {
@@ -460,17 +439,26 @@
         /* --- DESKTOP SCALING --- */
         @media (min-width: 768px) {
             .grid-container {
-                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
                 gap: 24px;
                 padding: 0 5%;
             }
             .search-bar { min-width: 350px; flex-grow: 0; }
             .window-bar { padding: 8px 12px; gap: 6px; }
             .dot { width: 12px; height: 12px; }
-            .card-content { padding: 20px; }
-            .card h3 { font-size: 1.3rem; padding: 6px 10px; margin-bottom: 12px; -webkit-line-clamp: unset; }
-            .card p.desc { font-size: 0.95rem; margin-bottom: 24px; -webkit-line-clamp: unset; padding: 6px; }
-            .btn { padding: 14px; font-size: 1rem; box-shadow: var(--shadow-sm); }
+            .card-content { padding: 16px; }
+            .card h3 { font-size: 1.2rem; height: 2.8em; margin-bottom: 16px; }
+            
+            /* Re-show descriptions on desktop where there is space */
+            .card:not(.expanded) p.desc { 
+                display: -webkit-box !important; 
+                font-size: 0.9rem; 
+                margin-bottom: 20px; 
+                color: #333;
+                font-weight: 500;
+            }
+
+            .btn { padding: 12px; font-size: 0.9rem; box-shadow: var(--shadow-sm); }
             .brand { font-size: 2rem; }
             .nav-links button { padding: 10px 20px; font-size: 1rem; }
             .controls { margin-bottom: 40px; }
@@ -488,7 +476,7 @@
             color: var(--text-color);
             cursor: pointer;
             text-decoration: none;
-            background: var(--c-yellow);
+            background: #FFF;
             padding: 4px 10px;
             border: 2px solid var(--text-color);
             box-shadow: 2px 2px 0px var(--text-color);
@@ -505,7 +493,7 @@
             bottom: 20px;
             left: 5%;
             right: 5%;
-            background: var(--c-green);
+            background: var(--c-yellow);
             color: var(--text-color);
             padding: 20px;
             border: var(--border-width) solid var(--border-color);
@@ -525,8 +513,8 @@
         }
 
         .cookie-banner button {
-            background: #FFF;
-            color: #000;
+            background: var(--text-color);
+            color: #FFF;
             border: var(--border-width) solid var(--text-color);
             padding: 12px 24px;
             border-radius: var(--radius);
@@ -540,8 +528,8 @@
         }
 
         .cookie-banner button:hover {
-            background: #000;
-            color: #FFF;
+            background: var(--c-green);
+            color: var(--text-color);
             transform: translate(2px, 2px);
             box-shadow: 0px 0px 0px var(--text-color);
         }
@@ -566,7 +554,7 @@
         }
 
         .modal-content {
-            background: var(--c-pink);
+            background: #FFF;
             width: 90%;
             max-width: 500px;
             padding: 0;
@@ -585,7 +573,7 @@
         }
 
         .modal-body h2 {
-            background: #FFF;
+            background: var(--c-cyan);
             display: inline-block;
             padding: 4px 12px;
             border: 2px solid var(--text-color);
@@ -594,13 +582,10 @@
         .modal-body p {
             margin-top: 16px;
             font-weight: 700;
-            background: rgba(255,255,255,0.7);
-            padding: 10px;
-            border: 1px solid #000;
         }
 
         .close-modal {
-            background: var(--c-yellow);
+            background: var(--c-pink);
             color: var(--text-color);
             border: var(--border-width) solid var(--border-color);
             box-shadow: var(--shadow-sm);
