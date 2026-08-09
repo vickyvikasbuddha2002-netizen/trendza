@@ -74,7 +74,12 @@ function isSaneWish() {
   let d = request.resource.data;
   return d.to is string && d.to.size() > 0 && d.to.size() <= 60
       && d.from is string && d.from.size() > 0 && d.from.size() <= 60
-      && d.message is string && d.message.size() <= 1200
+      // The message arrives encrypted, so this limit is on base64 ciphertext,
+      // not on what was typed. The form caps input at 600 characters; in
+      // Devanagari that is 1800 UTF-8 bytes, which becomes ~2440 base64
+      // characters. A 1200 limit would have quietly rejected every Hindi
+      // wish while letting English ones through.
+      && d.message is string && d.message.size() <= 4000
       && d.photos is list && d.photos.size() <= 12
       && d.createdAt is number;
 }
