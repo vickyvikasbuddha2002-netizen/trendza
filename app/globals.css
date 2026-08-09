@@ -1,0 +1,224 @@
+@import "tailwindcss";
+
+/* ── Trendza palette ─────────────────────────────────────────────
+   Warm ivory ground, deep maroon type, a single gold. The restraint
+   is the point: three colours read as expensive, six read as a
+   festival template. */
+:root {
+  --ivory: #fdf9f3;
+  --ivory-deep: #f5ebdd;
+  --ivory-shadow: #e8dac6;
+  --maroon: #6e1b24;
+  --maroon-soft: #97444d;
+  --gold: #c9a227;
+  --gold-light: #e5c86a;
+  --gold-pale: #f0dfa8;
+  --ink: #2a1f1c;
+  --muted: #8a7a6e;
+  --paper: #f7f1e4;
+}
+
+@theme inline {
+  --color-ivory: var(--ivory);
+  --color-ivory-deep: var(--ivory-deep);
+  --color-ivory-shadow: var(--ivory-shadow);
+  --color-maroon: var(--maroon);
+  --color-maroon-soft: var(--maroon-soft);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-gold-pale: var(--gold-pale);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-paper: var(--paper);
+  --font-display: var(--font-cormorant);
+  --font-sans: var(--font-inter);
+  --font-type: var(--font-typewriter);
+}
+
+html,
+body {
+  background: var(--ivory);
+  color: var(--ink);
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Let the immersive routes own the full viewport without the page
+   scrolling horizontally when petals drift past the edges. */
+body {
+  overflow-x: hidden;
+}
+
+/* ── Ambient motion ──────────────────────────────────────────────
+   Everything here animates transform/opacity only, so it composites
+   on the GPU and holds 60fps on budget Android — which is most of
+   the audience for this. */
+
+@keyframes tz-bloom {
+  0%,
+  100% {
+    transform: translate3d(-8%, -4%, 0) scale(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate3d(6%, 5%, 0) scale(1.25);
+    opacity: 0.85;
+  }
+}
+
+@keyframes tz-bloom-alt {
+  0%,
+  100% {
+    transform: translate3d(5%, 6%, 0) scale(1.15);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate3d(-7%, -5%, 0) scale(1);
+    opacity: 0.8;
+  }
+}
+
+@keyframes tz-petal-fall {
+  0% {
+    transform: translate3d(0, -12vh, 0) rotate(0deg);
+    opacity: 0;
+  }
+  8% {
+    opacity: var(--petal-opacity, 0.7);
+  }
+  92% {
+    opacity: var(--petal-opacity, 0.7);
+  }
+  100% {
+    transform: translate3d(var(--petal-drift, 40px), 112vh, 0) rotate(var(--petal-spin, 320deg));
+    opacity: 0;
+  }
+}
+
+@keyframes tz-shimmer {
+  0% {
+    transform: translate3d(-120%, 0, 0);
+  }
+  100% {
+    transform: translate3d(320%, 0, 0);
+  }
+}
+
+@keyframes tz-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.045);
+    opacity: 1;
+  }
+}
+
+@keyframes tz-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -9px, 0);
+  }
+}
+
+@keyframes tz-kenburns {
+  0% {
+    transform: scale(1.06) translate3d(0, 0, 0);
+  }
+  100% {
+    transform: scale(1.2) translate3d(-1.5%, -2%, 0);
+  }
+}
+
+@keyframes tz-kenburns-alt {
+  0% {
+    transform: scale(1.18) translate3d(1.5%, 1%, 0);
+  }
+  100% {
+    transform: scale(1.04) translate3d(0, 0, 0);
+  }
+}
+
+.tz-bloom {
+  animation: tz-bloom 22s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+.tz-bloom-alt {
+  animation: tz-bloom-alt 28s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+.tz-petal {
+  animation: tz-petal-fall var(--petal-duration, 16s) linear infinite;
+  animation-delay: var(--petal-delay, 0s);
+  will-change: transform, opacity;
+}
+.tz-shimmer {
+  animation: tz-shimmer 5.5s ease-in-out infinite;
+}
+.tz-breathe {
+  animation: tz-breathe 3.4s ease-in-out infinite;
+}
+.tz-float {
+  animation: tz-float 6s ease-in-out infinite;
+}
+.tz-kenburns {
+  animation: tz-kenburns 26s ease-in-out infinite alternate;
+  will-change: transform;
+}
+.tz-kenburns-alt {
+  animation: tz-kenburns-alt 30s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* Aged paper for the agreement, drawn in CSS so there is no image to
+   download on a 4G connection. */
+.tz-paper {
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(ellipse at 12% 8%, rgba(180, 140, 80, 0.13), transparent 55%),
+    radial-gradient(ellipse at 88% 92%, rgba(160, 120, 70, 0.11), transparent 55%),
+    radial-gradient(ellipse at 70% 18%, rgba(200, 160, 100, 0.09), transparent 45%);
+}
+
+.tz-hairline {
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--gold) 18%,
+    var(--gold-light) 50%,
+    var(--gold) 82%,
+    transparent
+  );
+}
+
+/* Signature and note fields keep the handwritten feel without pulling
+   a script webfont over the wire. */
+.tz-scroll-hidden::-webkit-scrollbar {
+  display: none;
+}
+.tz-scroll-hidden {
+  scrollbar-width: none;
+}
+
+/* ── Reduced motion ──────────────────────────────────────────────
+   Ambient motion stops entirely; reveals collapse to plain opacity.
+   Non-negotiable — vestibular disorders are real and this page moves
+   a lot by design. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .tz-petal {
+    display: none !important;
+  }
+}

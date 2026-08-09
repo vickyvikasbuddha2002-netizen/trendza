@@ -1,0 +1,90 @@
+rules_version = '2';
+
+// ─────────────────────────────────────────────────────────────────────
+//  MERGE THESE BLOCKS INTO YOUR EXISTING RULES — DO NOT REPLACE THE FILE
+//
+//  The trendza-720ac project already serves a `posts` collection to your
+//  live site. Publishing this file wholesale as-is is fine (the `posts`
+//  block below preserves public read access), but if your existing rules
+//  cover anything else — `saved`, user profiles, anything written while
+//  signed in with Google — copy the three blocks below into what you
+//  already have instead, or that feature will break.
+//
+//  Publish at:
+//  console.firebase.google.com → Firestore Database → Rules → Publish
+//
+//  Until this is published, every wish and counter fails with
+//  PERMISSION_DENIED.
+// ─────────────────────────────────────────────────────────────────────
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── The site is account-free, so these rules are the only thing
+    //    between a stranger and everyone's family photographs. The
+    //    critical line is `allow list: if false` — without it anyone
+    //    could ask Firestore for the whole collection and walk every
+    //    wish ever made. Reading one requires already knowing its
+    //    12-character id.
+    match /wishes/{wishId} {
+      allow get: if true;
+      allow list: if false;
+
+      allow create: if isSaneWish();
+      // Immutable once sent. There are no accounts to prove ownership
+      // with, so nobody may edit or delete anything.
+      allow update, delete: if false;
+    }
+
+    match /agreements/{agreementId} {
+      allow get: if true;
+      allow list: if false;
+
+      allow create: if isSaneAgreement();
+
+      // The single permitted mutation: adding the second signature,
+      // once, and only while it is still missing.
+      allow update: if resource.data.signatureB == null
+                    && request.resource.data.diff(resource.data)
+                         .affectedKeys().hasOnly(['signatureB', 'signedAt'])
+                    && request.resource.data.signatureB is string
+                    && request.resource.data.signatureB.size() < 200000;
+
+      allow delete: if false;
+    }
+
+    // Vanity counters. Anyone may increment them; the worst case is an
+    // inflated number on the landing page, which is not worth defending
+    // with anything more complicated.
+    match /stats/global {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // ── Pre-existing: your live site reads this publicly today. Kept so
+    //    publishing this file does not take the current site down.
+    match /posts/{postId} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}
+
+function isSaneWish() {
+  let d = request.resource.data;
+  return d.to is string && d.to.size() > 0 && d.to.size() <= 60
+      && d.from is string && d.from.size() > 0 && d.from.size() <= 60
+      && d.message is string && d.message.size() <= 1200
+      && d.photos is list && d.photos.size() <= 12
+      && d.createdAt is number;
+}
+
+function isSaneAgreement() {
+  let d = request.resource.data;
+  return d.partyA is string && d.partyA.size() > 0 && d.partyA.size() <= 60
+      && d.partyB is string && d.partyB.size() > 0 && d.partyB.size() <= 60
+      && d.clauses is list && d.clauses.size() > 0 && d.clauses.size() <= 12
+      && d.signatureA is string && d.signatureA.size() < 200000
+      && d.signatureB == null
+      && d.createdAt is number;
+}
