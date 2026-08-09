@@ -1,8 +1,8 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import WishExperience from "@/components/WishExperience";
 import { WishUnavailable } from "@/components/WishUnavailable";
-import { getWishServer } from "@/lib/server-firestore";
+import { getWishServer } from "@/lib/server-db";
 
 export async function generateMetadata({
   params,

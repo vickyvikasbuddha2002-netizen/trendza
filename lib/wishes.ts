@@ -1,16 +1,14 @@
-import { doc, setDoc, Timestamp } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { db, storage } from "./firebase";
+import { PHOTO_BUCKET, supabase } from "./supabase";
 import { newId } from "./id";
 import { compressImage } from "./compress";
 import { recordWish } from "./stats";
 import {
+  decryptBytes,
+  decryptText,
   encryptBytes,
   encryptText,
   exportKey,
   generateKey,
-  decryptBytes,
-  decryptText,
 } from "./crypto";
 import { RETENTION_MS, type Retention, type Wish, type WishPhoto } from "./types";
 
@@ -22,16 +20,16 @@ export interface DraftPhoto {
 
 export interface CreatedWish {
   id: string;
-  /** Belongs in the URL fragment. Never send this to the server. */
+  /** Belongs in the URL fragment. Never send this to a server. */
   key: string;
 }
 
 /**
- * Compresses, encrypts and uploads every photo, then writes the wish record.
+ * Compresses, encrypts and uploads every photo, then writes the wish row.
  *
- * Names stay in plaintext so the WhatsApp preview card has something to show.
- * Everything else — the message, the per-photo notes, the photos themselves —
- * is encrypted with a key that never leaves the browser.
+ * The two names stay in plaintext so the WhatsApp preview card has something
+ * to show. Everything else — the message, the per-photo notes, the photos
+ * themselves — is encrypted with a key that never leaves this browser.
  */
 export async function createWish(
   input: {
@@ -48,30 +46,27 @@ export async function createWish(
   const total = input.photos.length;
   const uploaded: WishPhoto[] = [];
 
-  // The retention class is baked into the storage path so a single Cloud
-  // Storage lifecycle rule per prefix can honour each sender's choice. A
-  // bucket-wide rule could only ever enforce one window for everybody.
-  const prefix = `wishes/${input.retention}/${id}`;
+  // The retention class leads the storage path so the nightly cleanup can
+  // find everything in one expired class with a single prefix query.
+  const prefix = `${input.retention}/${id}`;
 
   for (let i = 0; i < total; i++) {
     const draft = input.photos[i];
     const { blob, w, h } = await compressImage(draft.file);
     const sealed = await encryptBytes(key, await blob.arrayBuffer());
 
-    const storageRef = ref(storage, `${prefix}/${i}.bin`);
-    try {
-      await uploadBytes(storageRef, sealed, {
-        contentType: "application/octet-stream",
-        cacheControl: "public, max-age=31536000, immutable",
-      });
-    } catch (err) {
-      throw new Error(describeUploadFailure(err));
-    }
+    const path = `${prefix}/${i}.bin`;
+    const { error } = await supabase.storage.from(PHOTO_BUCKET).upload(path, sealed, {
+      contentType: "application/octet-stream",
+      cacheControl: "31536000",
+      upsert: false,
+    });
+    if (error) throw new Error(describeUploadFailure(error));
 
-    const url = await getDownloadURL(storageRef);
+    const { data } = supabase.storage.from(PHOTO_BUCKET).getPublicUrl(path);
     const note = draft.note.trim();
     uploaded.push({
-      url,
+      url: data.publicUrl,
       w,
       h,
       ...(note ? { note: await encryptText(key, note) } : {}),
@@ -81,20 +76,18 @@ export async function createWish(
   }
 
   const window = RETENTION_MS[input.retention];
-  const expiresAt = window === null ? null : Date.now() + window;
+  const expiresAt = window === null ? null : new Date(Date.now() + window);
 
-  await setDoc(doc(db, "wishes", id), {
+  const { error } = await supabase.from("wishes").insert({
     id,
-    to: input.to.trim(),
-    from: input.from.trim(),
+    to_name: input.to.trim(),
+    from_name: input.from.trim(),
     message: await encryptText(key, input.message.trim()),
     photos: uploaded,
-    createdAt: Date.now(),
     retention: input.retention,
-    // A real Timestamp, because Firestore's native TTL policy can only be
-    // attached to a timestamp field.
-    expiresAt: expiresAt === null ? null : Timestamp.fromMillis(expiresAt),
+    expires_at: expiresAt?.toISOString() ?? null,
   });
+  if (error) throw new Error(describeInsertFailure(error));
 
   void recordWish();
 
@@ -111,8 +104,8 @@ export interface OpenPhoto {
 /**
  * Fetches the ciphertext and decrypts it in the recipient's browser.
  *
- * Object URLs are returned rather than data URLs — a data URL for six photos
- * would put megabytes of base64 into the DOM.
+ * Object URLs rather than data URLs — six photos as base64 would put
+ * megabytes of string into the DOM.
  */
 export async function openWish(
   wish: Wish,
@@ -140,27 +133,32 @@ export async function openWish(
   return { message, photos };
 }
 
-/**
- * Firebase's own upload errors are opaque ("storage/unknown"). These map the
- * ones that actually happen onto something a person can act on — the setup
- * failures in particular, which otherwise look identical to a bad connection.
- */
-function describeUploadFailure(err: unknown): string {
-  const code = (err as { code?: string })?.code ?? "";
+function describeUploadFailure(err: { message?: string }): string {
+  const message = err.message ?? "";
 
-  if (code === "storage/unauthorized") {
-    return "Photo uploads are blocked by the Storage security rules. Publish storage.rules in the Firebase console.";
+  if (/bucket not found/i.test(message)) {
+    return "The photo storage bucket does not exist yet. Run supabase-setup.sql in the Supabase SQL editor.";
   }
-  if (code === "storage/retry-limit-exceeded" || code === "storage/unknown") {
-    return "Could not reach photo storage. If this is a new project, Firebase Storage may not be enabled yet — open the Firebase console, go to Storage, and click Get started.";
+  if (/row-level security|policy/i.test(message)) {
+    return "Uploads are blocked by the storage policy. Run supabase-setup.sql in the Supabase SQL editor.";
   }
-  if (code === "storage/quota-exceeded") {
-    return "The storage bucket is out of free space.";
+  if (/exceeded the maximum|payload too large|413/i.test(message)) {
+    return "One of those photos is too large even after compression. Try a smaller one.";
   }
-  if (code === "storage/canceled") {
-    return "The upload was cancelled.";
+  if (/fetch|network/i.test(message)) {
+    return "Could not reach photo storage. Please check your connection and try again.";
   }
-  return err instanceof Error && err.message
-    ? `Photo upload failed: ${err.message}`
-    : "Photo upload failed. Please check your connection and try again.";
+  return message ? `Photo upload failed: ${message}` : "Photo upload failed. Please try again.";
+}
+
+function describeInsertFailure(err: { message?: string; code?: string }): string {
+  const message = err.message ?? "";
+
+  if (/row-level security|policy/i.test(message)) {
+    return "Saving the wish was blocked by a database policy. Run supabase-setup.sql in the Supabase SQL editor.";
+  }
+  if (/relation .* does not exist/i.test(message)) {
+    return "The database tables have not been created yet. Run supabase-setup.sql in the Supabase SQL editor.";
+  }
+  return message ? `Could not save the wish: ${message}` : "Could not save the wish. Please try again.";
 }

@@ -32,13 +32,23 @@ export default function AgreementViewer({ agreement }: { agreement: Agreement })
     setSaving(true);
     setError(null);
     try {
-      await signAgreement(agreement.id, draft);
+      const accepted = await signAgreement(agreement.id, draft);
+      if (!accepted) {
+        // Someone signed it from another device or tab first. Their
+        // signature stands; overwriting it would be wrong.
+        setError("This has already been signed. Reload to see it.");
+        return;
+      }
       setSignatureB(draft);
       setSigning(false);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
       console.error(err);
-      setError("Could not save your signature. Please try again.");
+      setError(
+        err instanceof Error && err.message
+          ? err.message
+          : "Could not save your signature. Please try again.",
+      );
     } finally {
       setSaving(false);
     }

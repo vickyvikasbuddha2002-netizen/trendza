@@ -1,6 +1,6 @@
-import { ImageResponse } from "next/og";
+﻿import { ImageResponse } from "next/og";
 import { loadSerif } from "@/lib/og-font";
-import { getAgreementServer } from "@/lib/server-firestore";
+import { getAgreementServer } from "@/lib/server-db";
 
 export const alt = "The Sibling Accord";
 export const size = { width: 1200, height: 630 };

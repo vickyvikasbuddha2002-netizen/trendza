@@ -1,7 +1,7 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import AgreementViewer from "@/components/AgreementViewer";
-import { getAgreementServer } from "@/lib/server-firestore";
+import { getAgreementServer } from "@/lib/server-db";
 
 export async function generateMetadata({
   params,

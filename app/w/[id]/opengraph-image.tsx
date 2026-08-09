@@ -1,6 +1,6 @@
-import { ImageResponse } from "next/og";
+﻿import { ImageResponse } from "next/og";
 import { loadSerif } from "@/lib/og-font";
-import { getWishServer } from "@/lib/server-firestore";
+import { getWishServer } from "@/lib/server-db";
 
 export const alt = "A rakhi wish";
 export const size = { width: 1200, height: 630 };

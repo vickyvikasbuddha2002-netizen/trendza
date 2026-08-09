@@ -6,9 +6,9 @@ import { recordVisit, watchStats } from "@/lib/stats";
 import type { SiteStats } from "@/lib/types";
 
 /**
- * Live social proof. Subscribed to Firestore rather than fetched once, so
- * the numbers move while someone is looking at them — which is the whole
- * reason to show a counter at all.
+ * Live social proof. Polled rather than fetched once, so the numbers move
+ * while someone is looking at them — which is the whole reason to show a
+ * counter at all.
  */
 export function LiveCounters() {
   const [stats, setStats] = useState<SiteStats | null>(null);

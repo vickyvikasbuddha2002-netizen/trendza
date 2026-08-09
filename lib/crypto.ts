@@ -4,7 +4,7 @@
  * A random AES-256-GCM key is generated in the sender's browser, and travels
  * to the recipient in the URL *fragment* (`/w/abc#k=...`). Browsers never put
  * the fragment in an HTTP request, so the key never reaches the server, never
- * appears in access logs, and is not in the Firestore record.
+ * appears in access logs, and is not in the database row.
  *
  * The consequence, and it is not reversible: whoever holds the link holds the
  * only copy of the key. Lose the fragment and the photos are unrecoverable —

@@ -1,8 +1,6 @@
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import { db } from "./firebase";
+import { supabase } from "./supabase";
 import { newId } from "./id";
 import { recordAgreement } from "./stats";
-import type { Agreement } from "./types";
 
 export async function createAgreement(input: {
   partyA: string;
@@ -12,34 +10,40 @@ export async function createAgreement(input: {
 }): Promise<string> {
   const id = newId();
 
-  const agreement: Agreement = {
+  const { error } = await supabase.from("agreements").insert({
     id,
-    partyA: input.partyA.trim(),
-    partyB: input.partyB.trim(),
+    party_a: input.partyA.trim(),
+    party_b: input.partyB.trim(),
     clauses: input.clauses.map((c) => c.trim()).filter(Boolean),
-    signatureA: input.signatureA,
-    signatureB: null,
-    createdAt: Date.now(),
-    signedAt: null,
-  };
+    signature_a: input.signatureA,
+    signature_b: null,
+  });
 
-  await setDoc(doc(db, "agreements", id), agreement);
+  if (error) {
+    throw new Error(
+      /relation .* does not exist|policy|row-level security/i.test(error.message)
+        ? "The database is not set up yet. Run supabase-setup.sql in the Supabase SQL editor."
+        : `Could not save the agreement: ${error.message}`,
+    );
+  }
+
   void recordAgreement();
-
   return id;
 }
 
-/** The counter-signature. Refuses to overwrite one that already exists. */
-export async function signAgreement(id: string, signatureB: string): Promise<void> {
-  const ref = doc(db, "agreements", id);
-  const snap = await getDoc(ref);
-  if (!snap.exists()) throw new Error("That agreement no longer exists");
-  if ((snap.data() as Agreement).signatureB) return;
+/**
+ * The counter-signature.
+ *
+ * Runs as a Postgres function that only writes where `signature_b is null`,
+ * so a forwarded link cannot be used to sign over someone who already has.
+ * Returns false when it was already signed.
+ */
+export async function signAgreement(id: string, signatureB: string): Promise<boolean> {
+  const { data, error } = await supabase.rpc("sign_agreement", {
+    p_id: id,
+    p_signature: signatureB,
+  });
 
-  await updateDoc(ref, { signatureB, signedAt: Date.now() });
-}
-
-export async function getAgreement(id: string): Promise<Agreement | null> {
-  const snap = await getDoc(doc(db, "agreements", id));
-  return snap.exists() ? (snap.data() as Agreement) : null;
+  if (error) throw new Error(`Could not save your signature: ${error.message}`);
+  return data === true;
 }
