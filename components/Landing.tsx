@@ -64,6 +64,24 @@ export function Landing() {
               Make a sibling agreement
             </Link>
           </motion.div>
+
+          {/* The doubt people have before uploading family photographs, answered
+              before they have to go looking for it. */}
+          <motion.p
+            className="mt-8 max-w-sm font-sans text-[0.72rem] leading-relaxed text-[var(--muted)]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 1.2 }}
+          >
+            Your photos are locked on your own phone before they are sent. We cannot
+            open them, and they delete themselves.{" "}
+            <Link
+              href="/privacy"
+              className="text-[var(--maroon-soft)] underline-offset-4 hover:underline"
+            >
+              How this works
+            </Link>
+          </motion.p>
         </section>
 
         {/* ── Live counters ───────────────────────────────────── */}

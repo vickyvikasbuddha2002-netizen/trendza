@@ -303,11 +303,29 @@ export default function WishExperience({ wish }: { wish: Wish }) {
               >
                 <ThreadRule />
 
-                {wish.expiresAt !== null && (
+                {/* The recipient is the one whose face is in these photographs.
+                    They deserve to know where they ended up as much as the
+                    sender does. */}
+                {!wish.plaintext && (
                   <p className="mt-7 font-sans text-[0.68rem] leading-relaxed text-[var(--muted)]">
-                    {wish.from} chose to keep this for{" "}
-                    {RETENTION_LABEL[wish.retention]}. Save the photographs before{" "}
-                    <ExpiryDate at={wish.expiresAt} />.
+                    These photographs were locked on {wish.from}&apos;s phone before
+                    they were sent. Trendza cannot open them.
+                    {wish.expiresAt !== null ? (
+                      <>
+                        {" "}
+                        They are deleted for good on{" "}
+                        <ExpiryDate at={wish.expiresAt} /> — save any you want to
+                        keep.{" "}
+                      </>
+                    ) : (
+                      " "
+                    )}
+                    <Link
+                      href="/privacy"
+                      className="text-[var(--maroon-soft)] underline-offset-4 hover:underline"
+                    >
+                      How this works
+                    </Link>
                   </p>
                 )}
 

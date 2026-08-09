@@ -46,6 +46,9 @@ export function PageShell({
           <Link href="/shop" className="hover:text-[var(--maroon-soft)]">
             Rakhi gifts
           </Link>
+          <Link href="/privacy" className="hover:text-[var(--maroon-soft)]">
+            Your photos
+          </Link>
           <ChaiLink />
         </div>
       </footer>
