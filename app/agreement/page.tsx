@@ -10,7 +10,7 @@ import { ShareBox } from "@/components/ShareBox";
 import { SignaturePad } from "@/components/SignaturePad";
 import { ThreadRule } from "@/components/Ambient";
 import { createAgreement } from "@/lib/agreements";
-import { CLAUSE_LIBRARY, DEFAULT_CLAUSES } from "@/lib/clauses";
+import { CLAUSE_LIBRARY, DEFAULT_CLAUSES, fillClause } from "@/lib/clauses";
 import { recordVisit } from "@/lib/stats";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -67,7 +67,9 @@ export default function AgreementBuilder() {
       const created = await createAgreement({
         partyA,
         partyB,
-        clauses: selected,
+        // Names are baked in before saving, so the document that arrives is
+        // about two actual people rather than two placeholders.
+        clauses: selected.map((c) => fillClause(c, partyA, partyB)),
         signatureA: signature,
       });
       setId(created);
@@ -106,13 +108,13 @@ export default function AgreementBuilder() {
               <div className="mt-9 grid gap-5 sm:grid-cols-2">
                 <NameField
                   id="party-a"
-                  label="You (Party A)"
+                  label="Your name"
                   value={partyA}
                   onChange={setPartyA}
                 />
                 <NameField
                   id="party-b"
-                  label="Them (Party B)"
+                  label="Their name"
                   value={partyB}
                   onChange={setPartyB}
                 />
@@ -149,7 +151,7 @@ export default function AgreementBuilder() {
                             >
                               {on ? "✓" : ""}
                             </span>
-                            {clause}
+                            {fillClause(clause, partyA, partyB)}
                           </button>
                         );
                       })}
@@ -173,7 +175,7 @@ export default function AgreementBuilder() {
                       }
                     }}
                     maxLength={160}
-                    placeholder="Party B shall stop telling that story."
+                    placeholder={`${partyB.trim() || "They"} shall stop telling that story.`}
                     className="min-w-0 flex-1 rounded-full border border-[var(--ivory-shadow)] bg-[var(--ivory)]/70 px-5 py-3 font-type text-sm text-[var(--ink)] outline-none transition placeholder:text-[var(--muted)]/55 focus:border-[var(--gold)]"
                   />
                   <button
@@ -227,7 +229,7 @@ export default function AgreementBuilder() {
                 <AgreementPaper
                   partyA={partyA}
                   partyB={partyB}
-                  clauses={selected}
+                  clauses={selected.map((c) => fillClause(c, partyA, partyB))}
                   signatureA={signature}
                   animate={false}
                 />

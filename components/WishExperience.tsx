@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { AmbientScore, MUTE_STORAGE_KEY } from "@/lib/audio";
+import { blessingFor } from "@/lib/blessings";
 import { importKey, keyFromLocation } from "@/lib/crypto";
 import { recordVisit } from "@/lib/stats";
 import { openWish, type OpenPhoto } from "@/lib/wishes";
@@ -124,6 +125,7 @@ export default function WishExperience({ wish }: { wish: Wish }) {
     return <WishUnavailable variant={failure} to={wish.to} from={wish.from} />;
   }
 
+  const blessing = blessingFor(wish.id);
   const ready = Boolean(content) && untied;
   const lines = (content?.message ?? "")
     .split("\n")
@@ -223,11 +225,22 @@ export default function WishExperience({ wish }: { wish: Wish }) {
             {content.photos.map((photo, i) => (
               <section key={photo.objectUrl} className="px-0 py-[11vh]">
                 <figure className="m-0">
+                  {/*
+                    The frame is sized to the photograph's own shape, never the
+                    other way round. `width` is capped by both the viewport and
+                    by whatever width would make the photo 82vh tall, so a tall
+                    portrait shrinks and centres instead of being squashed into
+                    a full-width box and cropped by object-cover. Landscape
+                    shots still run edge to edge. Nothing is cut, and there are
+                    no empty bars either — the box always matches the picture.
+                  */}
                   <div
-                    className="relative w-full overflow-hidden bg-[var(--ivory-deep)]"
+                    className={`relative mx-auto overflow-hidden bg-[var(--ivory-deep)] ${
+                      i % 2 === 0 ? "tz-drift" : "tz-drift-alt"
+                    }`}
                     style={{
                       aspectRatio: `${photo.w || 4} / ${photo.h || 3}`,
-                      maxHeight: "82vh",
+                      width: `min(100%, calc(82vh * ${(photo.w || 4) / (photo.h || 3)}))`,
                     }}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -235,9 +248,7 @@ export default function WishExperience({ wish }: { wish: Wish }) {
                       src={photo.objectUrl}
                       alt={photo.note || `A memory shared with ${wish.to}`}
                       decoding="async"
-                      className={`absolute inset-0 h-full w-full object-cover ${
-                        i % 2 === 0 ? "tz-kenburns" : "tz-kenburns-alt"
-                      }`}
+                      className="absolute inset-0 h-full w-full object-cover"
                     />
                     <div
                       aria-hidden
@@ -296,7 +307,7 @@ export default function WishExperience({ wish }: { wish: Wish }) {
                 viewport={{ once: true, margin: "-15%" }}
                 transition={{ duration: 1.6, ease: EASE }}
               >
-                Distance is only distance.
+                {blessing.first}
               </motion.p>
               <motion.p
                 className="mt-5 max-w-lg font-display text-[1.7rem] font-light italic leading-relaxed text-[var(--maroon)] sm:text-4xl"
@@ -305,7 +316,7 @@ export default function WishExperience({ wish }: { wish: Wish }) {
                 viewport={{ once: true, margin: "-15%" }}
                 transition={{ duration: 1.6, delay: 0.9, ease: EASE }}
               >
-                The thread holds anyway.
+                {blessing.second}
               </motion.p>
             </section>
 

@@ -85,12 +85,11 @@ export function AgreementPaper({
           <span className="font-semibold text-[var(--maroon)]">
             {partyA || "________"}
           </span>{" "}
-          <span className="text-[var(--muted)]">(hereafter “Party A”)</span> and{" "}
+          and{" "}
           <span className="font-semibold text-[var(--maroon)]">
             {partyB || "________"}
-          </span>{" "}
-          <span className="text-[var(--muted)]">(hereafter “Party B”)</span>, who are
-          stuck with each other for life.
+          </span>
+          , who are stuck with each other for life.
         </motion.p>
 
         <ol className="mt-9 space-y-5">
@@ -115,8 +114,8 @@ export function AgreementPaper({
         </ol>
 
         <div className="mt-12 grid grid-cols-2 gap-6">
-          <SignatureSlot name={partyA} role="Party A" signature={signatureA} />
-          <SignatureSlot name={partyB} role="Party B" signature={signatureB} />
+          <SignatureSlot name={partyA} signature={signatureA} />
+          <SignatureSlot name={partyB} signature={signatureB} />
         </div>
 
         {footer && <div className="mt-10">{footer}</div>}
@@ -127,11 +126,9 @@ export function AgreementPaper({
 
 function SignatureSlot({
   name,
-  role,
   signature,
 }: {
   name: string;
-  role: string;
   signature?: string | null;
 }) {
   return (
@@ -154,9 +151,9 @@ function SignatureSlot({
         )}
       </div>
       <div className="mt-1 border-t border-[var(--ink)]/35 pt-2">
-        <p className="font-type text-[0.8rem] text-[var(--ink)]">{name || "________"}</p>
+        <p className="font-type text-[0.85rem] text-[var(--ink)]">{name || "________"}</p>
         <p className="font-sans text-[0.58rem] uppercase tracking-[0.24em] text-[var(--muted)]">
-          {role}
+          {signature ? "Signed" : "Not yet signed"}
         </p>
       </div>
     </div>

@@ -42,8 +42,8 @@ export function Landing() {
             transition={{ duration: 1.1, delay: 0.75, ease: EASE }}
           >
             Some years the thread has to travel. Make one out of your
-            photographs — the long summers, the old arguments, the things you
-            have never quite managed to say — and let it arrive for you.
+            photographs, the long summers, the old arguments, the things you
+            have never quite managed to say and let it arrive for you.
           </motion.p>
 
           <motion.p

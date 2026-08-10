@@ -126,21 +126,28 @@ body {
   }
 }
 
-@keyframes tz-kenburns {
-  0% {
-    transform: scale(1.06) translate3d(0, 0, 0);
-  }
+/* The photograph frames breathe instead of the images panning inside them.
+   A Ken Burns move has to scale the image past its frame, which means part
+   of every photo is permanently cut off — and the part people put at the
+   edge of a family photo is usually a person. Scaling the frame itself
+   keeps the whole image visible while nothing sits still. */
+@keyframes tz-drift {
+  0%,
   100% {
-    transform: scale(1.2) translate3d(-1.5%, -2%, 0);
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: scale(1.018) translate3d(0, -6px, 0);
   }
 }
 
-@keyframes tz-kenburns-alt {
-  0% {
-    transform: scale(1.18) translate3d(1.5%, 1%, 0);
-  }
+@keyframes tz-drift-alt {
+  0%,
   100% {
-    transform: scale(1.04) translate3d(0, 0, 0);
+    transform: scale(1.014) translate3d(0, -4px, 0);
+  }
+  50% {
+    transform: scale(1) translate3d(0, 2px, 0);
   }
 }
 
@@ -166,12 +173,12 @@ body {
 .tz-float {
   animation: tz-float 6s ease-in-out infinite;
 }
-.tz-kenburns {
-  animation: tz-kenburns 26s ease-in-out infinite alternate;
+.tz-drift {
+  animation: tz-drift 20s ease-in-out infinite;
   will-change: transform;
 }
-.tz-kenburns-alt {
-  animation: tz-kenburns-alt 30s ease-in-out infinite alternate;
+.tz-drift-alt {
+  animation: tz-drift-alt 24s ease-in-out infinite;
   will-change: transform;
 }
 
