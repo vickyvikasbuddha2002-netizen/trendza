@@ -28,6 +28,7 @@ export class AmbientScore {
   private timer: number | null = null;
   private muted = false;
   private disposed = false;
+  private onVisible: (() => void) | null = null;
 
   get isRunning() {
     return this.ctx !== null;
@@ -47,13 +48,36 @@ export class AmbientScore {
     const ctx = new Ctor();
     this.ctx = ctx;
 
-    // Some browsers hand back a suspended context even from a gesture.
-    if (ctx.state === "suspended") {
-      try {
-        await ctx.resume();
-      } catch {
-        /* stays silent, page still works */
+    // iOS will not honour a context that has never played anything, no matter
+    // how correct the gesture was. Pushing one silent sample through it
+    // immediately — synchronously, before any await, while the tap is still
+    // the current task — is what actually unlocks audio on iPhones.
+    try {
+      const unlock = ctx.createBufferSource();
+      unlock.buffer = ctx.createBuffer(1, 1, 22050);
+      unlock.connect(ctx.destination);
+      unlock.start(0);
+    } catch {
+      /* older engines: the resume below is the only route */
+    }
+
+    // Resume is also started before any await, for the same reason.
+    const resumed = ctx.state === "suspended" ? ctx.resume() : Promise.resolve();
+
+    // Safari suspends the context whenever the tab goes to the background and
+    // does not always bring it back, so the score returns silently after a
+    // phone call or a switch to another app.
+    this.onVisible = () => {
+      if (document.visibilityState === "visible" && this.ctx?.state === "suspended") {
+        void this.ctx.resume().catch(() => {});
       }
+    };
+    document.addEventListener("visibilitychange", this.onVisible);
+
+    try {
+      await resumed;
+    } catch {
+      /* stays silent, page still works */
     }
 
     const master = ctx.createGain();
@@ -180,6 +204,10 @@ export class AmbientScore {
     this.disposed = true;
     if (this.timer !== null) window.clearTimeout(this.timer);
     this.timer = null;
+    if (this.onVisible) {
+      document.removeEventListener("visibilitychange", this.onVisible);
+      this.onVisible = null;
+    }
     for (const osc of this.oscillators) {
       try {
         osc.stop();
