@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ThreadRule } from "@/components/Ambient";
 import { PageShell } from "@/components/PageShell";
-import { ProductMotif } from "@/components/ProductMotif";
-import { PRODUCTS, amazonUrl } from "@/lib/products";
+import { ShopList } from "@/components/ShopList";
 
 export const metadata: Metadata = {
   title: "Rakhi gifts — Trendza",
@@ -28,35 +27,7 @@ export default function ShopPage() {
           </p>
         </header>
 
-        <div className="mt-14 grid gap-x-8 gap-y-12 sm:grid-cols-2">
-          {PRODUCTS.map((product) => (
-            <a
-              key={product.id}
-              href={amazonUrl(product)}
-              target="_blank"
-              rel="noopener noreferrer sponsored"
-              className="group flex gap-5"
-            >
-              <div className="shrink-0 pt-1">
-                <ProductMotif motif={product.motif} />
-              </div>
-              <div className="min-w-0">
-                <p className="font-sans text-[0.6rem] uppercase tracking-[0.24em] text-[var(--gold)]">
-                  {product.forWhom}
-                </p>
-                <h2 className="mt-1.5 font-display text-2xl font-light text-[var(--maroon)] transition group-hover:text-[var(--maroon-soft)]">
-                  {product.title}
-                </h2>
-                <p className="mt-2 font-sans text-sm leading-relaxed text-[var(--muted)]">
-                  {product.blurb}
-                </p>
-                <span className="mt-3 inline-block font-sans text-[0.76rem] tracking-wide text-[var(--maroon-soft)] underline-offset-4 group-hover:underline">
-                  See them on Amazon →
-                </span>
-              </div>
-            </a>
-          ))}
-        </div>
+        <ShopList />
 
         <div className="mt-16">
           <ThreadRule />

@@ -10,6 +10,7 @@ import { recordVisit } from "@/lib/stats";
 import { openWish, type OpenPhoto } from "@/lib/wishes";
 import { RETENTION_LABEL, type Wish } from "@/lib/types";
 import { Bloom, Petals, ThreadRule } from "./Ambient";
+import { GiftThread } from "./GiftThread";
 import { MuteButton } from "./MuteButton";
 import { SealedLetter } from "./SealedLetter";
 import { ThreadSpine } from "./ThreadSpine";
@@ -355,18 +356,16 @@ export default function WishExperience({ wish }: { wish: Wish }) {
 
                 <div className="mt-9 flex flex-col gap-3">
                   <Link
-                    href="/shop"
-                    className="rounded-full border border-[var(--gold)]/45 bg-[var(--ivory-deep)]/60 px-7 py-3.5 font-sans text-[0.8rem] tracking-wide text-[var(--maroon)] transition hover:border-[var(--gold)] hover:bg-[var(--ivory-deep)]"
-                  >
-                    Send {wish.from} something real →
-                  </Link>
-                  <Link
                     href="/create"
                     className="rounded-full bg-[var(--maroon)] px-7 py-3.5 font-sans text-[0.8rem] tracking-wide text-[var(--ivory)] transition hover:bg-[var(--maroon-soft)]"
                   >
                     Make one for your sibling
                   </Link>
                 </div>
+
+                {/* The shop lives here as something to notice rather than a
+                    second button competing with the one above. */}
+                <GiftThread from={wish.from} />
 
                 {/* The single mention of the brand, and the only housekeeping
                     on this page. Both sit here, after the story has landed,

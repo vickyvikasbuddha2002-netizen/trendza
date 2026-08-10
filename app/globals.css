@@ -43,10 +43,14 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Let the immersive routes own the full viewport without the page
-   scrolling horizontally when petals drift past the edges. */
+/* Petals drift past the edges, and the gift parcel deliberately hangs off
+   the right one. `clip` rather than `hidden`: hidden still creates a scroll
+   container, so mobile browsers let the page be dragged sideways anyway.
+   Clip refuses outright, and it has to be on html as well as body or the
+   root element keeps scrolling regardless. */
+html,
 body {
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* ── Ambient motion ──────────────────────────────────────────────
