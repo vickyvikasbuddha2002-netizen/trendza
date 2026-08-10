@@ -49,6 +49,9 @@ export function PageShell({
           <Link href="/privacy" className="hover:text-[var(--maroon-soft)]">
             Your photos
           </Link>
+          <Link href="/terms" className="hover:text-[var(--maroon-soft)]">
+            Terms
+          </Link>
           <ChaiLink />
         </div>
       </footer>

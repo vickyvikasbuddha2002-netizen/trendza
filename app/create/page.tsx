@@ -30,6 +30,7 @@ export default function CreatePage() {
   const [message, setMessage] = useState("");
   const [photos, setPhotos] = useState<DraftPhoto[]>([]);
   const [retention, setRetention] = useState<Retention>("30d");
+  const [accepted, setAccepted] = useState(false);
   const [progress, setProgress] = useState({ done: 0, total: 0 });
   const [error, setError] = useState<string | null>(null);
   const [created, setCreated] = useState<{ id: string; key: string } | null>(null);
@@ -324,13 +325,37 @@ export default function CreatePage() {
                 </p>
               </div>
 
+              {/* Explicit acceptance rather than a passive "by continuing you
+                  agree" line — it is the difference between a term someone
+                  was shown and one they actively accepted. */}
+              <label className="mt-9 flex cursor-pointer items-start gap-3">
+                <input
+                  type="checkbox"
+                  checked={accepted}
+                  onChange={(e) => setAccepted(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 shrink-0 accent-[var(--maroon)]"
+                />
+                <span className="font-sans text-[0.72rem] leading-relaxed text-[var(--muted)]">
+                  These photos are mine to share, and anyone in them is happy for
+                  me to. I accept the{" "}
+                  <Link
+                    href="/terms"
+                    target="_blank"
+                    className="text-[var(--maroon-soft)] underline underline-offset-4"
+                  >
+                    terms of use
+                  </Link>
+                  .
+                </span>
+              </label>
+
               {error && (
                 <p className="mt-5 rounded-xl bg-[var(--maroon)]/8 px-4 py-3 font-sans text-sm text-[var(--maroon)]">
                   {error}
                 </p>
               )}
 
-              <div className="mt-9 flex gap-3">
+              <div className="mt-6 flex gap-3">
                 <button
                   type="button"
                   onClick={() => setStep("words")}
@@ -340,8 +365,9 @@ export default function CreatePage() {
                 </button>
                 <button
                   type="button"
+                  disabled={!accepted}
                   onClick={submit}
-                  className="flex-1 rounded-full bg-[var(--maroon)] px-8 py-4 font-sans text-sm tracking-wide text-[var(--ivory)] transition hover:bg-[var(--maroon-soft)]"
+                  className="flex-1 rounded-full bg-[var(--maroon)] px-8 py-4 font-sans text-sm tracking-wide text-[var(--ivory)] transition enabled:hover:bg-[var(--maroon-soft)] disabled:cursor-not-allowed disabled:opacity-35"
                 >
                   {photos.length ? "Create the wish" : "Create without photos"}
                 </button>

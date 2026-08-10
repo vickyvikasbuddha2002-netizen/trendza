@@ -7,15 +7,19 @@ export interface CompressedImage {
 /**
  * Shrink a phone photo before it ever touches the network.
  *
- * A typical 4000x3000 phone shot is 3-8MB. At 1600px on the long edge
- * and WebP q0.82 it lands around 150-300KB with no visible loss at the
- * sizes we display. Uploading six untouched originals over 4G is the
- * single biggest reason someone abandons the flow halfway.
+ * A typical 4000x3000 phone shot is 3-8MB. At 1400px on the long edge and
+ * WebP q0.76 it lands around 100-160KB, which still looks clean at the size
+ * these are displayed and on the screens they are displayed on.
+ *
+ * Two reasons to be this aggressive. Uploading untouched originals over 4G
+ * is the main reason people abandon the flow halfway. And the free storage
+ * tier is 1GB — at this size that is roughly two thousand wishes rather
+ * than eight hundred.
  */
 export async function compressImage(
   file: File,
-  maxDim = 1600,
-  quality = 0.82,
+  maxDim = 1400,
+  quality = 0.76,
 ): Promise<CompressedImage> {
   const bitmap = await loadBitmap(file);
 

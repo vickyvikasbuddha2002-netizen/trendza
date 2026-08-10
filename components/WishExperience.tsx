@@ -353,32 +353,6 @@ export default function WishExperience({ wish }: { wish: Wish }) {
               >
                 <ThreadRule />
 
-                {/* The recipient is the one whose face is in these photographs.
-                    They deserve to know where they ended up as much as the
-                    sender does. */}
-                {!wish.plaintext && (
-                  <p className="mt-7 font-sans text-[0.68rem] leading-relaxed text-[var(--muted)]">
-                    These photographs were locked on {wish.from}&apos;s phone before
-                    they were sent. Trendza cannot open them.
-                    {wish.expiresAt !== null ? (
-                      <>
-                        {" "}
-                        They are deleted for good on{" "}
-                        <ExpiryDate at={wish.expiresAt} /> — save any you want to
-                        keep.{" "}
-                      </>
-                    ) : (
-                      " "
-                    )}
-                    <Link
-                      href="/privacy"
-                      className="text-[var(--maroon-soft)] underline-offset-4 hover:underline"
-                    >
-                      How this works
-                    </Link>
-                  </p>
-                )}
-
                 <div className="mt-9 flex flex-col gap-3">
                   <Link
                     href="/shop"
@@ -394,13 +368,33 @@ export default function WishExperience({ wish }: { wish: Wish }) {
                   </Link>
                 </div>
 
-                {/* The single mention of the brand on this whole page. */}
+                {/* The single mention of the brand, and the only housekeeping
+                    on this page. Both sit here, after the story has landed,
+                    rather than interrupting it. */}
                 <p className="mt-8 font-sans text-[0.62rem] uppercase tracking-[0.34em] text-[var(--muted)]">
                   made on{" "}
                   <Link href="/" className="text-[var(--maroon-soft)] hover:underline">
                     Trendza
                   </Link>
                 </p>
+
+                {!wish.plaintext && (
+                  <p className="mt-3 font-sans text-[0.64rem] text-[var(--muted)]">
+                    {wish.expiresAt !== null ? (
+                      <>
+                        Private. Kept until <ExpiryDate at={wish.expiresAt} />.{" "}
+                      </>
+                    ) : (
+                      <>Private to this link. </>
+                    )}
+                    <Link
+                      href="/privacy"
+                      className="text-[var(--maroon-soft)] underline-offset-4 hover:underline"
+                    >
+                      Why
+                    </Link>
+                  </p>
+                )}
               </motion.div>
             </section>
           </main>
