@@ -1,4 +1,4 @@
-import { supabase } from "./supabase";
+import { isSupabaseConfigured, supabase } from "./supabase";
 import type { SiteStats } from "./types";
 
 const EMPTY: SiteStats = { visits: 0, wishes: 0, agreements: 0 };
@@ -28,6 +28,7 @@ export function recordAgreement(): Promise<void> {
 }
 
 async function bump(field: keyof SiteStats): Promise<void> {
+  if (!isSupabaseConfigured) return;
   try {
     // A Postgres function, so simultaneous visitors cannot lose an
     // increment the way a read-modify-write from the client would.
@@ -38,6 +39,9 @@ async function bump(field: keyof SiteStats): Promise<void> {
 }
 
 export async function fetchStats(): Promise<SiteStats> {
+  // Misconfiguration shows three zeroes rather than throwing. A counter is
+  // decoration; it must never be the thing that breaks a page.
+  if (!isSupabaseConfigured) return EMPTY;
   try {
     const { data, error } = await supabase
       .from("stats")
