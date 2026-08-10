@@ -205,6 +205,28 @@ body {
   scrollbar-width: none;
 }
 
+/* Curtain wipe used for the photo reveals. Pure transform, so it composites
+   on the GPU — a clip-path or blur reveal looks similar and costs far more
+   on the budget Android hardware most of this audience is holding. */
+@keyframes tz-curtain {
+  to {
+    transform: translate3d(0, -101%, 0);
+  }
+}
+
+/* ── Mobile budget ───────────────────────────────────────────────
+   Phones get half the petals and no third bloom. Ambient motion should
+   never be the reason a page stutters while someone is reading. */
+@media (max-width: 640px) {
+  .tz-petal:nth-child(2n) {
+    display: none;
+  }
+  .tz-bloom,
+  .tz-bloom-alt {
+    animation-duration: 34s;
+  }
+}
+
 /* ── Reduced motion ──────────────────────────────────────────────
    Ambient motion stops entirely; reveals collapse to plain opacity.
    Non-negotiable — vestibular disorders are real and this page moves

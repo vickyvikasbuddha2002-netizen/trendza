@@ -36,13 +36,23 @@ export function Landing() {
           </motion.h1>
 
           <motion.p
-            className="mt-6 max-w-md font-display text-lg font-light italic leading-relaxed text-[var(--ink)] sm:text-xl"
+            className="mt-7 max-w-lg font-display text-xl font-light italic leading-relaxed text-[var(--ink)] sm:text-2xl"
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.1, delay: 0.75, ease: EASE }}
           >
-            Make a rakhi wish out of your photographs and send it as a link. No
-            account, no cost, nothing to install.
+            Some years the thread has to travel. Make one out of your
+            photographs — the long summers, the old arguments, the things you
+            have never quite managed to say — and let it arrive for you.
+          </motion.p>
+
+          <motion.p
+            className="mt-5 font-sans text-[0.72rem] uppercase tracking-[0.28em] text-[var(--muted)]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 1 }}
+          >
+            Free · No account · Ready in two minutes
           </motion.p>
 
           <motion.div
@@ -230,16 +240,18 @@ function RakhiMotif() {
         transition={{ duration: 1.1, delay: 0.25, ease: EASE }}
       />
 
-      {/* The rotation lives on `style`, not the SVG attribute — Framer Motion
-          writes its own transform and would otherwise discard the attribute,
-          stacking all eight petals on top of each other. */}
+      {/* `transformBox: view-box` is doing real work here. Without it, CSS
+          transform-origin on an SVG element resolves against that element's
+          own bounding box, so every petal rotated around its own centre and
+          the eight of them stacked into a clump above the stone instead of
+          opening into a flower. */}
       {Array.from({ length: 8 }, (_, i) => (
         <motion.ellipse
           key={i}
           cx="130"
-          cy="34"
-          rx="10"
-          ry="20"
+          cy="38"
+          rx="9.5"
+          ry="19"
           stroke="var(--gold)"
           strokeWidth="1.6"
           fill="var(--gold)"
@@ -248,7 +260,11 @@ function RakhiMotif() {
             hidden: { scale: 0, opacity: 0 },
             shown: { scale: 1, opacity: 1 },
           }}
-          style={{ transformOrigin: "130px 60px", rotate: i * 45 }}
+          style={{
+            transformBox: "view-box",
+            transformOrigin: "130px 60px",
+            rotate: i * 45,
+          }}
           transition={{ duration: 0.7, delay: 0.75 + i * 0.06, ease: EASE }}
         />
       ))}

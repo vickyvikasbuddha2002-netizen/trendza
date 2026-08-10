@@ -71,29 +71,39 @@ export function Petals({ count = 18, seed = 7 }: { count?: number; seed?: number
  * Slow saffron and rose light moving under the ivory, so the background is
  * never a flat colour. Sits behind everything at z-0.
  */
+/**
+ * Slow saffron and rose light moving under the ivory, so the background is
+ * never a flat colour.
+ *
+ * Deliberately no `filter: blur()`. These used to carry a 90-110px blur,
+ * which on a mid-range Android meant the GPU re-rasterising three
+ * viewport-sized layers every frame — the single biggest cause of jank on
+ * the whole site. A radial gradient that fades to zero is already soft;
+ * the blur was buying nothing and costing everything.
+ */
 export function Bloom() {
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
       <div
-        className="tz-bloom absolute -left-[20%] -top-[25%] h-[85vh] w-[85vh] rounded-full blur-[90px]"
+        className="tz-bloom absolute -left-[25%] -top-[30%] h-[95vh] w-[95vh] rounded-full"
         style={{
           background:
-            "radial-gradient(circle, rgba(233,168,80,0.42), rgba(233,168,80,0) 68%)",
+            "radial-gradient(circle, rgba(233,168,80,0.38) 0%, rgba(233,168,80,0.16) 38%, rgba(233,168,80,0) 70%)",
         }}
       />
       <div
-        className="tz-bloom-alt absolute -right-[18%] top-[8%] h-[75vh] w-[75vh] rounded-full blur-[100px]"
+        className="tz-bloom-alt absolute -right-[22%] top-[4%] h-[88vh] w-[88vh] rounded-full"
         style={{
           background:
-            "radial-gradient(circle, rgba(214,120,130,0.34), rgba(214,120,130,0) 68%)",
+            "radial-gradient(circle, rgba(214,120,130,0.30) 0%, rgba(214,120,130,0.13) 38%, rgba(214,120,130,0) 70%)",
         }}
       />
       <div
-        className="tz-bloom absolute bottom-[-30%] left-[22%] h-[80vh] w-[80vh] rounded-full blur-[110px]"
+        className="tz-bloom absolute bottom-[-35%] left-[18%] hidden h-[90vh] w-[90vh] rounded-full sm:block"
         style={{
           animationDelay: "-11s",
           background:
-            "radial-gradient(circle, rgba(201,162,39,0.3), rgba(201,162,39,0) 70%)",
+            "radial-gradient(circle, rgba(201,162,39,0.26) 0%, rgba(201,162,39,0.11) 40%, rgba(201,162,39,0) 72%)",
         }}
       />
     </div>

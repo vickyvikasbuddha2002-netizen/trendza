@@ -19,12 +19,24 @@ export function LiveCounters() {
   }, []);
 
   return (
-    <div className="flex items-stretch justify-center gap-3 sm:gap-5">
-      <Counter value={stats?.visits} label="people here" />
-      <Divider />
-      <Counter value={stats?.wishes} label="wishes made" />
-      <Divider />
-      <Counter value={stats?.agreements} label="accords signed" />
+    <div>
+      <div className="mb-5 flex items-center justify-center gap-2">
+        <span className="relative flex h-1.5 w-1.5">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--gold)] opacity-70" />
+          <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[var(--gold)]" />
+        </span>
+        <span className="font-sans text-[0.58rem] uppercase tracking-[0.3em] text-[var(--muted)]">
+          Live
+        </span>
+      </div>
+
+      <div className="flex items-stretch justify-center gap-3 sm:gap-5">
+        <Counter value={stats?.visits} label="people here" />
+        <Divider />
+        <Counter value={stats?.wishes} label="wishes made" />
+        <Divider />
+        <Counter value={stats?.agreements} label="accords signed" />
+      </div>
     </div>
   );
 }

@@ -221,19 +221,13 @@ export default function WishExperience({ wish }: { wish: Wish }) {
 
             {/* ── Act 3 · the memories ────────────────────────────── */}
             {content.photos.map((photo, i) => (
-              <section key={photo.objectUrl} className="px-0 py-[9vh]">
-                <motion.figure
-                  className="m-0"
-                  initial={{ opacity: 0, y: 42 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-12%" }}
-                  transition={{ duration: 1.25, ease: EASE }}
-                >
+              <section key={photo.objectUrl} className="px-0 py-[11vh]">
+                <figure className="m-0">
                   <div
                     className="relative w-full overflow-hidden bg-[var(--ivory-deep)]"
                     style={{
                       aspectRatio: `${photo.w || 4} / ${photo.h || 3}`,
-                      maxHeight: "80vh",
+                      maxHeight: "82vh",
                     }}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -253,22 +247,67 @@ export default function WishExperience({ wish }: { wish: Wish }) {
                           "linear-gradient(to bottom, rgba(253,249,243,0.5) 0%, rgba(253,249,243,0) 18%, rgba(253,249,243,0) 82%, rgba(253,249,243,0.55) 100%)",
                       }}
                     />
+
+                    {/* The reveal: an ivory curtain drawn upward off the
+                        photograph, with the gold thread riding its edge.
+                        Pure translate, so it stays on the compositor — a
+                        blur or clip-path reveal looks similar and costs far
+                        more on the phones this will mostly open on. */}
+                    <motion.div
+                      aria-hidden
+                      className="absolute inset-0 z-10 bg-[var(--ivory)]"
+                      initial={{ y: "0%" }}
+                      whileInView={{ y: "-101%" }}
+                      viewport={{ once: true, margin: "-18%" }}
+                      transition={{ duration: 1.5, ease: [0.76, 0, 0.24, 1] }}
+                    />
+                    <motion.div
+                      aria-hidden
+                      className="absolute inset-x-0 top-0 z-20 h-px"
+                      style={{ background: "var(--gold)" }}
+                      initial={{ y: "0vh", opacity: 0 }}
+                      whileInView={{ y: "-101%", opacity: [0, 1, 1, 0] }}
+                      viewport={{ once: true, margin: "-18%" }}
+                      transition={{ duration: 1.5, ease: [0.76, 0, 0.24, 1] }}
+                    />
                   </div>
 
                   {photo.note && (
                     <motion.figcaption
-                      className="mx-auto mt-7 max-w-lg px-8 text-center font-display text-[1.28rem] font-light italic leading-relaxed text-[var(--maroon-soft)] sm:text-2xl"
-                      initial={{ opacity: 0, y: 14 }}
+                      className="mx-auto mt-8 max-w-lg px-8 text-center font-display text-[1.32rem] font-light italic leading-relaxed text-[var(--maroon-soft)] sm:text-2xl"
+                      initial={{ opacity: 0, y: 16 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true, margin: "-8%" }}
-                      transition={{ duration: 1.1, delay: 0.25, ease: EASE }}
+                      transition={{ duration: 1.3, delay: 0.75, ease: EASE }}
                     >
                       {photo.note}
                     </motion.figcaption>
                   )}
-                </motion.figure>
+                </figure>
               </section>
             ))}
+
+            {/* ── A blessing before the close ─────────────────────── */}
+            <section className="flex min-h-[62vh] flex-col items-center justify-center px-7 text-center">
+              <motion.p
+                className="max-w-lg font-display text-[1.7rem] font-light italic leading-relaxed text-[var(--maroon-soft)] sm:text-4xl"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-15%" }}
+                transition={{ duration: 1.6, ease: EASE }}
+              >
+                Distance is only distance.
+              </motion.p>
+              <motion.p
+                className="mt-5 max-w-lg font-display text-[1.7rem] font-light italic leading-relaxed text-[var(--maroon)] sm:text-4xl"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-15%" }}
+                transition={{ duration: 1.6, delay: 0.9, ease: EASE }}
+              >
+                The thread holds anyway.
+              </motion.p>
+            </section>
 
             {/* ── Act 4 · the close ───────────────────────────────── */}
             <section className="flex min-h-dvh flex-col items-center justify-center px-7 pb-24 pt-12 text-center">
