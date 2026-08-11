@@ -1,6 +1,6 @@
-import type { Product } from "@/lib/products";
+import type { Category } from "@/lib/products";
 
-const PATHS: Record<Product["motif"], React.ReactNode> = {
+const PATHS: Record<Category["motif"], React.ReactNode> = {
   thread: (
     <>
       <path d="M2 26h14M36 26h14" />
@@ -47,7 +47,7 @@ const PATHS: Record<Product["motif"], React.ReactNode> = {
   ),
 };
 
-export function ProductMotif({ motif }: { motif: Product["motif"] }) {
+export function ProductMotif({ motif }: { motif: Category["motif"] }) {
   return (
     <svg
       viewBox="0 0 52 52"
