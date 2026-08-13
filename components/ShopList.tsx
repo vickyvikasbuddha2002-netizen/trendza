@@ -17,6 +17,9 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 /** Raksha Bandhan 2026 — Friday 28 August, IST. */
 const RAKHI = new Date("2026-08-28T00:00:00+05:30");
 
+/** Beyond this many, a category collapses behind a "+N more". */
+const VISIBLE_PICKS = 8;
+
 const AUDIENCES = [
   { id: "all", label: "Everything" },
   { id: "her", label: "For her" },
@@ -134,6 +137,7 @@ function CategoryBlock({
   daysLeft: number | null;
   index: number;
 }) {
+  const [expanded, setExpanded] = useState(false);
   const timing = daysLeft === null ? null : timingFor(category.shipDays, daysLeft);
 
   return (
@@ -173,9 +177,12 @@ function CategoryBlock({
 
         {/* Each pick is its own link. Numbered rather than titled: Amazon's own
             product names are thirty words of keyword soup and would wreck the
-            page, and inventing names for products I cannot see would be worse. */}
+            page, and inventing names for products I cannot see would be worse.
+
+            Only the first eight show. Sixteen undifferentiated choices is the
+            fastest way to make someone choose nothing at all. */}
         <div className="mt-4 flex flex-wrap gap-2">
-          {category.picks.map((pick, i) => (
+          {category.picks.slice(0, expanded ? undefined : VISIBLE_PICKS).map((pick, i) => (
             <a
               key={pick.url}
               href={pick.url}
@@ -186,6 +193,16 @@ function CategoryBlock({
               {category.picks.length === 1 ? "See it on Amazon" : `Pick ${i + 1}`}
             </a>
           ))}
+
+          {category.picks.length > VISIBLE_PICKS && !expanded && (
+            <button
+              type="button"
+              onClick={() => setExpanded(true)}
+              className="rounded-full px-3 py-2 font-sans text-[0.74rem] text-[var(--muted)] underline-offset-4 transition hover:text-[var(--maroon)] hover:underline"
+            >
+              +{category.picks.length - VISIBLE_PICKS} more
+            </button>
+          )}
         </div>
       </div>
     </motion.section>
