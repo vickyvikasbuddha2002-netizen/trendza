@@ -1,5 +1,6 @@
 import { DEMO_WISH } from "./demo";
 import { isRetention, type Agreement, type Wish } from "./types";
+import type { Wishlist } from "./wishlist";
 
 /**
  * Server-side reads.
@@ -105,6 +106,38 @@ export async function getWishServer(id: string): Promise<WishResult> {
       retention: isRetention(row.retention) ? row.retention : "forever",
       expiresAt: row.expires_at ? Date.parse(row.expires_at) : null,
     },
+  };
+}
+
+interface WishlistRow {
+  id: string;
+  from_name: string;
+  to_name: string;
+  from_gender: string;
+  wishes: unknown;
+  views: number;
+  parent_id: string | null;
+  created_at: string;
+}
+
+export async function getWishlistServer(id: string): Promise<Wishlist | null> {
+  if (!/^[a-z0-9]{4,32}$/.test(id)) return null;
+
+  // No cache: the view counter should reflect reality, and these pages are
+  // cheap to render.
+  const rows = await callRpc<WishlistRow>("get_wishlist", { p_id: id }, 0);
+  const row = rows?.[0];
+  if (!row) return null;
+
+  return {
+    id: row.id,
+    from: row.from_name ?? "",
+    to: row.to_name ?? "",
+    fromGender: row.from_gender === "m" ? "m" : "f",
+    wishes: Array.isArray(row.wishes) ? (row.wishes as Wishlist["wishes"]) : [],
+    views: Number(row.views ?? 0),
+    parentId: row.parent_id ?? null,
+    createdAt: Date.parse(row.created_at) || 0,
   };
 }
 

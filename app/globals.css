@@ -225,6 +225,33 @@ body {
   }
 }
 
+/* ── Wishlist reactions ──────────────────────────────────────────
+   One keyframe per mood. Transform only, so six of these on screen
+   at once still composite on the GPU. */
+@keyframes tz-sway {
+  0%, 100% { transform: rotate(-2deg) translate3d(0, 0, 0); }
+  50%      { transform: rotate(2deg) translate3d(0, -3px, 0); }
+}
+@keyframes tz-plead {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  40%      { transform: translate3d(0, 4px, 0) scale(0.985); }
+  70%      { transform: translate3d(0, -2px, 0) scale(1.008); }
+}
+@keyframes tz-shake {
+  0%, 100%      { transform: translate3d(0, 0, 0) rotate(0deg); }
+  20%, 60%      { transform: translate3d(-3px, 0, 0) rotate(-1.6deg); }
+  40%, 80%      { transform: translate3d(3px, 0, 0) rotate(1.6deg); }
+}
+@keyframes tz-pop {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  45%      { transform: translate3d(0, -7px, 0) scale(1.035); }
+}
+
+.tz-sway  { animation: tz-sway 4.2s ease-in-out infinite; }
+.tz-plead { animation: tz-plead 2.6s ease-in-out infinite; }
+.tz-shake { animation: tz-shake 2.8s ease-in-out infinite; }
+.tz-pop   { animation: tz-pop 2.4s ease-in-out infinite; }
+
 /* ── Mobile budget ───────────────────────────────────────────────
    Phones get half the petals and no third bloom. Ambient motion should
    never be the reason a page stutters while someone is reading. */

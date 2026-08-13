@@ -68,11 +68,25 @@ export function Landing() {
               Make a rakhi wish
             </Link>
             <Link
-              href="/agreement"
+              href="/wishlist"
               className="rounded-full border border-[var(--gold)]/50 bg-[var(--ivory-deep)]/40 px-8 py-4 font-sans text-sm tracking-wide text-[var(--maroon)] transition hover:border-[var(--gold)] hover:bg-[var(--ivory-deep)]/80"
             >
-              Make a sibling agreement
+              Make a wishlist
             </Link>
+            <div className="flex gap-3">
+              <Link
+                href="/agreement"
+                className="flex-1 rounded-full border border-[var(--ivory-shadow)] px-5 py-3.5 text-center font-sans text-[0.78rem] tracking-wide text-[var(--muted)] transition hover:border-[var(--gold)] hover:text-[var(--maroon)]"
+              >
+                Sibling accord
+              </Link>
+              <Link
+                href="/shop"
+                className="flex-1 rounded-full border border-[var(--ivory-shadow)] px-5 py-3.5 text-center font-sans text-[0.78rem] tracking-wide text-[var(--muted)] transition hover:border-[var(--gold)] hover:text-[var(--maroon)]"
+              >
+                Rakhi gifts
+              </Link>
+            </div>
           </motion.div>
 
           {/* The doubt people have before uploading family photographs, answered

@@ -21,13 +21,34 @@ export function PageShell({
       <Bloom />
       <Petals count={petals} seed={seed} />
 
-      <header className="relative z-30 px-6 pt-7 sm:px-10">
+      {/* Permanent navigation. The shop used to be reachable only from the
+          bottom of the landing page and the end of a wish, which is a lot of
+          scrolling between someone wanting a gift and finding one. */}
+      <header className="relative z-30 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 px-6 pt-7 sm:px-10">
         <Link
           href="/"
           className="font-display text-xl tracking-wide text-[var(--maroon)] transition hover:text-[var(--maroon-soft)]"
         >
           Trendza
         </Link>
+
+        <nav className="flex items-center gap-4 font-sans text-[0.72rem] sm:gap-6">
+          <Link href="/create" className="text-[var(--muted)] transition hover:text-[var(--maroon)]">
+            Wish
+          </Link>
+          <Link href="/wishlist" className="text-[var(--muted)] transition hover:text-[var(--maroon)]">
+            Wishlist
+          </Link>
+          <Link href="/agreement" className="text-[var(--muted)] transition hover:text-[var(--maroon)]">
+            Accord
+          </Link>
+          <Link
+            href="/shop"
+            className="rounded-full border border-[var(--gold)]/50 bg-[var(--ivory-deep)]/50 px-4 py-1.5 tracking-wide text-[var(--maroon)] transition hover:border-[var(--gold)] hover:bg-[var(--ivory-deep)]"
+          >
+            Gifts
+          </Link>
+        </nav>
       </header>
 
       <div className="relative z-30">{children}</div>
