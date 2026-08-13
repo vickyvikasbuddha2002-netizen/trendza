@@ -15,8 +15,8 @@ import {
   REACTIONS,
   createWishlist,
   defaultReaction,
+  type DraftWish,
   type Reaction,
-  type WishItem,
 } from "@/lib/wishlist";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -25,14 +25,14 @@ export default function WishlistBuilder() {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [gender, setGender] = useState<"f" | "m">("f");
-  const [wishes, setWishes] = useState<WishItem[]>([
+  const [wishes, setWishes] = useState<DraftWish[]>([
     { reaction: "request", text: "" },
   ]);
   const [openPicker, setOpenPicker] = useState<number | null>(null);
   const [parentId, setParentId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [created, setCreated] = useState<string | null>(null);
+  const [created, setCreated] = useState<{ id: string; key: string | null } | null>(null);
 
   useEffect(() => {
     void recordVisit();
@@ -44,7 +44,7 @@ export default function WishlistBuilder() {
     if (theirName) setTo(theirName.slice(0, 20));
   }, []);
 
-  const setWish = (i: number, patch: Partial<WishItem>) =>
+  const setWish = (i: number, patch: Partial<DraftWish>) =>
     setWishes((prev) => prev.map((w, n) => (n === i ? { ...w, ...patch } : w)));
 
   const addWish = () =>
@@ -55,7 +55,31 @@ export default function WishlistBuilder() {
     );
 
   const removeWish = (i: number) =>
-    setWishes((prev) => (prev.length === 1 ? prev : prev.filter((_, n) => n !== i)));
+    setWishes((prev) => {
+      if (prev.length === 1) return prev;
+      if (prev[i].previewUrl) URL.revokeObjectURL(prev[i].previewUrl!);
+      return prev.filter((_, n) => n !== i);
+    });
+
+  const pickImage = (i: number, file?: File) => {
+    if (!file || !file.type.startsWith("image/")) return;
+    setWishes((prev) =>
+      prev.map((w, n) => {
+        if (n !== i) return w;
+        if (w.previewUrl) URL.revokeObjectURL(w.previewUrl);
+        return { ...w, file, previewUrl: URL.createObjectURL(file) };
+      }),
+    );
+  };
+
+  const clearImage = (i: number) =>
+    setWishes((prev) =>
+      prev.map((w, n) => {
+        if (n !== i) return w;
+        if (w.previewUrl) URL.revokeObjectURL(w.previewUrl);
+        return { ...w, file: undefined, previewUrl: undefined };
+      }),
+    );
 
   const filled = wishes.filter((w) => w.text.trim()).length;
   const canSend = from.trim() && to.trim() && filled > 0;
@@ -64,8 +88,8 @@ export default function WishlistBuilder() {
     setSaving(true);
     setError(null);
     try {
-      const id = await createWishlist({ from, to, fromGender: gender, wishes, parentId });
-      setCreated(id);
+      const result = await createWishlist({ from, to, fromGender: gender, wishes, parentId });
+      setCreated(result);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not save the list.");
     } finally {
@@ -86,10 +110,17 @@ export default function WishlistBuilder() {
             </p>
 
             <ShareBox
-              path={`/list/${created}`}
+              path={`/list/${created.id}${created.key ? `#k=${created.key}` : ""}`}
               shareText={`${to.trim()}, I made my Raksha Bandhan list 😤`}
               previewLabel="See what they will see"
             />
+
+            {created.key && (
+              <p className="mt-4 rounded-xl border border-[var(--gold)]/40 bg-[var(--ivory-deep)]/40 px-4 py-3 font-sans text-[0.7rem] leading-relaxed text-[var(--maroon)]">
+                Send the link <strong className="font-semibold">whole</strong> — the part
+                after the <code className="font-mono">#</code> unlocks your pictures.
+              </p>
+            )}
 
             <div className="mt-14">
               <ThreadRule />
@@ -205,6 +236,39 @@ export default function WishlistBuilder() {
                     }
                     className="w-full resize-none rounded-xl border border-[var(--ivory-shadow)] bg-[var(--ivory)] px-4 py-3 font-display text-lg text-[var(--ink)] outline-none transition placeholder:font-sans placeholder:text-xs placeholder:text-[var(--muted)]/70 focus:border-[var(--gold)]"
                   />
+                  {/* A picture of the thing, optional. Encrypted on upload
+                      like everything else, so the site keeps one promise
+                      rather than two different ones. */}
+                  <div className="mt-2 flex items-center gap-3">
+                    {wish.previewUrl ? (
+                      <>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={wish.previewUrl}
+                          alt=""
+                          className="h-12 w-12 rounded-lg object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => clearImage(i)}
+                          className="font-sans text-[0.68rem] text-[var(--muted)] underline-offset-4 hover:text-[var(--maroon)] hover:underline"
+                        >
+                          Remove picture
+                        </button>
+                      </>
+                    ) : (
+                      <label className="cursor-pointer font-sans text-[0.68rem] text-[var(--maroon-soft)] underline-offset-4 hover:underline">
+                        + Add a picture
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => pickImage(i, e.target.files?.[0])}
+                        />
+                      </label>
+                    )}
+                  </div>
+
                   <div className="mt-1.5 flex items-center justify-between">
                     <select
                       value={wish.categoryId ?? ""}

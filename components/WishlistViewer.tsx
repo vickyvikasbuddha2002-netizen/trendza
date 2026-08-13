@@ -2,20 +2,50 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { PageShell } from "./PageShell";
 import { ReactionCharacter } from "./ReactionCharacter";
 import { ThreadRule } from "./Ambient";
-import { countView, linkForWish, type Wishlist } from "@/lib/wishlist";
+import { keyFromLocation } from "@/lib/crypto";
+import {
+  countView,
+  linkForWish,
+  openWishlistImages,
+  type Wishlist,
+} from "@/lib/wishlist";
 import { recordVisit } from "@/lib/stats";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 export default function WishlistViewer({ list }: { list: Wishlist }) {
+  const [images, setImages] = useState<Record<number, string>>({});
+
   useEffect(() => {
     void recordVisit();
     countView(list.id);
   }, [list.id]);
+
+  // Pictures are encrypted with a key that lives only in the fragment. If the
+  // link was truncated the list still reads perfectly — the demands are the
+  // point and the pictures are decoration, so this degrades rather than fails.
+  useEffect(() => {
+    if (!list.wishes.some((w) => w.image)) return;
+    const encoded = keyFromLocation();
+    if (!encoded) return;
+
+    let live = true;
+    let created: Record<number, string> = {};
+    void openWishlistImages(list.wishes, encoded).then((urls) => {
+      created = urls;
+      if (live) setImages(urls);
+      else Object.values(urls).forEach(URL.revokeObjectURL);
+    });
+
+    return () => {
+      live = false;
+      Object.values(created).forEach(URL.revokeObjectURL);
+    };
+  }, [list.wishes]);
 
   const loopHref = `/wishlist?ref=${encodeURIComponent(list.id)}&from=${encodeURIComponent(list.from)}`;
 
@@ -103,6 +133,27 @@ export default function WishlistViewer({ list }: { list: Wishlist }) {
                 <p className="mx-auto mt-5 max-w-md font-display text-2xl font-light italic leading-relaxed text-[var(--maroon)] sm:text-3xl">
                   {wish.text}
                 </p>
+
+                {images[i] && (
+                  <motion.div
+                    className="mx-auto mt-6 overflow-hidden rounded-2xl"
+                    style={{
+                      aspectRatio: `${wish.image?.w ?? 4} / ${wish.image?.h ?? 3}`,
+                      width: `min(100%, calc(46vh * ${(wish.image?.w ?? 4) / (wish.image?.h ?? 3)}))`,
+                    }}
+                    initial={{ opacity: 0, scale: 0.97 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.7, ease: EASE }}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={images[i]}
+                      alt={wish.text}
+                      className="h-full w-full object-cover"
+                      decoding="async"
+                    />
+                  </motion.div>
+                )}
 
                 {gift && (
                   <a
