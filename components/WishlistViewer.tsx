@@ -96,59 +96,72 @@ export default function WishlistViewer({ list }: { list: Wishlist }) {
         {index === 0 ? (
           <div className="text-center">
             <motion.p
-              className="font-sans text-[0.66rem] uppercase tracking-[0.4em] text-[var(--muted)]"
+              className="font-sans text-[0.7rem] uppercase tracking-[0.42em] text-[var(--muted)]"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.15 }}
+              transition={{ duration: 0.7, delay: 0.1 }}
             >
-              Yes, you
+              Stop scrolling. Yes, you.
             </motion.p>
 
             <motion.h1
-              className="mt-3 font-display text-[3.4rem] font-light leading-[0.92] text-[var(--maroon)] sm:text-7xl"
-              initial={{ opacity: 0, scale: 0.85 }}
+              className="mt-3 font-display text-[4.2rem] font-light leading-[0.86] text-[var(--maroon)] sm:text-[7rem]"
+              initial={{ opacity: 0, scale: 0.82 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ type: "spring", stiffness: 170, damping: 12, delay: 0.25 }}
+              transition={{ type: "spring", stiffness: 170, damping: 12, delay: 0.22 }}
             >
               {list.to}
             </motion.h1>
 
             <motion.p
-              className="mx-auto mt-4 max-w-xs font-display text-xl font-light italic text-[var(--ink)] sm:text-2xl"
+              className="mx-auto mt-5 max-w-sm font-display text-[1.5rem] font-light leading-snug text-[var(--ink)] sm:text-3xl"
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.55, ease: EASE }}
+              transition={{ duration: 0.8, delay: 0.5, ease: EASE }}
             >
-              {list.from} has {list.wishes.length} demand
-              {list.wishes.length === 1 ? "" : "s"}.
+              It is Raksha Bandhan, and {list.from} has been thinking about this
+              for a while.
+            </motion.p>
+
+            <motion.p
+              className="mx-auto mt-4 max-w-xs font-display text-xl font-light italic text-[var(--maroon-soft)] sm:text-2xl"
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.85, ease: EASE }}
+            >
+              {list.wishes.length} demand{list.wishes.length === 1 ? "" : "s"}. You are
+              not going to like all of them.
             </motion.p>
 
             <motion.div
               className="mt-6 flex justify-center"
-              initial={{ opacity: 0, y: 40, scale: 0.9 }}
+              initial={{ opacity: 0, y: 44, scale: 0.88 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ type: "spring", stiffness: 150, damping: 13, delay: 0.7 }}
+              transition={{ type: "spring", stiffness: 150, damping: 13, delay: 1.1 }}
             >
               <ReactionCharacter
                 reaction={list.wishes[0]?.reaction ?? "request"}
                 gender={list.fromGender}
-                size={240}
+                size={260}
               />
             </motion.div>
           </div>
         ) : onFinale ? (
           <div className="pointer-events-auto text-center">
+            {/* Deliberately small. The deck locks scrolling, so this card has
+                to fit a short phone with four blocks of copy and three
+                buttons under it. */}
             <motion.div
-              className="mx-auto w-56 sm:w-72"
+              className="mx-auto w-36 sm:w-52"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ type: "spring", stiffness: 150, damping: 13 }}
             >
-              <RakhiScene scene="blessing" width={300} />
+              <RakhiScene scene="blessing" width={210} />
             </motion.div>
 
             <motion.p
-              className="mt-6 font-display text-2xl font-light italic text-[var(--maroon-soft)]"
+              className="mt-6 font-display text-2xl font-light italic text-[var(--maroon-soft)] sm:text-3xl"
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.25 }}
@@ -157,18 +170,38 @@ export default function WishlistViewer({ list }: { list: Wishlist }) {
             </motion.p>
 
             <motion.p
-              className="mt-8 font-display text-4xl font-light text-[var(--maroon)] sm:text-5xl"
-              initial={{ opacity: 0, scale: 0.9 }}
+              className="mx-auto mt-4 max-w-sm font-sans text-[0.86rem] leading-relaxed text-[var(--muted)]"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.5 }}
+            >
+              Tie the thread, sort the gifts, and we will call it even for another
+              year. {list.from} will pretend to have forgotten by next week.
+            </motion.p>
+
+            <motion.p
+              className="mt-9 font-display text-[3.2rem] font-light leading-none text-[var(--maroon)] sm:text-6xl"
+              initial={{ opacity: 0, scale: 0.88 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ type: "spring", stiffness: 180, damping: 12, delay: 0.45 }}
+              transition={{ type: "spring", stiffness: 180, damping: 12, delay: 0.75 }}
             >
               Your turn.
+            </motion.p>
+
+            <motion.p
+              className="mx-auto mt-3 max-w-xs font-display text-lg font-light italic text-[var(--maroon-soft)] sm:text-xl"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.95 }}
+            >
+              Make your own and send it back. {list.from} should have to sit through
+              one too.
             </motion.p>
 
             <motion.div
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.7 }}
+              transition={{ duration: 0.6, delay: 1.15 }}
             >
               <Link
                 href={loopHref}

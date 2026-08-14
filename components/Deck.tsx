@@ -158,8 +158,10 @@ export function Deck({
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: reduced ? 0 : 0.34, ease: [0.22, 1, 0.36, 1] }}
       >
-        {/* Cards opt their own controls back in with pointer-events-auto */}
-        <div className="w-full max-w-lg">{children}</div>
+        {/* Cards opt their own controls back in with pointer-events-auto.
+            `max-h-full` keeps a long card from spilling off a short phone,
+            since the deck has taken the page scroll away. */}
+        <div className="max-h-full w-full max-w-lg">{children}</div>
       </motion.div>
 
       {/* Shown once, until the first advance */}
