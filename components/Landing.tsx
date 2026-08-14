@@ -7,6 +7,7 @@ import { Countdown } from "./Countdown";
 import { RakhiScene } from "./ReactionCharacter";
 import { LiveCounters } from "./LiveCounters";
 import { PageShell } from "./PageShell";
+import { YourLinks } from "./YourLinks";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -88,6 +89,16 @@ export function Landing() {
                 Rakhi gifts
               </Link>
             </div>
+          </motion.div>
+
+          {/* Renders nothing on a first visit, so it never clutters. */}
+          <motion.div
+            className="w-full"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 1.3 }}
+          >
+            <YourLinks />
           </motion.div>
 
           {/* The doubt people have before uploading family photographs, answered

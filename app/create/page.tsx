@@ -9,6 +9,7 @@ import { ChaiLink } from "@/components/ChaiLink";
 import { ShareBox } from "@/components/ShareBox";
 import { createWish, type DraftPhoto } from "@/lib/wishes";
 import { recordVisit } from "@/lib/stats";
+import { clearDraft, loadDraft, rememberMade, saveDraft } from "@/lib/local";
 import type { Retention } from "@/lib/types";
 
 const MAX_PHOTOS = 12;
@@ -31,6 +32,7 @@ export default function CreatePage() {
   const [photos, setPhotos] = useState<DraftPhoto[]>([]);
   const [retention, setRetention] = useState<Retention>("30d");
   const [accepted, setAccepted] = useState(false);
+  const [restored, setRestored] = useState(false);
   const [progress, setProgress] = useState({ done: 0, total: 0 });
   const [error, setError] = useState<string | null>(null);
   const [created, setCreated] = useState<{ id: string; key: string } | null>(null);
@@ -38,7 +40,22 @@ export default function CreatePage() {
 
   useEffect(() => {
     void recordVisit();
+    // Photographs cannot be restored — File objects do not survive a reload —
+    // but the words are the part someone agonised over, so those come back.
+    const draft = loadDraft<{ to: string; from: string; message: string }>("wish");
+    if (draft) {
+      setTo(draft.to ?? "");
+      setFrom(draft.from ?? "");
+      setMessage(draft.message ?? "");
+      setRestored(Boolean(draft.message || draft.to));
+    }
   }, []);
+
+  useEffect(() => {
+    if (!to && !from && !message) return;
+    const timer = window.setTimeout(() => saveDraft("wish", { to, from, message }), 400);
+    return () => window.clearTimeout(timer);
+  }, [to, from, message]);
 
   // Object URLs leak if the component unmounts mid-draft.
   useEffect(() => {
@@ -103,6 +120,12 @@ export default function CreatePage() {
         (done, total) => setProgress({ done, total }),
       );
       setCreated(result);
+      rememberMade({
+        kind: "wish",
+        path: `/w/${result.id}#k=${result.key}`,
+        to: to.trim(),
+      });
+      clearDraft("wish");
       setStep("done");
     } catch (err) {
       console.error(err);
@@ -135,6 +158,29 @@ export default function CreatePage() {
               <p className="mt-3 font-sans text-sm text-[var(--muted)]">
                 No account, no sign-up. You will get a link to send them.
               </p>
+
+              {restored && (
+                <motion.p
+                  className="mt-4 flex items-center justify-between gap-3 rounded-xl border border-[var(--gold)]/40 bg-[var(--ivory-deep)]/50 px-4 py-3 font-sans text-[0.72rem] text-[var(--maroon)]"
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  <span>We kept what you had written.</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTo("");
+                      setFrom("");
+                      setMessage("");
+                      clearDraft("wish");
+                      setRestored(false);
+                    }}
+                    className="shrink-0 underline underline-offset-4 hover:text-[var(--maroon-soft)]"
+                  >
+                    Start fresh
+                  </button>
+                </motion.p>
+              )}
 
               <div className="mt-10 space-y-6">
                 <Field

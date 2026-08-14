@@ -9,6 +9,7 @@ import { ThreadRule } from "@/components/Ambient";
 import { ReactionCharacter } from "@/components/ReactionCharacter";
 import { CATEGORIES } from "@/lib/products";
 import { recordVisit } from "@/lib/stats";
+import { clearDraft, loadDraft, rememberMade, saveDraft } from "@/lib/local";
 import {
   MAX_WISHES,
   MAX_WISH_CHARS,
@@ -42,7 +43,42 @@ export default function WishlistBuilder() {
     const theirName = new URLSearchParams(window.location.search).get("from");
     if (ref) setParentId(ref);
     if (theirName) setTo(theirName.slice(0, 20));
+
+    // Pictures cannot survive a reload, but the names, the demands and which
+    // face goes with each all can.
+    const draft = loadDraft<{ from: string; to: string; gender: "f" | "m"; wishes: DraftWish[] }>(
+      "wishlist",
+    );
+    if (draft) {
+      setFrom(draft.from ?? "");
+      if (!theirName) setTo(draft.to ?? "");
+      setGender(draft.gender === "m" ? "m" : "f");
+      if (Array.isArray(draft.wishes) && draft.wishes.length) {
+        setWishes(draft.wishes.map((w) => ({ ...w, file: undefined, previewUrl: undefined })));
+      }
+    }
   }, []);
+
+  useEffect(() => {
+    if (!from && !to && wishes.every((w) => !w.text)) return;
+    const timer = window.setTimeout(
+      () =>
+        saveDraft("wishlist", {
+          from,
+          to,
+          gender,
+          // Files are dropped: a File cannot be serialised, and half-restoring
+          // one would show a picture that no longer exists.
+          wishes: wishes.map(({ file, previewUrl, ...rest }) => {
+            void file;
+            void previewUrl;
+            return rest;
+          }),
+        }),
+      400,
+    );
+    return () => window.clearTimeout(timer);
+  }, [from, to, gender, wishes]);
 
   const setWish = (i: number, patch: Partial<DraftWish>) =>
     setWishes((prev) => prev.map((w, n) => (n === i ? { ...w, ...patch } : w)));
@@ -90,6 +126,12 @@ export default function WishlistBuilder() {
     try {
       const result = await createWishlist({ from, to, fromGender: gender, wishes, parentId });
       setCreated(result);
+      rememberMade({
+        kind: "wishlist",
+        path: `/list/${result.id}${result.key ? `#k=${result.key}` : ""}`,
+        to: to.trim(),
+      });
+      clearDraft("wishlist");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not save the list.");
     } finally {

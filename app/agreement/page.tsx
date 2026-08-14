@@ -12,6 +12,7 @@ import { ThreadRule } from "@/components/Ambient";
 import { createAgreement } from "@/lib/agreements";
 import { CLAUSE_LIBRARY, DEFAULT_CLAUSES, fillClause } from "@/lib/clauses";
 import { recordVisit } from "@/lib/stats";
+import { clearDraft, loadDraft, rememberMade, saveDraft } from "@/lib/local";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const MAX_CLAUSES = 10;
@@ -30,7 +31,24 @@ export default function AgreementBuilder() {
 
   useEffect(() => {
     void recordVisit();
+    // The signature is not restored: it is a drawing tied to the canvas that
+    // made it, and a half-remembered one would be worse than drawing again.
+    const draft = loadDraft<{ a: string; b: string; clauses: string[] }>("agreement");
+    if (draft) {
+      setPartyA(draft.a ?? "");
+      setPartyB(draft.b ?? "");
+      if (Array.isArray(draft.clauses) && draft.clauses.length) setSelected(draft.clauses);
+    }
   }, []);
+
+  useEffect(() => {
+    if (!partyA && !partyB) return;
+    const timer = window.setTimeout(
+      () => saveDraft("agreement", { a: partyA, b: partyB, clauses: selected }),
+      400,
+    );
+    return () => window.clearTimeout(timer);
+  }, [partyA, partyB, selected]);
 
   const toggle = (clause: string) => {
     setSelected((prev) => {
@@ -73,6 +91,8 @@ export default function AgreementBuilder() {
         signatureA: signature,
       });
       setId(created);
+      rememberMade({ kind: "agreement", path: `/a/${created}`, to: partyB.trim() });
+      clearDraft("agreement");
       setStep("done");
     } catch (err) {
       console.error(err);

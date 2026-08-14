@@ -40,6 +40,13 @@ export function Deck({
       if (next < 0 || next >= count) return;
       setHintGone(true);
       onAdvanceSound?.(direction);
+      // A short tick on Android. Silent no-op on iOS, which does not expose
+      // the API, and on anything that has vibration switched off.
+      try {
+        navigator.vibrate?.(8);
+      } catch {
+        /* unsupported */
+      }
       onIndex(next);
     },
     [index, count, onIndex, onAdvanceSound],
@@ -177,6 +184,26 @@ export function Deck({
           </span>
         </motion.div>
       )}
+
+      {/* Going back is invisible otherwise: the left third of the screen is a
+          button with nothing in it, and nobody discovers that on their own. */}
+      {index > 0 && (
+        <motion.button
+          type="button"
+          onClick={() => go(-1)}
+          className="absolute bottom-6 left-5 z-30 rounded-full px-3 py-2 font-sans text-[0.62rem] uppercase tracking-[0.28em] text-[var(--muted)] transition hover:text-[var(--maroon)] sm:left-8"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4 }}
+        >
+          ← back
+        </motion.button>
+      )}
+
+      {/* Position, for anyone who wants to know how much is left */}
+      <div className="pointer-events-none absolute bottom-6 right-5 z-30 font-sans text-[0.62rem] tracking-[0.2em] text-[var(--muted)] sm:right-8">
+        {index + 1} / {count}
+      </div>
     </div>
   );
 }

@@ -186,6 +186,31 @@ body {
   will-change: transform;
 }
 
+/* ── Focus ───────────────────────────────────────────────────────
+   Visible only for keyboard users, so it never appears on a tap but is
+   always there for anyone navigating without a mouse. The deck's tap
+   zones are excluded: they are full-height invisible regions, and a ring
+   around one is meaningless. */
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+[aria-label="Next"]:focus-visible,
+[aria-label="Previous"]:focus-visible {
+  outline: none;
+}
+
+/* Stops iOS zooming the whole page when a field is focused, which it does
+   whenever the text is under 16px and never undoes afterwards. */
+@supports (-webkit-touch-callout: none) {
+  input,
+  textarea,
+  select {
+    font-size: max(16px, 1em);
+  }
+}
+
 /* Aged paper for the agreement, drawn in CSS so there is no image to
    download on a 4G connection. */
 .tz-paper {
