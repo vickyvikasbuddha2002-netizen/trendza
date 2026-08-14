@@ -30,10 +30,15 @@ export function LiveCounters() {
         </span>
       </div>
 
-      <div className="flex items-stretch justify-center gap-3 sm:gap-5">
+      {/* Two by two on a phone, one row on anything wider. Four of these
+          side by side on a 375px screen squeezes the numbers until they
+          stop reading as numbers. */}
+      <div className="mx-auto grid max-w-md grid-cols-2 gap-y-6 sm:flex sm:max-w-none sm:items-stretch sm:justify-center sm:gap-5">
         <Counter value={stats?.visits} label="people here" />
         <Divider />
         <Counter value={stats?.wishes} label="wishes made" />
+        <Divider />
+        <Counter value={stats?.wishlists} label="lists made" />
         <Divider />
         <Counter value={stats?.agreements} label="accords signed" />
       </div>
@@ -42,7 +47,7 @@ export function LiveCounters() {
 }
 
 function Divider() {
-  return <div aria-hidden className="w-px self-stretch bg-[var(--gold)]/25" />;
+  return <div aria-hidden className="hidden w-px self-stretch bg-[var(--gold)]/25 sm:block" />;
 }
 
 function Counter({ value, label }: { value?: number; label: string }) {

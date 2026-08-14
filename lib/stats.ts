@@ -1,7 +1,7 @@
 import { isSupabaseConfigured, supabase } from "./supabase";
 import type { SiteStats } from "./types";
 
-const EMPTY: SiteStats = { visits: 0, wishes: 0, agreements: 0 };
+const EMPTY: SiteStats = { visits: 0, wishes: 0, wishlists: 0, agreements: 0 };
 
 /**
  * Counted once per browser session rather than per page view — a refresh
@@ -21,6 +21,10 @@ export async function recordVisit(): Promise<void> {
 
 export function recordWish(): Promise<void> {
   return bump("wishes");
+}
+
+export function recordWishlist(): Promise<void> {
+  return bump("wishlists");
 }
 
 export function recordAgreement(): Promise<void> {
@@ -45,13 +49,14 @@ export async function fetchStats(): Promise<SiteStats> {
   try {
     const { data, error } = await supabase
       .from("stats")
-      .select("visits, wishes, agreements")
+      .select("visits, wishes, wishlists, agreements")
       .eq("id", "global")
       .single();
     if (error || !data) return EMPTY;
     return {
       visits: Number(data.visits ?? 0),
       wishes: Number(data.wishes ?? 0),
+      wishlists: Number(data.wishlists ?? 0),
       agreements: Number(data.agreements ?? 0),
     };
   } catch {

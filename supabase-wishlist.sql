@@ -22,6 +22,32 @@ create table if not exists public.wishlists (
 create index if not exists wishlists_parent_idx
   on public.wishlists (parent_id) where parent_id is not null;
 
+-- ── Counter ───────────────────────────────────────────────────────
+-- The landing page totals gain a fourth number. Added here rather than in
+-- the original setup file so this stays the single script to run.
+
+alter table public.stats add column if not exists wishlists bigint not null default 0;
+
+-- Replaces the three-field version from supabase-setup.sql.
+create or replace function public.bump_stat(p_field text)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  update public.stats
+     set visits     = visits     + (case when p_field = 'visits'     then 1 else 0 end),
+         wishes     = wishes     + (case when p_field = 'wishes'     then 1 else 0 end),
+         agreements = agreements + (case when p_field = 'agreements' then 1 else 0 end),
+         wishlists  = wishlists  + (case when p_field = 'wishlists'  then 1 else 0 end)
+   where id = 'global'
+     and p_field in ('visits', 'wishes', 'agreements', 'wishlists');
+end;
+$$;
+
+grant execute on function public.bump_stat(text) to anon, authenticated;
+
 alter table public.wishlists enable row level security;
 
 -- Deliberately no SELECT policy. Reads happen through get_wishlist below.

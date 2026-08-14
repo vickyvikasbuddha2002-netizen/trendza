@@ -2,6 +2,7 @@ import { PHOTO_BUCKET, supabase } from "./supabase";
 import { newId } from "./id";
 import { CATEGORIES } from "./products";
 import { compressImage } from "./compress";
+import { recordWishlist } from "./stats";
 import { decryptBytes, encryptBytes, exportKey, generateKey, importKey } from "./crypto";
 
 export type Reaction = "request" | "beg" | "mercy" | "threat" | "show" | "celebrate";
@@ -149,6 +150,8 @@ export async function createWishlist(input: {
           : `Could not save the list: ${error.message}`,
     );
   }
+
+  void recordWishlist();
 
   return { id, key: key ? await exportKey(key) : null };
 }

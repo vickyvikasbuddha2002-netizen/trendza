@@ -62,5 +62,6 @@ export interface Agreement {
 export interface SiteStats {
   visits: number;
   wishes: number;
+  wishlists: number;
   agreements: number;
 }
