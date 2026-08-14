@@ -23,6 +23,22 @@ const ANIMATION: Record<Reaction, string> = {
   celebrate: "tz-pop",
 };
 
+/**
+ * Tries WebP, then PNG, then gives up and draws the figure.
+ *
+ * Both formats are attempted because the art arrives as PNG but ought to end
+ * up as WebP — six characters render on a single wishlist, and PNGs at half a
+ * megabyte each would put several megabytes on a phone. Preferring WebP means
+ * converting the files later is the only step: nothing in the code changes,
+ * and each character upgrades itself the moment its .webp appears.
+ */
+type Source = "webp" | "png" | "drawn";
+
+const NEXT_SOURCE: Record<Exclude<Source, "drawn">, Source> = {
+  webp: "png",
+  png: "drawn",
+};
+
 export function ReactionCharacter({
   reaction,
   gender,
@@ -32,7 +48,7 @@ export function ReactionCharacter({
   gender: "f" | "m";
   size?: number;
 }) {
-  const [failed, setFailed] = useState(false);
+  const [source, setSource] = useState<Source>("webp");
 
   return (
     <div
@@ -63,18 +79,19 @@ export function ReactionCharacter({
         }}
       />
 
-      {failed ? (
+      {source === "drawn" ? (
         <ReactionFallback reaction={reaction} gender={gender} size={size} />
       ) : (
         /* eslint-disable-next-line @next/next/no-img-element */
         <img
-          src={`/characters/${reaction}-${gender}.webp`}
+          key={source}
+          src={`/characters/${reaction}-${gender}.${source}`}
           alt=""
           width={size}
           height={size}
           loading="lazy"
           decoding="async"
-          onError={() => setFailed(true)}
+          onError={() => setSource(NEXT_SOURCE[source])}
           className={`relative h-full w-full object-contain ${ANIMATION[reaction]}`}
         />
       )}
@@ -96,19 +113,22 @@ export function RakhiScene({
   className?: string;
   width?: number;
 }) {
-  const [failed, setFailed] = useState(false);
-  if (failed) return null;
+  const [source, setSource] = useState<Source>("webp");
+  // No drawn stand-in for the two-person scenes — they are decoration, so if
+  // neither file is there the section simply reads without an illustration.
+  if (source === "drawn") return null;
 
   return (
     /* eslint-disable-next-line @next/next/no-img-element */
     <img
-      src={`/characters/scene-${scene}.webp`}
+      key={source}
+      src={`/characters/scene-${scene}.${source}`}
       alt=""
       width={width}
       height={Math.round(width * 0.68)}
       loading="lazy"
       decoding="async"
-      onError={() => setFailed(true)}
+      onError={() => setSource(NEXT_SOURCE[source])}
       className={`h-auto w-full max-w-full object-contain ${className}`}
       style={{ maxWidth: width }}
     />
