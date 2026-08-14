@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Trendza — wishlist chat promo</title>
+<style>
+  /* 9:16 for Reels, Shorts and WhatsApp Status. Open, let it play, screen record. */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body { background: #05080a; }
+  body {
+    width: 1080px; height: 1920px;
+    font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+    background: #fdf9f3;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+
+  .top { padding: 58px 70px 28px; text-align: center; }
+  .kicker {
+    font-size: 23px; letter-spacing: 9px; text-transform: uppercase;
+    color: #8a7a6e; font-weight: 500;
+  }
+  .headline {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 70px; line-height: 1.04; color: #6e1b24;
+    margin-top: 16px; font-weight: 400;
+  }
+  .sub { font-size: 26px; color: #97444d; margin-top: 14px; font-style: italic; }
+
+  .phone {
+    width: 840px; margin: 0 auto; flex: 1; min-height: 0;
+    border-radius: 46px; overflow: hidden;
+    border: 12px solid #14181a;
+    box-shadow: 0 30px 70px rgba(110,27,36,0.20);
+    display: flex; flex-direction: column;
+    background: #0b141a;
+  }
+
+  .bar {
+    background: #1f2c33; color: #e9edef; flex: none;
+    padding: 20px 26px; display: flex; align-items: center; gap: 18px;
+  }
+  .avatar {
+    width: 62px; height: 62px; border-radius: 50%; flex: none;
+    background: linear-gradient(140deg, #e8a13c, #6e1b24);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; font-weight: 600; color: #fff;
+  }
+  .who { font-size: 30px; font-weight: 600; }
+  .status { font-size: 20px; color: #8696a0; margin-top: 3px; }
+
+  .chat {
+    flex: 1; min-height: 0; padding: 24px 24px 28px;
+    background: #0b141a;
+    background-image:
+      radial-gradient(circle at 18% 12%, rgba(255,255,255,0.028) 0 2px, transparent 2px),
+      radial-gradient(circle at 62% 38%, rgba(255,255,255,0.024) 0 2px, transparent 2px),
+      radial-gradient(circle at 84% 71%, rgba(255,255,255,0.028) 0 2px, transparent 2px);
+    background-size: 190px 190px, 230px 230px, 170px 170px;
+    display: flex; flex-direction: column; gap: 13px;
+    overflow: hidden;
+  }
+
+  .row { display: flex; }
+  .row.out { justify-content: flex-end; }
+
+  /* Every bubble arrives the way a real one does: a small pop, from the
+     side it belongs to. */
+  .b {
+    max-width: 78%; padding: 15px 19px 26px;
+    border-radius: 15px; position: relative;
+    font-size: 27px; line-height: 1.36; color: #e9edef;
+    transform-origin: bottom left;
+    animation: pop .28s cubic-bezier(.2,.9,.3,1.2) both;
+  }
+  .row.out .b { transform-origin: bottom right; }
+  @keyframes pop {
+    from { opacity: 0; transform: translateY(14px) scale(.9); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .in  { background: #1f2c33; border-top-left-radius: 4px; }
+  .out .b { background: #005c4b; border-top-right-radius: 4px; }
+
+  .t { position: absolute; right: 14px; bottom: 7px; font-size: 18px; color: #8696a0; }
+  .out .t { color: #8fc7b6; }
+  .tick { letter-spacing: -5px; margin-left: 5px; }
+  .tick.read { color: #53bdeb; }
+
+  /* typing indicator */
+  .typing { display: flex; gap: 7px; align-items: center; padding: 6px 2px; }
+  .typing span {
+    width: 11px; height: 11px; border-radius: 50%; background: #8696a0;
+    animation: blink 1.2s infinite;
+  }
+  .typing span:nth-child(2) { animation-delay: .2s; }
+  .typing span:nth-child(3) { animation-delay: .4s; }
+  @keyframes blink {
+    0%, 60%, 100% { opacity: .3; transform: translateY(0); }
+    30%           { opacity: 1;  transform: translateY(-4px); }
+  }
+
+  /* the link preview, i.e. the real share card */
+  .link { background: #101d24; border-radius: 12px; overflow: hidden; margin: -4px 0 8px; width: 100%; }
+  .card { background: #fdf9f3; padding: 26px 24px 22px; text-align: center; }
+  .card .yes { font-size: 15px; letter-spacing: 6px; text-transform: uppercase; color: #8a7a6e; }
+  .card .name { font-family: Georgia, serif; font-size: 62px; color: #6e1b24; line-height: 1; margin-top: 6px; }
+  .thread { display: flex; align-items: center; justify-content: center; margin-top: 16px; }
+  .thread i { display: block; width: 92px; height: 2px; background: #c9a227; }
+  .thread b { display: block; width: 15px; height: 15px; border-radius: 50%; background: #c9a227; margin: 0 8px; }
+  .card .from { font-family: Georgia, serif; font-size: 26px; color: #97444d; margin-top: 14px; }
+  .meta { padding: 13px 18px 15px; }
+  .meta .ttl { font-size: 22px; color: #e9edef; font-weight: 500; }
+  .meta .url { font-size: 19px; color: #8696a0; margin-top: 4px; }
+
+  .foot { padding: 26px 70px 50px; text-align: center; flex: none; }
+  .rule { height: 2px; width: 190px; margin: 0 auto 22px; background: linear-gradient(to right, transparent, #c9a227, transparent); }
+  .brand { font-family: Georgia, serif; font-size: 44px; color: #6e1b24; }
+  .url2 { font-size: 26px; letter-spacing: 5px; text-transform: uppercase; color: #8a7a6e; margin-top: 8px; }
+</style>
+</head>
+<body>
+
+  <div class="top">
+    <div class="kicker">Raksha Bandhan 2026</div>
+    <div class="headline">Ab list bhejo.<br />Hint dena band karo.</div>
+    <div class="sub">Apni demands, ek hi link mein</div>
+  </div>
+
+  <div class="phone">
+    <div class="bar">
+      <div class="avatar">P</div>
+      <div>
+        <div class="who">Priya 🧿</div>
+        <div class="status" id="status">online</div>
+      </div>
+    </div>
+    <div class="chat" id="chat"></div>
+  </div>
+
+  <div class="foot">
+    <div class="rule"></div>
+    <div class="brand">Apni list banao, do minute mein</div>
+    <div class="url2">trendza.life</div>
+  </div>
+
+<script>
+const chat   = document.getElementById("chat");
+const status = document.getElementById("status");
+
+const CARD = `
+  <div class="link">
+    <div class="card">
+      <div class="yes">Stop scrolling. Yes, you.</div>
+      <div class="name">Rohan</div>
+      <div class="thread"><i></i><b></b><i></i></div>
+      <div class="from">Priya has 5 demands</div>
+    </div>
+    <div class="meta">
+      <div class="ttl">Priya has demands for you, Rohan</div>
+      <div class="url">trendza.life</div>
+    </div>
+  </div>`;
+
+// who: "in" is Priya, "out" is Rohan. `think` is how long the typing dots
+// show first — longer for the messages that are meant to land.
+const script = [
+  { who: "in",  text: "Bhai suno",                                        think: 900,  after: 500 },
+  { who: "in",  text: "Is baar guess mat karna 😤",                        think: 1100, after: 700 },
+  { who: "in",  html: CARD + "Kholo isko",                                 think: 1400, after: 1100 },
+  { who: "out", text: "5 demands?! 😭",                                    after: 800 },
+  { who: "in",  text: "Kam hi to maanga hai",                              think: 900,  after: 700 },
+  { who: "out", text: "isme earbuds bhi hain",                             after: 700 },
+  { who: "in",  text: "Wahi to sabse zaroori hai",                         think: 900,  after: 800 },
+  { who: "out", text: "dekhta hoon",                                       after: 700 },
+  { who: "in",  text: '"dekhta hoon" ka koi matlab nahi hota',             think: 1200, after: 1100 },
+  { who: "out", text: "order kar diya 😤",                                 after: 700 },
+  { who: "in",  text: "🥹🥹🥹",                                            think: 700,  after: 700 },
+  { who: "out", text: "ab meri list bhi aa rahi hai. taiyaar rehna",       after: 800 },
+  { who: "in",  text: "😐",                                                think: 900,  after: 1600 },
+];
+
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+const stick = () => { chat.scrollTop = chat.scrollHeight; };
+
+function clock(i) {
+  const start = 9 * 60 + 14;               // 9:14 am
+  const m = start + Math.floor(i * 0.7);
+  return `${Math.floor(m / 60)}:${String(m % 60).padStart(2, "0")} am`;
+}
+
+async function typing() {
+  status.textContent = "typing…";
+  const row = document.createElement("div");
+  row.className = "row";
+  row.innerHTML = `<div class="b in"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  chat.appendChild(row);
+  stick();
+  return row;
+}
+
+async function play() {
+  chat.innerHTML = "";
+  await wait(900);
+
+  for (let i = 0; i < script.length; i++) {
+    const line = script[i];
+
+    if (line.who === "in" && line.think) {
+      const dots = await typing();
+      await wait(line.think);
+      dots.remove();
+      status.textContent = "online";
+    }
+
+    const row = document.createElement("div");
+    row.className = "row " + (line.who === "out" ? "out" : "");
+    const tick = line.who === "out"
+      ? `<span class="tick read">✓✓</span>`
+      : "";
+    row.innerHTML =
+      `<div class="b ${line.who === "in" ? "in" : ""}">${line.html || line.text}` +
+      `<span class="t">${clock(i)}${tick}</span></div>`;
+    chat.appendChild(row);
+    stick();
+
+    // Older messages fall off the top rather than the chat growing forever,
+    // so the newest exchange is always the one on screen.
+    while (chat.scrollHeight > chat.clientHeight + 40 && chat.children.length > 3) {
+      chat.removeChild(chat.firstElementChild);
+    }
+
+    await wait(line.after ?? 700);
+  }
+
+  await wait(2600);
+  play();                                   // loops, for a clean recording
+}
+
+play();
+</script>
+</body>
+</html>
