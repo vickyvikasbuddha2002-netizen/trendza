@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { PageShell } from "./PageShell";
-import { ReactionCharacter } from "./ReactionCharacter";
+import { RakhiScene, ReactionCharacter } from "./ReactionCharacter";
 import { ThreadRule } from "./Ambient";
 import { keyFromLocation } from "@/lib/crypto";
 import {
@@ -179,6 +179,10 @@ export default function WishlistViewer({ list }: { list: Wishlist }) {
           viewport={{ once: true, margin: "-12%" }}
           transition={{ duration: 1, ease: EASE }}
         >
+          <div className="mx-auto mb-8 w-64 sm:w-80">
+            <RakhiScene scene="blessing" width={340} />
+          </div>
+
           <p className="font-display text-2xl font-light italic text-[var(--maroon-soft)] sm:text-3xl">
             That is the whole list.
           </p>

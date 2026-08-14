@@ -6,13 +6,18 @@ import { decryptBytes, encryptBytes, exportKey, generateKey, importKey } from ".
 
 export type Reaction = "request" | "beg" | "mercy" | "threat" | "show" | "celebrate";
 
+/**
+ * Five offered, not six. `celebrate` stays in the type so older rows keep
+ * rendering, but there is no illustrated character for it — the two
+ * celebratory images are both two-person scenes, and a single demand cannot
+ * be represented by two people. The spec's own cut list called four enough.
+ */
 export const REACTIONS: { id: Reaction; label: string }[] = [
-  { id: "request", label: "Politely asking" },
+  { id: "request", label: "Asking nicely" },
+  { id: "show", label: "Counting them off" },
   { id: "beg", label: "Begging" },
-  { id: "mercy", label: "Mercy eyes" },
-  { id: "threat", label: "Threatening" },
-  { id: "show", label: "Showing off" },
-  { id: "celebrate", label: "Celebrating" },
+  { id: "mercy", label: "Full tears" },
+  { id: "threat", label: "Not negotiating" },
 ];
 
 /**
@@ -20,7 +25,7 @@ export const REACTIONS: { id: Reaction; label: string }[] = [
  * picker still ends up with an arc rather than six identical faces.
  */
 export function defaultReaction(index: number): Reaction {
-  return (["request", "request", "beg", "mercy", "threat", "threat"] as const)[
+  return (["request", "show", "beg", "mercy", "threat", "threat"] as const)[
     Math.min(index, 5)
   ];
 }

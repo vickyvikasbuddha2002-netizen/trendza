@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { ThreadRule } from "./Ambient";
 import { Countdown } from "./Countdown";
+import { RakhiScene } from "./ReactionCharacter";
 import { LiveCounters } from "./LiveCounters";
 import { PageShell } from "./PageShell";
 
@@ -167,6 +168,37 @@ export function Landing() {
             ))}
           </div>
         </section>
+
+        {/* ── The wishlist ────────────────────────────────────── */}
+        <motion.section
+          className="flex flex-col items-center gap-8 py-6 sm:flex-row sm:gap-12"
+          initial={{ opacity: 0, y: 22 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-8%" }}
+          transition={{ duration: 0.95, ease: EASE }}
+        >
+          <div className="w-52 shrink-0 sm:w-64">
+            <RakhiScene scene="tying" width={280} />
+          </div>
+          <div className="text-center sm:text-left">
+            <p className="font-sans text-[0.62rem] uppercase tracking-[0.34em] text-[var(--gold)]">
+              Entirely shameless
+            </p>
+            <h2 className="mt-3 font-display text-3xl font-light text-[var(--maroon)] sm:text-4xl">
+              Or just tell them what you want
+            </h2>
+            <p className="mt-3 max-w-md font-sans text-sm leading-relaxed text-[var(--muted)]">
+              Six demands, each with a face — asking nicely, begging, or refusing to
+              negotiate. They open it, and get prompted to send theirs straight back.
+            </p>
+            <Link
+              href="/wishlist"
+              className="mt-6 inline-block rounded-full border border-[var(--gold)]/55 px-7 py-3.5 font-sans text-[0.8rem] tracking-wide text-[var(--maroon)] transition hover:bg-[var(--ivory-deep)]"
+            >
+              Make your list →
+            </Link>
+          </div>
+        </motion.section>
 
         {/* ── The accord ──────────────────────────────────────── */}
         <motion.section
