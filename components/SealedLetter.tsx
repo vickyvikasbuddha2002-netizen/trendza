@@ -15,11 +15,17 @@ export function SealedLetter({
   to,
   from,
   onOpen,
+  onFirstTouch,
   waiting = false,
 }: {
   to: string;
   from: string;
   onOpen: () => void;
+  /**
+   * Fires synchronously on the tap, before anything async. This is the only
+   * moment a browser will let audio start, so it cannot wait for the untie.
+   */
+  onFirstTouch?: () => void;
   /** Untied, but the photographs are still downloading and decrypting. */
   waiting?: boolean;
 }) {
@@ -27,6 +33,7 @@ export function SealedLetter({
 
   const begin = () => {
     if (untying) return;
+    onFirstTouch?.();
     setUntying(true);
     // Let the knot loosen and the flap lift before handing over to the story.
     window.setTimeout(onOpen, 1650);
