@@ -89,7 +89,10 @@ export function ReactionCharacter({
           alt=""
           width={size}
           height={size}
-          loading="lazy"
+          // Eager, not lazy. In a deck the character is the card, so lazy
+          // loading buys nothing and costs a blank beat on arrival. They are
+          // roughly 25KB each after conversion.
+          loading="eager"
           decoding="async"
           onError={() => setSource(NEXT_SOURCE[source])}
           className={`relative h-full w-full object-contain ${ANIMATION[reaction]}`}
