@@ -9,7 +9,9 @@ import { importKey, keyFromLocation } from "@/lib/crypto";
 import { recordVisit } from "@/lib/stats";
 import { openWish, type OpenPhoto } from "@/lib/wishes";
 import { RETENTION_LABEL, type Wish } from "@/lib/types";
-import { Bloom, Petals, ThreadRule } from "./Ambient";
+import { Petals, ThreadRule } from "./Ambient";
+import { Atmosphere } from "./Atmosphere";
+import { WordReveal } from "./WordReveal";
 import { Deck } from "./Deck";
 import { GiftThread } from "./GiftThread";
 import { MuteButton } from "./MuteButton";
@@ -121,7 +123,7 @@ export default function WishExperience({ wish }: { wish: Wish }) {
 
   return (
     <div className="relative min-h-dvh bg-[var(--ivory)]">
-      <Bloom />
+      <Atmosphere />
       <Petals count={ready ? 16 : 12} />
 
       {/* Plain conditional, not AnimatePresence. Its exit never completed here,
@@ -173,17 +175,14 @@ export default function WishExperience({ wish }: { wish: Wish }) {
                   <ThreadRule />
                 </motion.div>
 
-                <div className="mt-8 space-y-3.5">
+                <div className="mt-8 space-y-4">
                   {lines.map((line, i) => (
-                    <motion.p
+                    <WordReveal
                       key={i}
-                      className="font-display text-[1.35rem] font-light italic leading-relaxed text-[var(--ink)] sm:text-2xl"
-                      initial={{ opacity: 0, y: 16 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 1, delay: 0.95 + i * 0.38, ease: EASE }}
-                    >
-                      {line}
-                    </motion.p>
+                      text={line}
+                      delay={0.95 + i * 1.15}
+                      className="font-display text-[1.45rem] font-light italic leading-relaxed text-[var(--ink)] sm:text-[1.8rem]"
+                    />
                   ))}
                 </div>
               </div>
@@ -192,6 +191,7 @@ export default function WishExperience({ wish }: { wish: Wish }) {
                 photo={photos[photoIndex]}
                 to={wish.to}
                 reduced={Boolean(reduced)}
+                index={photoIndex}
               />
             ) : photoIndex === photos.length ? (
               <div className="text-center">
@@ -293,46 +293,63 @@ function PhotoCard({
   photo,
   to,
   reduced,
+  index,
 }: {
   photo: OpenPhoto;
   to: string;
   reduced: boolean;
+  index: number;
 }) {
   const ratio = (photo.w || 4) / (photo.h || 3);
+  // A degree of tilt, alternating, so a run of photographs reads as things
+  // laid on a table rather than a column of identical rectangles.
+  const tilt = (index % 2 === 0 ? -1 : 1) * 1.4;
 
   return (
     <figure className="m-0 text-center">
       <motion.div
-        className={`relative mx-auto overflow-hidden rounded-sm bg-[var(--ivory-deep)] ${
-          reduced ? "" : "tz-drift"
-        }`}
-        style={{
-          aspectRatio: `${photo.w || 4} / ${photo.h || 3}`,
-          width: `min(100%, calc(58vh * ${ratio}))`,
-        }}
-        initial={{ opacity: 0, scale: 0.94, y: 18 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 1, ease: EASE }}
+        className="tz-keepsake relative mx-auto"
+        style={{ width: `min(100%, calc(52vh * ${ratio}))` }}
+        initial={{ opacity: 0, y: 42, scale: 0.9, rotate: tilt * 3 }}
+        animate={{ opacity: 1, y: 0, scale: 1, rotate: tilt }}
+        transition={{ duration: 1.15, ease: EASE }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={photo.objectUrl}
-          alt={photo.note || `A memory shared with ${to}`}
-          decoding="async"
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-      </motion.div>
-
-      {photo.note && (
-        <motion.figcaption
-          className="mx-auto mt-6 max-w-md px-4 font-display text-[1.2rem] font-light italic leading-relaxed text-[var(--maroon-soft)] sm:text-2xl"
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.55, ease: EASE }}
+        <div
+          className={`relative overflow-hidden ${reduced ? "" : "tz-drift"}`}
+          style={{ aspectRatio: `${photo.w || 4} / ${photo.h || 3}` }}
         >
-          {photo.note}
-        </motion.figcaption>
-      )}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={photo.objectUrl}
+            alt={photo.note || `A memory shared with ${to}`}
+            decoding="async"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          {/* light sweeping across the print as it lands */}
+          {!reduced && (
+            <div
+              aria-hidden
+              className="tz-sheen absolute inset-y-[-30%] left-0 w-1/3"
+              style={{
+                background:
+                  "linear-gradient(to right, transparent, rgba(255,255,255,0.55), transparent)",
+              }}
+            />
+          )}
+        </div>
+
+        {/* the caption, written on the album page itself */}
+        {photo.note && (
+          <motion.figcaption
+            className="absolute inset-x-4 bottom-3 font-display text-[1.05rem] font-light italic leading-snug text-[var(--maroon-soft)] sm:text-[1.25rem]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.9 }}
+          >
+            {photo.note}
+          </motion.figcaption>
+        )}
+      </motion.div>
     </figure>
   );
 }

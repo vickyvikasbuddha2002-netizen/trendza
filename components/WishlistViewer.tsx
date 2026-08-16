@@ -3,6 +3,8 @@
 import { motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Atmosphere } from "./Atmosphere";
+import { Petals } from "./Ambient";
 import { Deck } from "./Deck";
 import { RakhiScene, ReactionCharacter } from "./ReactionCharacter";
 import { MuteButton } from "./MuteButton";
@@ -24,6 +26,16 @@ const EASE = [0.22, 1, 0.36, 1] as const;
  * than fading in — five identical entrances would waste the only moment the
  * character has to be funny.
  */
+/** The temperature behind each mood. */
+const GLOW: Record<Reaction, string> = {
+  request: "radial-gradient(circle, rgba(233,168,80,0.34), rgba(233,168,80,0) 68%)",
+  show: "radial-gradient(circle, rgba(201,162,39,0.40), rgba(201,162,39,0) 68%)",
+  beg: "radial-gradient(circle, rgba(214,120,130,0.36), rgba(214,120,130,0) 68%)",
+  mercy: "radial-gradient(circle, rgba(120,150,205,0.34), rgba(120,150,205,0) 68%)",
+  threat: "radial-gradient(circle, rgba(178,52,60,0.34), rgba(178,52,60,0) 68%)",
+  celebrate: "radial-gradient(circle, rgba(233,168,80,0.42), rgba(233,168,80,0) 68%)",
+};
+
 const ENTRANCE: Record<Reaction, { from: Record<string, number>; spring: object }> = {
   request: { from: { x: -90, opacity: 0 }, spring: { type: "spring", stiffness: 120, damping: 14 } },
   show: { from: { scale: 0.55, opacity: 0 }, spring: { type: "spring", stiffness: 200, damping: 11 } },
@@ -85,6 +97,7 @@ export default function WishlistViewer({ list }: { list: Wishlist }) {
 
   return (
     <>
+      <Atmosphere />
       <MuteButton muted={muted} onToggle={toggleMute} />
 
       <Deck
@@ -148,6 +161,7 @@ export default function WishlistViewer({ list }: { list: Wishlist }) {
           </div>
         ) : onFinale ? (
           <div className="pointer-events-auto text-center">
+            <Petals count={26} seed={91} />
             {/* Deliberately small. The deck locks scrolling, so this card has
                 to fit a short phone with four blocks of copy and three
                 buttons under it. */}
@@ -271,11 +285,22 @@ function DemandCard({
       </motion.p>
 
       <motion.div
-        className="mt-3 flex justify-center"
+        className="relative mt-3 flex justify-center"
         initial={reduced ? { opacity: 0 } : entrance.from}
         animate={{ x: 0, y: 0, scale: 1, opacity: 1 }}
         transition={reduced ? { duration: 0.2 } : entrance.spring}
       >
+        {/* A glow behind the character in the mood's own colour — anger reads
+            red, pleading reads warm, showing off reads gold. It gives each
+            demand its own temperature without recolouring the artwork. */}
+        <motion.div
+          aria-hidden
+          className="absolute left-1/2 top-1/2 h-[290px] w-[290px] -translate-x-1/2 -translate-y-1/2 rounded-full"
+          style={{ background: GLOW[wish.reaction] ?? GLOW.request }}
+          initial={{ opacity: 0, scale: 0.7 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.1, delay: 0.15, ease: EASE }}
+        />
         <ReactionCharacter reaction={wish.reaction} gender={gender} size={230} />
       </motion.div>
 

@@ -250,6 +250,35 @@ body {
   }
 }
 
+/* Paper grain. An SVG turbulence baked into a data URI — no image request,
+   and it tiles seamlessly at any size. Kept faint: it should register as
+   texture, never as noise. */
+.tz-grain {
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.22'/%3E%3C/svg%3E");
+}
+
+/* A photograph pressed into an album: a hairline of gold, a deep soft
+   shadow, and a degree or so off square so it never looks like a div. */
+.tz-keepsake {
+  background: #fdf9f3;
+  padding: 14px 14px 52px;
+  box-shadow:
+    0 2px 0 rgba(201, 162, 39, 0.35),
+    0 22px 50px rgba(110, 27, 36, 0.18),
+    0 4px 14px rgba(110, 27, 36, 0.10);
+}
+
+/* The light that travels across a card as it arrives. */
+@keyframes tz-sheen {
+  0% { transform: translate3d(-140%, 0, 0) rotate(8deg); opacity: 0; }
+  18% { opacity: 0.75; }
+  60% { opacity: 0; }
+  100% { transform: translate3d(240%, 0, 0) rotate(8deg); opacity: 0; }
+}
+.tz-sheen { animation: tz-sheen 2.6s ease-out both; }
+
 /* ── Wishlist reactions ──────────────────────────────────────────
    One keyframe per mood. Transform only, so six of these on screen
    at once still composite on the GPU. */
