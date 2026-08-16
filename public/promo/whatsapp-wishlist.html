@@ -7,13 +7,25 @@
   /* 9:16 for Reels, Shorts and WhatsApp Status. Open, let it play, screen record. */
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  html, body { background: #05080a; }
-  body {
+  /* The canvas stays exactly 1080x1920 so a recording is a true 9:16, but
+     it is scaled down to fit whatever window it is opened in. Without this
+     you only see the top third of it at full size, which reads as being
+     zoomed in. */
+  html, body {
+    width: 100%; height: 100%;
+    background: #05080a;
+    overflow: hidden;
+    display: grid; place-items: center;
+  }
+
+  .stage {
     width: 1080px; height: 1920px;
+    flex: none;
     font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
     background: #fdf9f3;
     display: flex; flex-direction: column;
     overflow: hidden;
+    transform-origin: center center;
   }
 
   .top { padding: 58px 70px 28px; text-align: center; }
@@ -121,6 +133,7 @@
 </style>
 </head>
 <body>
+<div class="stage" id="stage">
 
   <div class="top">
     <div class="kicker">Raksha Bandhan 2026</div>
@@ -144,6 +157,21 @@
     <div class="brand">Apni list banao, do minute mein</div>
     <div class="url2">trendza.life</div>
   </div>
+
+</div>
+
+<script>
+// Fit the 1080x1920 canvas inside whatever window this is opened in. The
+// canvas itself never changes size, so a recording is still a true 9:16 —
+// only the on-screen preview is scaled.
+const stage = document.getElementById("stage");
+function fit() {
+  const scale = Math.min(window.innerWidth / 1080, window.innerHeight / 1920);
+  stage.style.transform = `scale(${scale})`;
+}
+fit();
+window.addEventListener("resize", fit);
+</script>
 
 <script>
 const chat   = document.getElementById("chat");
