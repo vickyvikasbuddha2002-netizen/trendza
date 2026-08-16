@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Atmosphere } from "./Atmosphere";
+import { PlayfulCorners } from "./Ornaments";
 import { Petals } from "./Ambient";
 import { Deck } from "./Deck";
 import { RakhiScene, ReactionCharacter } from "./ReactionCharacter";
@@ -97,7 +98,11 @@ export default function WishlistViewer({ list }: { list: Wishlist }) {
 
   return (
     <>
-      <Atmosphere />
+      {/* No toran here. The wishlist is a joke rather than a keepsake, so it
+          gets turning rakhis and falling confetti instead of the solemn
+          doorway garland the wish uses. */}
+      <Atmosphere garland={false} />
+      <PlayfulCorners />
       <MuteButton muted={muted} onToggle={toggleMute} />
 
       <Deck

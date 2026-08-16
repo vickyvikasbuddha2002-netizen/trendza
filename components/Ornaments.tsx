@@ -185,6 +185,149 @@ export function Glints({ count = 12, seed = 3 }: { count?: number; seed?: number
   );
 }
 
+/* ── Memory frame ────────────────────────────────────────────────
+   A vine that grows around a photograph and flowers at the corners.
+   The stroke draws itself first and the marigolds open after it arrives,
+   so the frame is planted rather than pasted on. */
+export function MemoryVine({ delay = 0.5 }: { delay?: number }) {
+  return (
+    <div aria-hidden className="pointer-events-none absolute -inset-6 sm:-inset-9">
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full" fill="none">
+        {[
+          "M2 18 C 2 8, 8 2, 18 2",
+          "M82 2 C 92 2, 98 8, 98 18",
+          "M98 82 C 98 92, 92 98, 82 98",
+          "M18 98 C 8 98, 2 92, 2 82",
+        ].map((d, i) => (
+          <motion.path
+            key={d}
+            d={d}
+            stroke="var(--gold)"
+            strokeWidth="0.6"
+            strokeLinecap="round"
+            vectorEffect="non-scaling-stroke"
+            opacity="0.8"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.1, delay: delay + i * 0.12, ease: [0.22, 1, 0.36, 1] }}
+          />
+        ))}
+      </svg>
+
+      {/* a marigold opening at each corner */}
+      {[
+        { c: "left-0 top-0", d: 0 },
+        { c: "right-0 top-0", d: 0.12 },
+        { c: "right-0 bottom-0", d: 0.24 },
+        { c: "left-0 bottom-0", d: 0.36 },
+      ].map((m) => (
+        <motion.svg
+          key={m.c}
+          viewBox="0 0 24 24"
+          className={`absolute h-6 w-6 sm:h-8 sm:w-8 ${m.c}`}
+          initial={{ opacity: 0, scale: 0, rotate: -90 }}
+          animate={{ opacity: 1, scale: 1, rotate: 0 }}
+          transition={{ type: "spring", stiffness: 180, damping: 12, delay: delay + 0.8 + m.d }}
+        >
+          {Array.from({ length: 8 }, (_, p) => (
+            <ellipse
+              key={p}
+              cx="12"
+              cy="6.5"
+              rx="2.6"
+              ry="4.6"
+              fill="#e8a13c"
+              opacity="0.85"
+              transform={`rotate(${p * 45} 12 12)`}
+            />
+          ))}
+          <circle cx="12" cy="12" r="2.6" fill="#c9781f" />
+        </motion.svg>
+      ))}
+    </div>
+  );
+}
+
+/* ── Playful corners ─────────────────────────────────────────────
+   For the wishlist, which is a joke rather than a keepsake. Rakhis
+   turning, gifts bobbing, confetti drifting — the same festival, told
+   with a grin instead of a hush. */
+export function PlayfulCorners() {
+  const confetti = useMemo(() => {
+    let s = 41;
+    const rand = () => ((s = (s * 1664525 + 1013904223) % 4294967296) / 4294967296);
+    return Array.from({ length: 14 }, (_, i) => ({
+      key: i,
+      left: rand() * 100,
+      size: 7 + rand() * 9,
+      dur: 13 + rand() * 12,
+      delay: -rand() * 20,
+      drift: rand() * 120 - 60,
+      spin: 240 + rand() * 400,
+      colour: ["#e8a13c", "#c9a227", "#d67882", "#6e1b24"][Math.floor(rand() * 4)],
+      round: rand() > 0.5,
+    }));
+  }, []);
+
+  return (
+    <div aria-hidden className="pointer-events-none fixed inset-0 z-[5] overflow-hidden">
+      {/* a rakhi turning in each upper corner */}
+      {[
+        "left-[-9%] top-[-7%]",
+        "right-[-9%] top-[-7%]",
+      ].map((pos, i) => (
+        <div key={pos} className={`absolute h-52 w-52 sm:h-72 sm:w-72 ${pos}`}>
+          <svg
+            viewBox="-60 -60 120 120"
+            className={i === 0 ? "tz-turn h-full w-full" : "tz-turn-back h-full w-full"}
+            fill="none"
+          >
+            {Array.from({ length: 10 }, (_, p) => (
+              <ellipse
+                key={p}
+                cx="0"
+                cy="-34"
+                rx="7"
+                ry="15"
+                stroke="var(--gold)"
+                strokeWidth="1.2"
+                fill="var(--gold)"
+                fillOpacity="0.07"
+                opacity="0.5"
+                transform={`rotate(${p * 36})`}
+              />
+            ))}
+            <circle r="11" fill="var(--maroon)" opacity="0.55" />
+            <circle r="17" stroke="var(--gold)" strokeWidth="1.2" opacity="0.5" />
+          </svg>
+        </div>
+      ))}
+
+      {/* confetti, falling on the petal keyframes already in the sheet */}
+      {confetti.map((c) => (
+        <span
+          key={c.key}
+          className="tz-petal absolute top-0 block"
+          style={
+            {
+              left: `${c.left}%`,
+              width: c.size,
+              height: c.round ? c.size : c.size * 0.5,
+              background: c.colour,
+              borderRadius: c.round ? "50%" : "2px",
+              "--petal-duration": `${c.dur}s`,
+              "--petal-delay": `${c.delay}s`,
+              "--petal-drift": `${c.drift}px`,
+              "--petal-spin": `${c.spin}deg`,
+              "--petal-opacity": 0.55,
+            } as React.CSSProperties
+          }
+        />
+      ))}
+    </div>
+  );
+}
+
 /* ── Diya ────────────────────────────────────────────────────────
    A lit lamp. The flame leans and swells on mismatched timings so it
    never falls into an obvious loop. */

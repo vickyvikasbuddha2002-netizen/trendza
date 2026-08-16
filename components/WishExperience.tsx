@@ -11,7 +11,10 @@ import { openWish, type OpenPhoto } from "@/lib/wishes";
 import { RETENTION_LABEL, type Wish } from "@/lib/types";
 import { Petals, ThreadRule } from "./Ambient";
 import { Atmosphere } from "./Atmosphere";
-import { Diya } from "./Ornaments";
+import { Diya, MemoryVine } from "./Ornaments";
+
+/** Keeps each photograph's petals in a different place to the last one's. */
+const photoIndexSeed = (i: number) => 101 + i * 37;
 import { WordReveal } from "./WordReveal";
 import { Deck } from "./Deck";
 import { GiftThread } from "./GiftThread";
@@ -318,7 +321,11 @@ function PhotoCard({
   const tilt = (index % 2 === 0 ? -1 : 1) * 1.4;
 
   return (
-    <figure className="m-0 text-center">
+    <figure className="relative m-0 text-center">
+      {/* Petals gathering around this photograph specifically, so a memory
+          feels attended to rather than sitting on a background. */}
+      <Petals count={7} seed={photoIndexSeed(index)} />
+
       <motion.div
         className="tz-keepsake relative mx-auto"
         style={{ width: `min(100%, calc(52vh * ${ratio}))` }}
@@ -326,6 +333,9 @@ function PhotoCard({
         animate={{ opacity: 1, y: 0, scale: 1, rotate: tilt }}
         transition={{ duration: 1.15, ease: EASE }}
       >
+        {/* A vine grows around the print and flowers at each corner */}
+        <MemoryVine delay={0.55} />
+
         {/* Corner brackets, the way a photograph is held into an album page */}
         {[
           "left-1.5 top-1.5",
