@@ -2,139 +2,103 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>Trendza — wishlist chat promo</title>
+<title>Trendza — wish &amp; wishlist promo</title>
 <style>
-  /* 9:16 for Reels, Shorts and WhatsApp Status. Open, let it play, screen record. */
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; background: #05080a; overflow: hidden; }
 
-  /* The canvas stays exactly 1080x1920 so a recording is a true 9:16, but
-     it is scaled down to fit whatever window it is opened in. Without this
-     you only see the top third of it at full size, which reads as being
-     zoomed in. */
-  html, body {
-    width: 100%; height: 100%;
-    background: #05080a;
-    overflow: hidden;
-  }
-
-  /* Pinned to the centre and scaled from there. Centring a 1920px-tall box
-     with grid or flex and then transforming it leaves the top unreachable
-     once it is taller than the window; fixed positioning does not care how
-     big the box is. */
   .stage {
-    position: fixed;
-    top: 50%; left: 50%;
+    position: fixed; top: 50%; left: 50%;
     width: 1080px; height: 1920px;
     font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
     background: #fdf9f3;
-    display: flex; flex-direction: column;
-    overflow: hidden;
-    transform-origin: center center;
-    transform: translate(-50%, -50%) scale(1);
+    display: flex; flex-direction: column; overflow: hidden;
+    transform-origin: center center; transform: translate(-50%, -50%) scale(1);
   }
 
-  .top { padding: 58px 70px 28px; text-align: center; }
-  .kicker {
-    font-size: 23px; letter-spacing: 9px; text-transform: uppercase;
-    color: #8a7a6e; font-weight: 500;
-  }
-  .headline {
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 70px; line-height: 1.04; color: #6e1b24;
-    margin-top: 16px; font-weight: 400;
-  }
-  .sub { font-size: 26px; color: #97444d; margin-top: 14px; font-style: italic; }
+  .top { padding: 50px 70px 24px; text-align: center; flex: none; }
+  .kicker { font-size: 22px; letter-spacing: 9px; text-transform: uppercase; color: #8a7a6e; font-weight: 500; }
+  .headline { font-family: Georgia, serif; font-size: 64px; line-height: 1.06; color: #6e1b24; margin-top: 12px; min-height: 136px; }
+  .sub { font-size: 25px; color: #97444d; margin-top: 10px; font-style: italic; }
 
   .phone {
     width: 840px; margin: 0 auto; flex: 1; min-height: 0;
-    border-radius: 46px; overflow: hidden;
-    border: 12px solid #14181a;
-    box-shadow: 0 30px 70px rgba(110,27,36,0.20);
-    display: flex; flex-direction: column;
-    background: #0b141a;
+    border-radius: 46px; overflow: hidden; border: 12px solid #14181a;
+    box-shadow: 0 30px 70px rgba(110,27,36,.2); position: relative; background: #0b141a;
   }
 
-  .bar {
-    background: #1f2c33; color: #e9edef; flex: none;
-    padding: 20px 26px; display: flex; align-items: center; gap: 18px;
-  }
-  .avatar {
-    width: 62px; height: 62px; border-radius: 50%; flex: none;
-    background: linear-gradient(140deg, #e8a13c, #6e1b24);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 28px; font-weight: 600; color: #fff;
-  }
+  .screen { position: absolute; inset: 0; display: flex; flex-direction: column; opacity: 0; transition: opacity .6s ease; }
+  .screen.on { opacity: 1; }
+
+  /* chat */
+  .bar { background: #1f2c33; color: #e9edef; flex: none; padding: 20px 26px; display: flex; align-items: center; gap: 18px; }
+  .avatar { width: 62px; height: 62px; border-radius: 50%; flex: none; background: linear-gradient(140deg,#e8a13c,#6e1b24); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 600; color: #fff; }
   .who { font-size: 30px; font-weight: 600; }
   .status { font-size: 20px; color: #8696a0; margin-top: 3px; }
-
   .chat {
-    flex: 1; min-height: 0; padding: 24px 24px 28px;
-    background: #0b141a;
+    flex: 1; min-height: 0; padding: 24px 24px 28px; background: #0b141a;
     background-image:
-      radial-gradient(circle at 18% 12%, rgba(255,255,255,0.028) 0 2px, transparent 2px),
-      radial-gradient(circle at 62% 38%, rgba(255,255,255,0.024) 0 2px, transparent 2px),
-      radial-gradient(circle at 84% 71%, rgba(255,255,255,0.028) 0 2px, transparent 2px);
+      radial-gradient(circle at 18% 12%, rgba(255,255,255,.028) 0 2px, transparent 2px),
+      radial-gradient(circle at 62% 38%, rgba(255,255,255,.024) 0 2px, transparent 2px),
+      radial-gradient(circle at 84% 71%, rgba(255,255,255,.028) 0 2px, transparent 2px);
     background-size: 190px 190px, 230px 230px, 170px 170px;
-    display: flex; flex-direction: column; gap: 13px;
-    overflow: hidden;
+    display: flex; flex-direction: column; gap: 13px; overflow: hidden;
   }
-
-  .row { display: flex; }
-  .row.out { justify-content: flex-end; }
-
-  /* Every bubble arrives the way a real one does: a small pop, from the
-     side it belongs to. */
-  .b {
-    max-width: 78%; padding: 15px 19px 26px;
-    border-radius: 15px; position: relative;
-    font-size: 27px; line-height: 1.36; color: #e9edef;
-    transform-origin: bottom left;
-    animation: pop .28s cubic-bezier(.2,.9,.3,1.2) both;
-  }
+  .row { display: flex; } .row.out { justify-content: flex-end; }
+  .b { max-width: 78%; padding: 15px 19px 26px; border-radius: 15px; position: relative; font-size: 27px; line-height: 1.36; color: #e9edef; transform-origin: bottom left; animation: pop .3s cubic-bezier(.2,.9,.3,1.2) both; }
   .row.out .b { transform-origin: bottom right; }
-  @keyframes pop {
-    from { opacity: 0; transform: translateY(14px) scale(.9); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
-  }
-
-  .in  { background: #1f2c33; border-top-left-radius: 4px; }
+  @keyframes pop { from{opacity:0;transform:translateY(14px) scale(.9)} to{opacity:1;transform:none} }
+  .in { background: #1f2c33; border-top-left-radius: 4px; }
   .out .b { background: #005c4b; border-top-right-radius: 4px; }
-
   .t { position: absolute; right: 14px; bottom: 7px; font-size: 18px; color: #8696a0; }
-  .out .t { color: #8fc7b6; }
-  .tick { letter-spacing: -5px; margin-left: 5px; }
-  .tick.read { color: #53bdeb; }
+  .out .t { color: #8fc7b6; } .tick { letter-spacing: -5px; margin-left: 5px; color: #53bdeb; }
+  .typing { display: flex; gap: 7px; padding: 6px 2px; }
+  .typing span { width: 11px; height: 11px; border-radius: 50%; background: #8696a0; animation: blink 1.2s infinite; }
+  .typing span:nth-child(2){animation-delay:.2s} .typing span:nth-child(3){animation-delay:.4s}
+  @keyframes blink { 0%,60%,100%{opacity:.3;transform:none} 30%{opacity:1;transform:translateY(-4px)} }
 
-  /* typing indicator */
-  .typing { display: flex; gap: 7px; align-items: center; padding: 6px 2px; }
-  .typing span {
-    width: 11px; height: 11px; border-radius: 50%; background: #8696a0;
-    animation: blink 1.2s infinite;
-  }
-  .typing span:nth-child(2) { animation-delay: .2s; }
-  .typing span:nth-child(3) { animation-delay: .4s; }
-  @keyframes blink {
-    0%, 60%, 100% { opacity: .3; transform: translateY(0); }
-    30%           { opacity: 1;  transform: translateY(-4px); }
-  }
-
-  /* the link preview, i.e. the real share card */
   .link { background: #101d24; border-radius: 12px; overflow: hidden; margin: -4px 0 8px; width: 100%; }
   .card { background: #fdf9f3; padding: 26px 24px 22px; text-align: center; }
   .card .yes { font-size: 15px; letter-spacing: 6px; text-transform: uppercase; color: #8a7a6e; }
-  .card .name { font-family: Georgia, serif; font-size: 62px; color: #6e1b24; line-height: 1; margin-top: 6px; }
-  .thread { display: flex; align-items: center; justify-content: center; margin-top: 16px; }
-  .thread i { display: block; width: 92px; height: 2px; background: #c9a227; }
-  .thread b { display: block; width: 15px; height: 15px; border-radius: 50%; background: #c9a227; margin: 0 8px; }
-  .card .from { font-family: Georgia, serif; font-size: 26px; color: #97444d; margin-top: 14px; }
+  .card .name { font-family: Georgia, serif; font-size: 58px; color: #6e1b24; line-height: 1; margin-top: 6px; }
+  .thread { display: flex; align-items: center; justify-content: center; margin-top: 15px; }
+  .thread i { width: 84px; height: 2px; background: #c9a227; }
+  .thread b { width: 14px; height: 14px; border-radius: 50%; background: #c9a227; margin: 0 8px; }
+  .card .from { font-family: Georgia, serif; font-size: 25px; color: #97444d; margin-top: 13px; }
   .meta { padding: 13px 18px 15px; }
   .meta .ttl { font-size: 22px; color: #e9edef; font-weight: 500; }
   .meta .url { font-size: 19px; color: #8696a0; margin-top: 4px; }
 
-  .foot { padding: 26px 70px 50px; text-align: center; flex: none; }
-  .rule { height: 2px; width: 190px; margin: 0 auto 22px; background: linear-gradient(to right, transparent, #c9a227, transparent); }
-  .brand { font-family: Georgia, serif; font-size: 44px; color: #6e1b24; }
-  .url2 { font-size: 26px; letter-spacing: 5px; text-transform: uppercase; color: #8a7a6e; margin-top: 8px; }
+  /* wish + list screens */
+  .ivory {
+    background:
+      radial-gradient(circle at 18% 8%, rgba(233,168,80,.3), rgba(233,168,80,0) 62%),
+      radial-gradient(circle at 84% 78%, rgba(214,120,130,.24), rgba(214,120,130,0) 62%),
+      #fdf9f3;
+  }
+  .beat { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 46px; text-align: center; opacity: 0; transition: opacity .7s ease; }
+  .beat.on { opacity: 1; }
+
+  .eyebrow { font-size: 19px; letter-spacing: 9px; text-transform: uppercase; color: #8a7a6e; }
+  .big { font-family: Georgia, serif; font-size: 92px; color: #6e1b24; line-height: .95; margin-top: 12px; }
+  .line { font-family: Georgia, serif; font-style: italic; font-size: 36px; color: #2a1f1c; line-height: 1.45; margin-top: 18px; max-width: 620px; opacity: 0; transform: translateY(14px); transition: all .8s ease; }
+  .line.on { opacity: 1; transform: none; }
+
+  /* Memory frames. A real photograph dropped into public/promo as
+     memory-1.jpg or memory-2.jpg replaces the illustration automatically. */
+  .memory { width: 560px; height: 400px; border-radius: 5px; overflow: hidden; background: #f5ebdd; display: flex; align-items: center; justify-content: center; box-shadow: 0 16px 40px rgba(110,27,36,.14); }
+  .memory img { width: 100%; height: 100%; object-fit: contain; }
+  .cap { font-family: Georgia, serif; font-style: italic; font-size: 30px; color: #97444d; margin-top: 26px; max-width: 600px; }
+  .bow { width: 250px; }
+
+  .char { width: 280px; height: 280px; object-fit: contain; }
+  .bubble { margin-top: 18px; max-width: 580px; padding: 22px 30px; border: 3px solid rgba(110,27,36,.16); background: rgba(245,235,221,.82); border-radius: 30px; font-family: Georgia, serif; font-size: 38px; color: #6e1b24; line-height: 1.25; }
+  .demand { font-size: 19px; letter-spacing: 7px; text-transform: uppercase; color: #c9a227; }
+
+  .foot { padding: 22px 70px 42px; text-align: center; flex: none; }
+  .rule { height: 2px; width: 190px; margin: 0 auto 18px; background: linear-gradient(to right,transparent,#c9a227,transparent); }
+  .brand { font-family: Georgia, serif; font-size: 40px; color: #6e1b24; }
+  .url2 { font-size: 24px; letter-spacing: 5px; text-transform: uppercase; color: #8a7a6e; margin-top: 7px; }
 </style>
 </head>
 <body>
@@ -142,133 +106,259 @@
 
   <div class="top">
     <div class="kicker">Raksha Bandhan 2026</div>
-    <div class="headline">Ab list bhejo.<br />Hint dena band karo.</div>
-    <div class="sub">Apni demands, ek hi link mein</div>
+    <div class="headline" id="headline">Pehle pyaar.<br />Phir demands.</div>
+    <div class="sub" id="sub">Ek wish, ek list — dono bhej do</div>
   </div>
 
   <div class="phone">
-    <div class="bar">
-      <div class="avatar">P</div>
-      <div>
-        <div class="who">Priya 🧿</div>
-        <div class="status" id="status">online</div>
+
+    <div class="screen on" id="s-chat">
+      <div class="bar">
+        <div class="avatar">P</div>
+        <div>
+          <div class="who">Priya · behen 🧿</div>
+          <div class="status" id="status">online</div>
+        </div>
+      </div>
+      <div class="chat" id="chat"></div>
+    </div>
+
+    <!-- the wish -->
+    <div class="screen ivory" id="s-wish">
+      <div class="beat" id="w1">
+        <div class="eyebrow">A rakhi wish</div>
+        <div class="big">For Rohan</div>
+        <svg class="bow" viewBox="0 0 320 230" fill="none" style="width:340px;margin-top:36px">
+          <rect x="22" y="52" width="276" height="156" rx="9" fill="#f5ebdd" stroke="#c9a227" stroke-width="2"/>
+          <path d="M22 208 L160 128 L298 208" stroke="#c9a227" stroke-opacity=".3" stroke-width="2"/>
+          <path d="M22 61 C22 55,27 52,33 52 L287 52 C293 52,298 55,298 61 L160 152 Z" fill="#fdf9f3" stroke="#c9a227" stroke-width="2"/>
+          <path d="M0 132 L320 132" stroke="#c9a227" stroke-width="3"/>
+          <ellipse cx="141" cy="132" rx="17" ry="10" stroke="#c9a227" stroke-width="3" transform="rotate(-18 141 132)"/>
+          <ellipse cx="179" cy="132" rx="17" ry="10" stroke="#c9a227" stroke-width="3" transform="rotate(18 179 132)"/>
+          <circle cx="160" cy="132" r="7" fill="#c9a227"/>
+        </svg>
+        <div class="eyebrow" style="margin-top:32px">Tap to untie</div>
+      </div>
+
+      <div class="beat" id="w2">
+        <div class="eyebrow">Happy Raksha Bandhan</div>
+        <div class="big" style="font-size:100px">Rohan</div>
+        <div class="line" id="l1">Har saal tum yeh dhaaga baandhti ho.</div>
+        <div class="line" id="l2">Har saal main kuch bolna bhool jaata hoon.</div>
+        <div class="line" id="l3">Is baar likh diya.</div>
+      </div>
+
+      <div class="beat" id="w3">
+        <div class="memory"><img id="mem1" alt="" /></div>
+        <div class="cap">Woh chhat, woh garmiyaan, woh poora saal.</div>
+      </div>
+
+      <div class="beat" id="w4">
+        <div class="memory"><img id="mem2" alt="" /></div>
+        <div class="cap">Aur tum abhi bhi mujhse lambi banti ho.</div>
+      </div>
+
+      <div class="beat" id="w5">
+        <svg class="bow" viewBox="0 0 200 90" fill="none">
+          <path d="M100 45 C70 20,40 30,46 46 C52 62,84 58,100 45" stroke="#c9a227" stroke-width="3"/>
+          <path d="M100 45 C130 20,160 30,154 46 C148 62,116 58,100 45" stroke="#c9a227" stroke-width="3"/>
+          <path d="M92 52 L78 84 M108 52 L122 84" stroke="#c9a227" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="100" cy="45" r="8" fill="#c9a227"/>
+        </svg>
+        <div class="cap" style="font-size:34px;margin-top:32px">with all my love,</div>
+        <div class="big" style="font-size:72px;margin-top:4px">Priya</div>
       </div>
     </div>
-    <div class="chat" id="chat"></div>
+
+    <!-- the wishlist -->
+    <div class="screen ivory" id="s-list">
+      <div class="beat" id="k0">
+        <div class="eyebrow">Stop scrolling. Yes, you.</div>
+        <div class="big" style="font-size:104px">Rohan</div>
+        <div class="line on" style="font-style:normal;font-size:32px;margin-top:18px;max-width:560px">
+          Priya has 5 demands. You are not going to like all of them.
+        </div>
+        <img class="char" src="/characters/request-f.webp" alt="" />
+      </div>
+
+      <div class="beat" id="k1">
+        <div class="demand">Demand 1 of 5</div>
+        <img class="char" src="/characters/show-f.webp" alt="" />
+        <div class="bubble">Wireless earbuds. Achhe waale, sasta nahi.</div>
+      </div>
+
+      <div class="beat" id="k2">
+        <div class="demand">Demand 2 of 5</div>
+        <img class="char" src="/characters/request-f.webp" alt="" />
+        <div class="bubble">Woh kurta jo maine teen baar bheja tha.</div>
+      </div>
+
+      <div class="beat" id="k3">
+        <div class="demand">Demand 3 of 5</div>
+        <img class="char" src="/characters/threat-f.webp" alt="" />
+        <div class="bubble">Mummy ko mat batana. Kuch bhi. Kabhi bhi.</div>
+      </div>
+
+      <div class="beat" id="k4">
+        <div class="demand">Demand 4 of 5</div>
+        <img class="char" src="/characters/beg-f.webp" alt="" />
+        <div class="bubble">Phone uthaya karo. Ek baar mein.</div>
+      </div>
+
+      <div class="beat" id="k5">
+        <div class="demand">Demand 5 of 5</div>
+        <img class="char" src="/characters/mercy-f.webp" alt="" />
+        <div class="bubble">Aur agli baar Diwali pe ghar aa jao. Please.</div>
+      </div>
+    </div>
+
   </div>
 
   <div class="foot">
     <div class="rule"></div>
-    <div class="brand">Apni list banao, do minute mein</div>
+    <div class="brand" id="brand">Dono banao, do minute mein</div>
     <div class="url2">trendza.life</div>
   </div>
 
 </div>
 
 <script>
-// Fit the 1080x1920 canvas inside whatever window this is opened in. The
-// canvas itself never changes size, so a recording is still a true 9:16 —
-// only the on-screen preview is scaled.
 const stage = document.getElementById("stage");
 function fit() {
-  const scale = Math.min(window.innerWidth / 1080, window.innerHeight / 1920);
-  stage.style.transform = `translate(-50%, -50%) scale(${scale})`;
+  const s = Math.min(innerWidth / 1080, innerHeight / 1920);
+  stage.style.transform = `translate(-50%, -50%) scale(${s})`;
 }
-fit();
-window.addEventListener("resize", fit);
+fit(); addEventListener("resize", fit);
+
+// Real photographs if they exist, the illustrated scenes if not. Drop
+// memory-1.jpg / memory-2.jpg into public/promo to swap them in — no code
+// change needed, and .png works too.
+function memory(el, base, fallback) {
+  const tries = [`/promo/${base}.jpg`, `/promo/${base}.png`, `/promo/${base}.webp`, fallback];
+  let i = 0;
+  const next = () => { if (i < tries.length) el.src = tries[i++]; };
+  el.onerror = next;
+  next();
+}
+memory(document.getElementById("mem1"), "memory-1", "/characters/scene-tying.webp");
+memory(document.getElementById("mem2"), "memory-2", "/characters/scene-blessing.webp");
 </script>
 
 <script>
-const chat   = document.getElementById("chat");
+const chat = document.getElementById("chat");
 const status = document.getElementById("status");
+const headline = document.getElementById("headline");
+const sub = document.getElementById("sub");
 
-const CARD = `
-  <div class="link">
-    <div class="card">
-      <div class="yes">Stop scrolling. Yes, you.</div>
-      <div class="name">Rohan</div>
-      <div class="thread"><i></i><b></b><i></i></div>
-      <div class="from">Priya has 5 demands</div>
-    </div>
-    <div class="meta">
-      <div class="ttl">Priya has demands for you, Rohan</div>
-      <div class="url">trendza.life</div>
-    </div>
-  </div>`;
+const wait = (ms) => new Promise(r => setTimeout(r, ms));
+const $ = (id) => document.getElementById(id);
+const show = (id) => ["s-chat","s-wish","s-list"].forEach(s => $(s).classList.toggle("on", s === id));
+const beat = (id, on) => $(id).classList.toggle("on", on);
+const title = (h, s) => { headline.innerHTML = h; sub.textContent = s; };
 
-// who: "in" is Priya, "out" is Rohan. `think` is how long the typing dots
-// show first — longer for the messages that are meant to land.
-const script = [
-  { who: "in",  text: "Bhai suno",                                        think: 900,  after: 500 },
-  { who: "in",  text: "Is baar guess mat karna 😤",                        think: 1100, after: 700 },
-  { who: "in",  html: CARD + "Kholo isko",                                 think: 1400, after: 1100 },
-  { who: "out", text: "5 demands?! 😭",                                    after: 800 },
-  { who: "in",  text: "Kam hi to maanga hai",                              think: 900,  after: 700 },
-  { who: "out", text: "isme earbuds bhi hain",                             after: 700 },
-  { who: "in",  text: "Wahi to sabse zaroori hai",                         think: 900,  after: 800 },
-  { who: "out", text: "dekhta hoon",                                       after: 700 },
-  { who: "in",  text: '"dekhta hoon" ka koi matlab nahi hota',             think: 1200, after: 1100 },
-  { who: "out", text: "order kar diya 😤",                                 after: 700 },
-  { who: "in",  text: "🥹🥹🥹",                                            think: 700,  after: 700 },
-  { who: "out", text: "ab meri list bhi aa rahi hai. taiyaar rehna",       after: 800 },
-  { who: "in",  text: "😐",                                                think: 900,  after: 1600 },
-];
+const WISH_CARD = `
+  <div class="link"><div class="card">
+    <div class="yes">A rakhi wish</div><div class="name">For Rohan</div>
+    <div class="thread"><i></i><b></b><i></i></div><div class="from">from Priya</div>
+  </div><div class="meta">
+    <div class="ttl">Priya sent you a rakhi wish, Rohan</div><div class="url">trendza.life</div>
+  </div></div>`;
 
-const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-const stick = () => { chat.scrollTop = chat.scrollHeight; };
+const LIST_CARD = `
+  <div class="link"><div class="card">
+    <div class="yes">Stop scrolling. Yes, you.</div><div class="name">Rohan</div>
+    <div class="thread"><i></i><b></b><i></i></div><div class="from">Priya has 5 demands</div>
+  </div><div class="meta">
+    <div class="ttl">Priya has demands for you, Rohan</div><div class="url">trendza.life</div>
+  </div></div>`;
 
-function clock(i) {
-  const start = 9 * 60 + 14;               // 9:14 am
-  const m = start + Math.floor(i * 0.7);
-  return `${Math.floor(m / 60)}:${String(m % 60).padStart(2, "0")} am`;
+let clockMin = 9 * 60 + 12;
+const stamp = () => { const m = clockMin++; return `${Math.floor(m/60)}:${String(m%60).padStart(2,"0")} am`; };
+
+function trim() {
+  while (chat.scrollHeight > chat.clientHeight + 40 && chat.children.length > 2) chat.removeChild(chat.firstElementChild);
 }
 
-async function typing() {
+async function typing(ms) {
   status.textContent = "typing…";
   const row = document.createElement("div");
   row.className = "row";
   row.innerHTML = `<div class="b in"><div class="typing"><span></span><span></span><span></span></div></div>`;
-  chat.appendChild(row);
-  stick();
-  return row;
+  chat.appendChild(row); chat.scrollTop = chat.scrollHeight;
+  await wait(ms); row.remove(); status.textContent = "online";
+}
+
+async function say(who, content, hold = 1600) {
+  const row = document.createElement("div");
+  row.className = "row " + (who === "out" ? "out" : "");
+  row.innerHTML = `<div class="b ${who === "in" ? "in" : ""}">${content}` +
+    `<span class="t">${stamp()}${who === "out" ? '<span class="tick">✓✓</span>' : ""}</span></div>`;
+  chat.appendChild(row); chat.scrollTop = chat.scrollHeight; trim();
+  await wait(hold);
+}
+
+/** Runs a screen's beats one after another, holding each. */
+async function sequence(screen, beats, hold) {
+  show(screen);
+  await wait(1100);
+  for (const b of beats) {
+    beat(b, true);
+    await wait(hold);
+    beat(b, false);
+    await wait(650);
+  }
 }
 
 async function play() {
-  chat.innerHTML = "";
-  await wait(900);
+  chat.innerHTML = ""; clockMin = 9 * 60 + 12;
+  ["w1","w2","w3","w4","w5","k0","k1","k2","k3","k4","k5","l1","l2","l3"].forEach(b => beat(b, false));
+  title("Pehle pyaar.<br />Phir demands.", "Ek wish, ek list — dono bhej do");
+  show("s-chat");
+  await wait(1500);
 
-  for (let i = 0; i < script.length; i++) {
-    const line = script[i];
+  // ── the wish ───────────────────────────────────────────────────
+  await typing(1400); await say("in", "Bhai", 1300);
+  await typing(1700); await say("in", "Neeche wala link kholo. Abhi. 🧡", 1900);
+  await typing(1900); await say("in", WISH_CARD, 2600);
+  await say("out", "kya hai ye", 1700);
 
-    if (line.who === "in" && line.think) {
-      const dots = await typing();
-      await wait(line.think);
-      dots.remove();
-      status.textContent = "online";
-    }
+  title("Ek link.<br />Poora saal usme.", "Tumhaari photos, tumhaare shabd");
+  show("s-wish"); await wait(1100);
+  beat("w1", true);  await wait(3200); beat("w1", false); await wait(650);
+  beat("w2", true);  await wait(800);
+  $("l1").classList.add("on"); await wait(2000);
+  $("l2").classList.add("on"); await wait(2000);
+  $("l3").classList.add("on"); await wait(2600);
+  beat("w2", false); await wait(650);
+  beat("w3", true);  await wait(3600); beat("w3", false); await wait(650);
+  beat("w4", true);  await wait(3600); beat("w4", false); await wait(650);
+  beat("w5", true);  await wait(3400); beat("w5", false); await wait(700);
 
-    const row = document.createElement("div");
-    row.className = "row " + (line.who === "out" ? "out" : "");
-    const tick = line.who === "out"
-      ? `<span class="tick read">✓✓</span>`
-      : "";
-    row.innerHTML =
-      `<div class="b ${line.who === "in" ? "in" : ""}">${line.html || line.text}` +
-      `<span class="t">${clock(i)}${tick}</span></div>`;
-    chat.appendChild(row);
-    stick();
+  title("Pehle pyaar.<br />Phir demands.", "Ek wish, ek list — dono bhej do");
+  show("s-chat"); await wait(1100);
+  await say("out", "yaar 🥹", 1700);
+  await say("out", "subah subah rula diya", 2000);
+  await typing(1600); await say("in", "Achha ab ro mat", 1700);
+  await typing(1700); await say("in", "Ek aur cheez bheji hai 😌", 2000);
 
-    // Older messages fall off the top rather than the chat growing forever,
-    // so the newest exchange is always the one on screen.
-    while (chat.scrollHeight > chat.clientHeight + 40 && chat.children.length > 3) {
-      chat.removeChild(chat.firstElementChild);
-    }
+  // ── the list ───────────────────────────────────────────────────
+  await typing(1800); await say("in", LIST_CARD, 2500);
+  await say("out", "isme kya hai", 1600);
 
-    await wait(line.after ?? 700);
-  }
+  title("Aur phir<br />asli baat.", "Apni demands, ek hi link mein");
+  await sequence("s-list", ["k0","k1","k2","k3","k4","k5"], 3300);
 
-  await wait(2600);
-  play();                                   // loops, for a clean recording
+  title("Pehle pyaar.<br />Phir demands.", "Ek wish, ek list — dono bhej do");
+  show("s-chat"); await wait(1100);
+  await say("out", "PAANCH?! 😭", 1800);
+  await typing(1500); await say("in", "Kam hi to maanga hai", 1900);
+  await say("out", "theek hai. order kar diya 😤", 2100);
+  await typing(1400); await say("in", "🥹 best bhai", 1900);
+  await say("out", "ab meri list bhi aa rahi hai", 2000);
+  await typing(1300); await say("in", "😐", 2800);
+
+  await wait(2400);
+  play();
 }
 
 play();
