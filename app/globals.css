@@ -279,6 +279,49 @@ body {
 }
 .tz-sheen { animation: tz-sheen 2.6s ease-out both; }
 
+/* ── Festival ornament ───────────────────────────────────────────
+   Rotation and opacity only. Two rings turning against each other read
+   as a mandala breathing rather than a gif looping. */
+@keyframes tz-turn      { to { transform: rotate(360deg); } }
+@keyframes tz-turn-back { to { transform: rotate(-360deg); } }
+
+@keyframes tz-breathe-ring {
+  0%, 100% { transform: scale(1);    opacity: .55; }
+  50%      { transform: scale(1.06); opacity: .9; }
+}
+
+/* A diya flame never repeats the same way twice, so the scale and the
+   lean are on deliberately mismatched durations. */
+@keyframes tz-flame {
+  0%, 100% { transform: scale(1, 1)      translateY(0)    skewX(0deg); }
+  25%      { transform: scale(.94, 1.08) translateY(-2px) skewX(-3deg); }
+  50%      { transform: scale(1.05, .95) translateY(1px)  skewX(2deg); }
+  75%      { transform: scale(.97, 1.05) translateY(-1px) skewX(-2deg); }
+}
+@keyframes tz-glowpulse {
+  0%, 100% { opacity: .45; transform: scale(1); }
+  50%      { opacity: .8;  transform: scale(1.18); }
+}
+
+@keyframes tz-twinkle {
+  0%, 100% { opacity: 0;   transform: scale(.3) rotate(0deg); }
+  40%      { opacity: .95; transform: scale(1)  rotate(45deg); }
+  70%      { opacity: .35; transform: scale(.8) rotate(80deg); }
+}
+
+@keyframes tz-garland {
+  0%, 100% { transform: rotate(-1.1deg); }
+  50%      { transform: rotate(1.1deg); }
+}
+
+.tz-turn        { animation: tz-turn 120s linear infinite; }
+.tz-turn-back   { animation: tz-turn-back 90s linear infinite; }
+.tz-breathe-ring{ animation: tz-breathe-ring 7s ease-in-out infinite; }
+.tz-flame       { animation: tz-flame 1.6s ease-in-out infinite; transform-origin: bottom center; }
+.tz-glowpulse   { animation: tz-glowpulse 2.4s ease-in-out infinite; }
+.tz-twinkle     { animation: tz-twinkle var(--tw-dur, 4s) ease-in-out infinite; animation-delay: var(--tw-delay, 0s); }
+.tz-garland     { animation: tz-garland 9s ease-in-out infinite; transform-origin: top center; }
+
 /* ── Wishlist reactions ──────────────────────────────────────────
    One keyframe per mood. Transform only, so six of these on screen
    at once still composite on the GPU. */

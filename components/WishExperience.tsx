@@ -11,6 +11,7 @@ import { openWish, type OpenPhoto } from "@/lib/wishes";
 import { RETENTION_LABEL, type Wish } from "@/lib/types";
 import { Petals, ThreadRule } from "./Ambient";
 import { Atmosphere } from "./Atmosphere";
+import { Diya } from "./Ornaments";
 import { WordReveal } from "./WordReveal";
 import { Deck } from "./Deck";
 import { GiftThread } from "./GiftThread";
@@ -214,6 +215,17 @@ export default function WishExperience({ wish }: { wish: Wish }) {
               </div>
             ) : (
               <div className="pointer-events-auto text-center">
+                {/* A lamp lit beside the signature. It is the one moment on
+                    the page that is purely ceremonial, so it earns it. */}
+                <motion.div
+                  className="flex justify-center"
+                  initial={{ opacity: 0, scale: 0.7 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 1.2, ease: EASE }}
+                >
+                  <Diya size={78} />
+                </motion.div>
+
                 <ClosingBow />
 
                 <motion.p
@@ -314,6 +326,27 @@ function PhotoCard({
         animate={{ opacity: 1, y: 0, scale: 1, rotate: tilt }}
         transition={{ duration: 1.15, ease: EASE }}
       >
+        {/* Corner brackets, the way a photograph is held into an album page */}
+        {[
+          "left-1.5 top-1.5",
+          "right-1.5 top-1.5 rotate-90",
+          "right-1.5 bottom-1.5 rotate-180",
+          "left-1.5 bottom-1.5 -rotate-90",
+        ].map((pos, i) => (
+          <motion.svg
+            key={pos}
+            viewBox="0 0 24 24"
+            className={`absolute z-10 h-5 w-5 ${pos}`}
+            fill="none"
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 0.85, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.7 + i * 0.09, ease: EASE }}
+            aria-hidden
+          >
+            <path d="M2 10 V 2 H 10" stroke="var(--gold)" strokeWidth="2" strokeLinecap="round" />
+          </motion.svg>
+        ))}
+
         <div
           className={`relative overflow-hidden ${reduced ? "" : "tz-drift"}`}
           style={{ aspectRatio: `${photo.w || 4} / ${photo.h || 3}` }}

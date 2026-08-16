@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { CornerMandala, Glints, Toran } from "./Ornaments";
 
 /**
  * The layer that makes a page feel like paper rather than a screen.
@@ -15,47 +16,13 @@ import { motion } from "framer-motion";
  * costs almost nothing on a phone.
  */
 
-function CornerMandala({ className }: { className: string }) {
-  return (
-    <svg
-      viewBox="0 0 200 200"
-      className={className}
-      fill="none"
-      stroke="var(--gold)"
-      strokeWidth="1"
-      aria-hidden
-    >
-      {/* concentric petals radiating from the corner */}
-      {[34, 58, 82, 106].map((r, ring) =>
-        Array.from({ length: 6 }, (_, i) => {
-          const a = (i * 90) / 5;
-          const rad = (a * Math.PI) / 180;
-          return (
-            <ellipse
-              key={`${ring}-${i}`}
-              cx={Math.cos(rad) * r}
-              cy={Math.sin(rad) * r}
-              rx="11"
-              ry="4.5"
-              opacity={0.5 - ring * 0.09}
-              transform={`rotate(${a} ${Math.cos(rad) * r} ${Math.sin(rad) * r})`}
-            />
-          );
-        }),
-      )}
-      {[26, 50, 74, 98].map((r, i) => (
-        <path
-          key={r}
-          d={`M ${r} 0 A ${r} ${r} 0 0 1 0 ${r}`}
-          opacity={0.34 - i * 0.06}
-          strokeDasharray={i % 2 ? "3 7" : undefined}
-        />
-      ))}
-    </svg>
-  );
-}
-
-export function Atmosphere({ intensity = 1 }: { intensity?: number }) {
+export function Atmosphere({
+  intensity = 1,
+  garland = true,
+}: {
+  intensity?: number;
+  garland?: boolean;
+}) {
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
       {/* warm wash, breathing slowly */}
@@ -76,23 +43,29 @@ export function Atmosphere({ intensity = 1 }: { intensity?: number }) {
         }}
       />
 
-      {/* corner ornament */}
+      {/* the toran across the top */}
+      {garland && <Toran />}
+
+      {/* turning corner mandalas, hung off the edge so only a quadrant shows */}
       <motion.div
-        className="absolute left-0 top-0 h-40 w-40 sm:h-56 sm:w-56"
-        initial={{ opacity: 0, scale: 0.85 }}
-        animate={{ opacity: 0.85, scale: 1 }}
-        transition={{ duration: 2.2, ease: [0.22, 1, 0.36, 1] }}
+        className="absolute -left-[13%] -top-[10%] h-64 w-64 sm:h-96 sm:w-96"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 0.9, scale: 1 }}
+        transition={{ duration: 2.4, ease: [0.22, 1, 0.36, 1] }}
       >
         <CornerMandala className="h-full w-full" />
       </motion.div>
       <motion.div
-        className="absolute bottom-0 right-0 h-40 w-40 rotate-180 sm:h-56 sm:w-56"
-        initial={{ opacity: 0, scale: 0.85 }}
-        animate={{ opacity: 0.85, scale: 1 }}
-        transition={{ duration: 2.2, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+        className="absolute -bottom-[12%] -right-[13%] h-64 w-64 sm:h-96 sm:w-96"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 0.9, scale: 1 }}
+        transition={{ duration: 2.4, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
       >
-        <CornerMandala className="h-full w-full" />
+        <CornerMandala className="h-full w-full" flip />
       </motion.div>
+
+      {/* glints catching the light */}
+      <Glints count={11} seed={17} />
 
       {/* light falls off at the edges */}
       <div
