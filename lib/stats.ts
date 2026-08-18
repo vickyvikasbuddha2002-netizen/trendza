@@ -23,9 +23,11 @@ export function recordWish(): Promise<void> {
   return bump("wishes");
 }
 
-export function recordWishlist(): Promise<void> {
-  return bump("wishlists");
-}
+/**
+ * Deliberately a no-op. The lists total is counted from the table itself in
+ * `fetchStats`, so there is no counter to keep in step and nothing to drift.
+ */
+export async function recordWishlist(): Promise<void> {}
 
 export function recordAgreement(): Promise<void> {
   return bump("agreements");
@@ -43,25 +45,48 @@ async function bump(field: keyof SiteStats): Promise<void> {
 }
 
 export async function fetchStats(): Promise<SiteStats> {
-  // Misconfiguration shows three zeroes rather than throwing. A counter is
+  // Misconfiguration shows zeroes rather than throwing. A counter is
   // decoration; it must never be the thing that breaks a page.
   if (!isSupabaseConfigured) return EMPTY;
-  try {
-    const { data, error } = await supabase
-      .from("stats")
-      .select("visits, wishes, wishlists, agreements")
-      .eq("id", "global")
-      .single();
-    if (error || !data) return EMPTY;
-    return {
-      visits: Number(data.visits ?? 0),
-      wishes: Number(data.wishes ?? 0),
-      wishlists: Number(data.wishlists ?? 0),
-      agreements: Number(data.agreements ?? 0),
-    };
-  } catch {
-    return EMPTY;
-  }
+
+  // The three long-standing totals and the wishlist count are fetched
+  // separately on purpose. Postgres rejects an entire select for one unknown
+  // column, so asking for all four together meant a single missing column
+  // blanked every number on the page. Kept apart, each can fail alone.
+  const [totals, lists] = await Promise.all([
+    (async () => {
+      try {
+        const { data, error } = await supabase
+          .from("stats")
+          .select("visits, wishes, agreements")
+          .eq("id", "global")
+          .single();
+        if (error || !data) return null;
+        return data;
+      } catch {
+        return null;
+      }
+    })(),
+    // Counted from the table itself rather than a counter column: it cannot
+    // drift, and it needs no migration to start working.
+    (async () => {
+      try {
+        const { data, error } = await supabase.rpc("wishlist_stats");
+        if (error) return 0;
+        const row = Array.isArray(data) ? data[0] : data;
+        return Number(row?.created ?? 0);
+      } catch {
+        return 0;
+      }
+    })(),
+  ]);
+
+  return {
+    visits: Number(totals?.visits ?? 0),
+    wishes: Number(totals?.wishes ?? 0),
+    wishlists: lists,
+    agreements: Number(totals?.agreements ?? 0),
+  };
 }
 
 /**
