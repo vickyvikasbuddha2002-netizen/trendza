@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { PageShell } from "@/components/PageShell";
 import { ThreadRule } from "@/components/Ambient";
 import { ChaiLink } from "@/components/ChaiLink";
+import { MessageHelper } from "@/components/MessageHelper";
 import { ShareBox } from "@/components/ShareBox";
 import { createWish, type DraftPhoto } from "@/lib/wishes";
 import { recordVisit } from "@/lib/stats";
@@ -219,6 +220,19 @@ export default function CreatePage() {
                   <p className="mt-2 font-sans text-[0.66rem] text-[var(--muted)]">
                     Each new line appears on its own, one after another.
                   </p>
+
+                  <MessageHelper
+                    to={to}
+                    from={from}
+                    hasText={message.trim().length > 0}
+                    onPick={(text) =>
+                      // Appends rather than replaces. Someone who managed two
+                      // lines and then reached for help should not lose them.
+                      setMessage((prev) =>
+                        prev.trim() ? `${prev.replace(/\s+$/, "")}\n${text}` : text,
+                      )
+                    }
+                  />
                 </div>
               </div>
 
