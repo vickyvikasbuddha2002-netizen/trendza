@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { Bloom, Petals } from "./Ambient";
+import { Petals } from "./Ambient";
+import { Atmosphere } from "./Atmosphere";
 import { ChaiLink } from "./ChaiLink";
 
 /**
@@ -18,7 +19,10 @@ export function PageShell({
 }) {
   return (
     <div className="relative min-h-dvh bg-[var(--ivory)]">
-      <Bloom />
+      {/* The ornament used to live only on the wish and the wishlist, which
+          left every other page — including the front door — comparatively
+          bare. It belongs on all of them. */}
+      <Atmosphere />
       <Petals count={petals} seed={seed} />
 
       {/* Permanent navigation. The shop used to be reachable only from the

@@ -328,6 +328,60 @@ export function PlayfulCorners() {
   );
 }
 
+/* ── Arch ────────────────────────────────────────────────────────
+   The scalloped doorway of a haveli, drawn behind the hero. An arch is
+   what makes a space feel ceremonial rather than merely decorated — it
+   says you are standing at an entrance, which is exactly what a landing
+   page is. Drawn as one path so it scales to any width without seams. */
+export function Arch({ className = "" }: { className?: string }) {
+  // eleven scallops across the top of the arch
+  const scallops = Array.from({ length: 11 }, (_, i) => {
+    const x = 6 + i * 8.8;
+    return `Q ${x + 2.2} 16 ${x + 4.4} 22 Q ${x + 6.6} 16 ${x + 8.8} 22`;
+  }).join(" ");
+
+  return (
+    <svg
+      viewBox="0 0 100 120"
+      preserveAspectRatio="none"
+      className={className}
+      fill="none"
+      aria-hidden
+    >
+      <motion.path
+        d={`M4 120 L4 40 Q 4 22 14 22 ${scallops} Q 96 22 96 40 L96 120`}
+        stroke="var(--gold)"
+        strokeWidth="0.55"
+        vectorEffect="non-scaling-stroke"
+        opacity="0.55"
+        initial={{ pathLength: 0, opacity: 0 }}
+        animate={{ pathLength: 1, opacity: 0.55 }}
+        transition={{ duration: 2.6, ease: [0.22, 1, 0.36, 1] }}
+      />
+      <motion.path
+        d={`M8 120 L8 42 Q 8 27 17 27 L83 27 Q 92 27 92 42 L92 120`}
+        stroke="var(--gold)"
+        strokeWidth="0.4"
+        vectorEffect="non-scaling-stroke"
+        strokeDasharray="1.5 3"
+        opacity="0.35"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 2.6, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      />
+      {/* a hanging bud at the crown */}
+      <motion.g
+        initial={{ opacity: 0, y: -6 }}
+        animate={{ opacity: 0.7, y: 0 }}
+        transition={{ duration: 1.2, delay: 2.2 }}
+      >
+        <line x1="50" y1="22" x2="50" y2="31" stroke="var(--gold)" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
+        <circle cx="50" cy="33" r="2.2" fill="var(--gold)" opacity="0.5" />
+      </motion.g>
+    </svg>
+  );
+}
+
 /* ── Diya ────────────────────────────────────────────────────────
    A lit lamp. The flame leans and swells on mismatched timings so it
    never falls into an obvious loop. */

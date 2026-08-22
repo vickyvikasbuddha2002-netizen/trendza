@@ -6,6 +6,7 @@ import { ThreadRule } from "./Ambient";
 import { Countdown } from "./Countdown";
 import { RakhiScene } from "./ReactionCharacter";
 import { LiveCounters } from "./LiveCounters";
+import { Arch, Diya } from "./Ornaments";
 import { PageShell } from "./PageShell";
 import { YourLinks } from "./YourLinks";
 
@@ -16,7 +17,12 @@ export function Landing() {
     <PageShell petals={12} seed={5}>
       <main className="mx-auto max-w-4xl px-6 pb-10 sm:px-8">
         {/* ── Hero ────────────────────────────────────────────── */}
-        <section className="flex min-h-[78vh] flex-col items-center justify-center text-center">
+        <section className="relative flex min-h-[88vh] flex-col items-center justify-center text-center">
+          {/* A doorway drawn behind the hero. An arch is what makes a space
+              ceremonial rather than merely decorated — it says you are
+              standing at an entrance, which is what a landing page is. */}
+          <Arch className="pointer-events-none absolute inset-x-0 top-[2%] -z-10 mx-auto h-[92%] w-[min(100%,42rem)]" />
+
           <motion.p
             className="font-sans text-[0.66rem] uppercase tracking-[0.4em] text-[var(--muted)]"
             initial={{ opacity: 0, y: 10 }}
@@ -28,13 +34,36 @@ export function Landing() {
 
           <RakhiMotif />
 
+          {/* Two lamps at the threshold, lit as you arrive */}
+          <motion.div
+            className="mt-4 flex items-end justify-center gap-14 sm:gap-20"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.4, delay: 1.9, ease: EASE }}
+          >
+            <Diya size={54} />
+            <Diya size={54} />
+          </motion.div>
+
           <motion.h1
-            className="mt-6 max-w-2xl font-display text-[2.9rem] font-light leading-[1.02] text-[var(--maroon)] sm:text-7xl"
+            className="mt-7 max-w-3xl font-display text-[3.6rem] font-light leading-[0.98] text-[var(--maroon)] sm:text-[6.5rem]"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2, delay: 0.5, ease: EASE }}
           >
-            For the ones who are far away
+            For the ones
+            <br />
+            <span
+              className="italic"
+              style={{
+                background: "linear-gradient(100deg, var(--maroon), #b8860b 45%, var(--maroon))",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                color: "transparent",
+              }}
+            >
+              who are far away
+            </span>
           </motion.h1>
 
           <motion.p
